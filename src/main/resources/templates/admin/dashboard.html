@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Administrativo - NotyGo</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --admin-bg: #f8f9fa;
+            --admin-sidebar: #1e3a8a;
+            --admin-sidebar-hover: #1e40af;
+            --admin-primary: #1a56db;
+            --admin-primary-hover: #1749c4;
+            --admin-text: #111827;
+            --admin-text-muted: #6b7280;
+            --admin-border: #e5e7eb;
+            --admin-card-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+            --admin-radius: 12px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--admin-bg);
+            color: var(--admin-text);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        /* Navbar Admin */
+        .admin-navbar {
+            background: linear-gradient(135deg, var(--admin-sidebar) 0%, var(--admin-sidebar-hover) 100%);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .admin-navbar .navbar-brand {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .admin-navbar .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .admin-navbar .user-info span {
+            font-weight: 500;
+        }
+        .admin-navbar .btn-logout {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        .admin-navbar .btn-logout:hover {
+            background: rgba(255,255,255,0.25);
+            color: white;
+        }
+
+        /* Layout */
+        .admin-wrapper {
+            display: flex;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* Sidebar */
+        .admin-sidebar {
+            width: 240px;
+            background: var(--admin-sidebar);
+            color: white;
+            padding: 1.5rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+        }
+        .admin-sidebar .nav-link {
+            color: rgba(255,255,255,0.85);
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .admin-sidebar .nav-link:hover,
+        .admin-sidebar .nav-link.active {
+            background: rgba(255,255,255,0.15);
+            color: white;
+        }
+        .admin-sidebar .nav-link i {
+            width: 20px;
+            text-align: center;
+            font-size: 1rem;
+        }
+        .admin-sidebar .divider {
+            height: 1px;
+            background: rgba(255,255,255,0.2);
+            margin: 1rem 0.5rem;
+        }
+
+        /* Main Content */
+        .admin-main {
+            flex: 1;
+            padding: 2rem;
+            overflow-x: hidden;
+        }
+
+        /* Stats Cards */
+        .stat-card {
+            background: white;
+            border-radius: var(--admin-radius);
+            padding: 1.5rem;
+            box-shadow: var(--admin-card-shadow);
+            border: 1px solid var(--admin-border);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .stat-card.bg-primary {
+            background: linear-gradient(135deg, var(--admin-primary), var(--admin-sidebar-hover));
+            color: white;
+            border: none;
+        }
+        .stat-card.bg-success {
+            background: linear-gradient(135deg, #16a34a, #15803d);
+            color: white;
+            border: none;
+        }
+        .stat-card.bg-warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            border: none;
+        }
+        .stat-card.bg-danger {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            color: white;
+            border: none;
+        }
+        .stat-card .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+        .stat-card .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        .stat-card .stat-icon {
+            font-size: 2rem;
+            opacity: 0.3;
+        }
+
+        /* Table */
+        .admin-table {
+            background: white;
+            border-radius: var(--admin-radius);
+            box-shadow: var(--admin-card-shadow);
+            border: 1px solid var(--admin-border);
+            overflow: hidden;
+        }
+        .admin-table thead {
+            background: var(--admin-bg);
+            border-bottom: 1px solid var(--admin-border);
+        }
+        .admin-table th {
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--admin-text-muted);
+            padding: 1rem 1.25rem;
+        }
+        .admin-table td {
+            padding: 1rem 1.25rem;
+            vertical-align: middle;
+            font-size: 0.9rem;
+        }
+        .admin-table tbody tr:hover {
+            background: var(--admin-bg);
+        }
+
+        /* Badges */
+        .badge-rol {
+            padding: 0.35rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge-rol.admin {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+        .badge-rol.user {
+            background: #eff6ff;
+            color: #1a56db;
+        }
+        .badge-estado {
+            padding: 0.35rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge-estado.activo {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+        .badge-estado.inactivo {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        /* Buttons */
+        .btn-admin {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s;
+        }
+        .btn-admin-primary {
+            background: var(--admin-primary);
+            color: white;
+            border: none;
+        }
+        .btn-admin-primary:hover {
+            background: var(--admin-primary-hover);
+            color: white;
+        }
+        .btn-admin-outline {
+            background: transparent;
+            color: var(--admin-primary);
+            border: 1.5px solid var(--admin-primary);
+        }
+        .btn-admin-outline:hover {
+            background: var(--admin-primary);
+            color: white;
+        }
+        .btn-admin-sm {
+            padding: 0.35rem 0.75rem;
+            font-size: 0.8rem;
+        }
+
+        /* Alerts */
+        .admin-alert {
+            border-radius: var(--admin-radius);
+            border: none;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+        .admin-alert.success {
+            background: #dcfce7;
+            color: #166534;
+        }
+        .admin-alert.error {
+            background: #fef2f2;
+            color: #991b1b;
+        }
+
+        /* Responsive */
+        @media (max-width: 991.98px) {
+            .admin-sidebar {
+                position: fixed;
+                left: -240px;
+                top: 60px;
+                height: calc(100vh - 60px);
+                z-index: 999;
+                box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+            }
+            .admin-sidebar.show {
+                transform: translateX(240px);
+            }
+            .admin-main {
+                padding: 1.5rem;
+            }
+            .btn-toggle-sidebar {
+                display: block !important;
+            }
+        }
+        @media (min-width: 992px) {
+            .btn-toggle-sidebar {
+                display: none !important;
+            }
+        }
+
+        /* Toggle button for mobile */
+        .btn-toggle-sidebar {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            padding: 0.5rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar Admin -->
+<nav class="admin-navbar">
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-3">
+            <button class="btn-toggle-sidebar d-lg-none" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <a class="navbar-brand" th:href="@{/admin/dashboard}">
+                <i class="fas fa-shield-alt"></i>
+                <span>Admin NotyGo</span>
+            </a>
+        </div>
+        <div class="user-info">
+            <span><i class="fas fa-user me-1"></i> <span th:text="${session.usuarioLogueado}">Admin</span></span>
+            <form th:action="@{/logout}" method="post" style="display:inline;">
+                <button type="submit" class="btn-logout">
+                    <i class="fas fa-sign-out-alt me-1"></i>Salir
+                </button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<!-- Wrapper -->
+<div class="admin-wrapper">
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <nav class="nav flex-column">
+            <a th:href="@{/admin/dashboard}" class="nav-link active">
+                <i class="fas fa-home"></i> Dashboard
+            </a>
+            <a th:href="@{/admin/usuarios}" class="nav-link">
+                <i class="fas fa-users"></i> Usuarios
+            </a>
+
+            <a th:href="@{/admin/tareas}" class="nav-link">
+                <i class="fas fa-tasks"></i> Tareas
+            </a>
+            <div class="divider"></div>
+            <a th:href="@{/cliente/home}" class="nav-link">
+                <i class="fas fa-arrow-left"></i> Volver al Cliente
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="mb-0">Panel de Administración</h4>
+            <span class="badge bg-danger rounded-pill px-3 py-2">
+                <i class="fas fa-crown me-1"></i>Administrador
+            </span>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3 col-sm-6">
+                <div class="stat-card bg-primary">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="stat-value" th:text="${stats.totalUsuarios}">0</div>
+                            <div class="stat-label">Total Usuarios</div>
+                        </div>
+                        <i class="fas fa-users stat-icon"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="stat-card bg-success">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="stat-value" th:text="${stats.usuariosActivos}">0</div>
+                            <div class="stat-label">Usuarios Activos</div>
+                        </div>
+                        <i class="fas fa-user-check stat-icon"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="stat-card bg-warning">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="stat-value" th:text="${stats.usuariosInactivos}">0</div>
+                            <div class="stat-label">Usuarios Inactivos</div>
+                        </div>
+                        <i class="fas fa-user-clock stat-icon"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="stat-card bg-danger">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="stat-value" th:text="${stats.totalAdmins}">0</div>
+                            <div class="stat-label">Administradores</div>
+                        </div>
+                        <i class="fas fa-user-shield stat-icon"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Usuarios Recientes -->
+        <div class="admin-table">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                    <tr>
+                        <th class="ps-4">Usuario</th>
+                        <th>Email</th>
+                        <th>Rol</th>
+                        <th>Estado</th>
+                        <th class="text-end pe-4">Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="usuario : ${usuariosRecientes}">
+                        <td class="ps-4 fw-semibold" th:text="${usuario.nombre}">Nombre</td>
+                        <td th:text="${usuario.email}">email@ejemplo.com</td>
+                        <td>
+                                <span class="badge-rol"
+                                      th:classappend="${usuario.admin} ? 'admin' : 'user'"
+                                      th:text="${usuario.admin} ? 'ADMIN' : 'USER'">
+                                    USER
+                                </span>
+                        </td>
+                        <td>
+                                <span class="badge-estado"
+                                      th:classappend="${usuario.estado == 'ACTIVO'} ? 'activo' : 'inactivo'"
+                                      th:text="${usuario.estado}">
+                                    ACTIVO
+                                </span>
+                        </td>
+                        <td class="text-end pe-4">
+                            <button type="button"
+                                    class="btn-admin btn-admin-outline btn-admin-sm"
+                                    th:data-usuario-id="${usuario.id}"
+                                    onclick="abrirModalEditar(this)">
+                                <i class="fas fa-edit"></i> Editar
+                            </button>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(usuariosRecientes)}">
+                        <td colspan="5" class="text-center py-4 text-muted">
+                            <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
+                            No hay usuarios registrados
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Botón Ver Todos -->
+        <div class="text-center mt-4">
+            <a th:href="@{/admin/usuarios}" class="btn-admin btn-admin-primary">
+                <i class="fas fa-list"></i> Ver Todos los Usuarios
+            </a>
+        </div>
+
+    </main>
+</div>
+
+<!-- ==========================================
+     MODAL EDITAR USUARIO
+     ========================================== -->
+<div class="modal fade" id="modalEditarUsuario" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-user-edit me-2"></i>Editar Usuario
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formEditarUsuario">
+                <div class="modal-body">
+                    <input type="hidden" id="editUsuarioId">
+
+                    <div class="mb-3">
+                        <label for="editNombre" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="editNombre" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="editEmail" required>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="editRol" class="form-label">Rol</label>
+                            <select class="form-select" id="editRol" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="1">Administrador</option>
+                                <option value="2">Usuario Estandar</option>
+                                <option value="3">Premium</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="editEstado" class="form-label">Estado</label>
+                            <select class="form-select" id="editEstado" required>
+                                <option value="ACTIVO">Activo</option>
+                                <option value="INACTIVO">Inactivo</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editPassword" class="form-label">
+                            Nueva Contraseña <small class="text-muted">(dejar en blanco para mantener)</small>
+                        </label>
+                        <input type="password" class="form-control" id="editPassword" placeholder="••••••••">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i>Guardar Cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Toast de notificaciones -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="toastNotificacion" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="fas fa-check-circle me-2"></i>
+                <span id="toastMensaje">Operación exitosa</span>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Toggle sidebar en móvil
+    function toggleSidebar() {
+        document.getElementById('adminSidebar').classList.toggle('show');
+    }
+
+    // Cerrar sidebar al hacer clic fuera en móvil
+    document.addEventListener('click', function(e) {
+        const sidebar = document.getElementById('adminSidebar');
+        const toggleBtn = document.querySelector('.btn-toggle-sidebar');
+
+        if (window.innerWidth < 992 &&
+            sidebar.classList.contains('show') &&
+            !sidebar.contains(e.target) &&
+            !toggleBtn.contains(e.target)) {
+            sidebar.classList.remove('show');
+        }
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Toggle sidebar en móvil
+    function toggleSidebar() {
+        document.getElementById('adminSidebar').classList.toggle('show');
+    }
+
+    // Cerrar sidebar al hacer clic fuera en móvil
+    document.addEventListener('click', function(e) {
+        const sidebar = document.getElementById('adminSidebar');
+        const toggleBtn = document.querySelector('.btn-toggle-sidebar');
+
+        if (window.innerWidth < 992 &&
+            sidebar.classList.contains('show') &&
+            !sidebar.contains(e.target) &&
+            !toggleBtn.contains(e.target)) {
+            sidebar.classList.remove('show');
+        }
+    });
+
+    // ==========================================
+    // FUNCIONES DEL MODAL DE EDICIÓN
+    // ==========================================
+
+    // Abrir modal y cargar datos del usuario
+    async function abrirModalEditar(btn) {
+        const usuarioId = btn.getAttribute('data-usuario-id');
+        console.log('🔍 Intentando cargar usuario ID:', usuarioId);
+
+        try {
+            // Mostrar modal
+            const modal = new bootstrap.Modal(document.getElementById('modalEditarUsuario'));
+            modal.show();
+
+            // ✅ CORREGIDO: Ruta correcta con /admin/api/...
+            console.log('📡 Fetching: /admin/api/usuarios/' + usuarioId);
+            const response = await fetch(`/admin/api/usuarios/${usuarioId}`);
+
+            console.log('📥 Response status:', response.status);
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('❌ Error HTTP:', response.status, errorText);
+                throw new Error(`Error ${response.status}: ${errorText}`);
+            }
+
+            const usuario = await response.json();
+            console.log('✅ Usuario cargado:', usuario);
+
+            // Llenar formulario
+            document.getElementById('editUsuarioId').value = usuario.id;
+            document.getElementById('editNombre').value = usuario.nombre || '';
+            document.getElementById('editEmail').value = usuario.email || '';
+            document.getElementById('editRol').value = usuario.rolId || '';
+            document.getElementById('editEstado').value = usuario.estado || 'ACTIVO';
+            document.getElementById('editPassword').value = '';
+
+            console.log('✅ Formulario llenado correctamente');
+
+        } catch (error) {
+            console.error('💥 Error en abrirModalEditar:', error);
+            mostrarToast('Error al cargar los datos del usuario: ' + error.message, 'error');
+
+            // Cerrar modal si está abierto
+            const modalEl = document.getElementById('modalEditarUsuario');
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            if (modal) modal.hide();
+        }
+    }
+
+    // Submit del formulario
+    document.getElementById('formEditarUsuario')?.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const usuarioId = document.getElementById('editUsuarioId').value;
+        const formData = {
+            nombre: document.getElementById('editNombre').value,
+            email: document.getElementById('editEmail').value,
+            rolId: parseInt(document.getElementById('editRol').value),
+            estado: document.getElementById('editEstado').value,
+            password: document.getElementById('editPassword').value
+        };
+
+        try {
+            // ✅ CORREGIDO: Ruta correcta con /admin/api/...
+            console.log('📡 PUT: /admin/api/usuarios/' + usuarioId + '/actualizar');
+            const response = await fetch(`/admin/api/usuarios/${usuarioId}/actualizar`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+
+            if (response.ok) {
+                // Cerrar modal
+                bootstrap.Modal.getInstance(document.getElementById('modalEditarUsuario'))?.hide();
+
+                // Mostrar éxito
+                mostrarToast('Usuario actualizado correctamente');
+
+                // Recargar página después de 1 segundo
+                setTimeout(() => location.reload(), 1000);
+            } else {
+                const error = await response.text();
+                console.error('❌ Error al actualizar:', error);
+                mostrarToast(error || 'Error al actualizar usuario', 'error');
+            }
+        } catch (error) {
+            console.error('💥 Error de conexión:', error);
+            mostrarToast('Error de conexión al actualizar', 'error');
+        }
+    });
+
+    // Mostrar toast de notificación
+    function mostrarToast(mensaje, tipo = 'success') {
+        const toastEl = document.getElementById('toastNotificacion');
+        const toastBody = toastEl.querySelector('.toast-body');
+
+        // Actualizar color según tipo
+        toastEl.className = `toast align-items-center text-white border-0 ${tipo === 'success' ? 'bg-success' : 'bg-danger'}`;
+
+        // Actualizar mensaje
+        const icono = tipo === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+        toastBody.innerHTML = `<i class="fas ${icono} me-2"></i><span>${mensaje}</span>`;
+
+        // Mostrar toast
+        const toast = new bootstrap.Toast(toastEl);
+        toast.show();
+    }
+</script>
+
+</body>
+</html>

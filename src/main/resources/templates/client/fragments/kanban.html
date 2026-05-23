@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="columnBody(tareas, estado)" th:remove="tag">
+    <div th:each="tarea : ${tareas}"
+         class="task-card"
+         th:attr="data-id=${tarea.id}"
+         draggable="true">
+
+        <div class="task-card-header">
+            <div class="d-flex align-items-center gap-2">
+                    <span class="badge"
+                          th:classappend="${tarea.prioridad == 'ALTA'} ? 'bg-danger' : (${tarea.prioridad == 'MEDIA'} ? 'bg-warning text-dark' : 'bg-success')"
+                          th:text="${tarea.prioridad}">ALTA</span>
+                <span th:if="${tarea.fechaLimite < #dates.createNow() and tarea.estadoTarea != 'TERMINADO'}"
+                      class="badge bg-danger">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </span>
+            </div>
+            <div class="task-actions dropdown">
+                <button class="btn btn-sm btn-link text-muted"
+                        type="button"
+                        data-bs-toggle="dropdown">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="#" th:attr="data-id=${tarea.id}" onclick="app.tarea.editar(this.getAttribute('data-id'))">
+                        <i class="fas fa-edit me-2"></i>Editar
+                    </a></li>
+                    <li><a class="dropdown-item" href="#" th:attr="data-id=${tarea.id}" onclick="app.tarea.duplicar(this.getAttribute('data-id'))">
+                        <i class="fas fa-copy me-2"></i>Duplicar
+                    </a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item text-danger" href="#" th:attr="data-id=${tarea.id}" onclick="app.tarea.eliminar(this.getAttribute('data-id'))">
+                        <i class="fas fa-trash me-2"></i>Eliminar
+                    </a></li>
+                </ul>
+            </div>
+        </div>
+
+        <h6 class="task-title mb-2 fw-bold" th:text="${tarea.titulo}">Título de la tarea</h6>
+        <p class="task-description text-muted small mb-3" th:text="${#strings.abbreviate(tarea.descripcion, 80)}">Descripción...</p>
+
+        <!-- Barra de progreso para En Progreso -->
+        <div th:if="${estado == 'EN_PROGRESO'}" class="progress mb-3" style="height: 4px;">
+            <div class="progress-bar bg-primary" role="progressbar" style="width: 60%"></div>
+        </div>
+
+        <!-- Meta información -->
+        <div class="task-meta mb-3 d-flex flex-wrap gap-2">
+                <span th:if="${tarea.categoria}" class="task-category badge bg-light text-dark border">
+                    <i class="fas fa-folder me-1"></i>
+                    <span th:text="${tarea.categoria.nombre}">Categoría</span>
+                </span>
+        </div>
+
+        <!-- Footer -->
+        <div class="task-footer d-flex justify-content-between align-items-center pt-3 border-top">
+            <div class="task-due-date"
+                 th:classappend="${tarea.fechaLimite < #dates.createNow() and tarea.estadoTarea != 'TERMINADO'} ? 'text-danger fw-bold overdue' : 'text-muted'">
+                <i class="far fa-calendar me-1"></i>
+                <span th:text="${#temporals.format(tarea.fechaLimite, 'dd/MM/yyyy')}">01/01/2026</span>
+            </div>
+            <div class="task-tags">
+                    <span th:each="etiqueta : ${tarea.etiquetas}"
+                          class="badge badge-sm me-1"
+                          th:text="${etiqueta.nombre}"
+                          th:style="'background-color: ' + ${etiqueta.color} + '; color: white;'">
+                        Tag
+                    </span>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

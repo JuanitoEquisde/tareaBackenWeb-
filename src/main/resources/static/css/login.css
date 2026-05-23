@@ -1,0 +1,644 @@
+/* ==========================================
+   NOTYGO - LOGIN STYLES
+   Diseño Responsive Mejorado
+   ========================================== */
+
+:root {
+    --color-primary: #1565C0;
+    --color-primary-dark: #0D47A1;
+    --color-primary-light: #1976D2;
+    --color-secondary: #2196F3;
+    --color-accent-yellow: #FFC107;
+    --color-accent-orange: #FF5722;
+    --color-white: #FFFFFF;
+    --color-gray-light: #F5F5F5;
+    --color-gray: #E0E0E0;
+    --color-gray-dark: #424242;
+    --color-text: #212121;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 20px;
+}
+
+/* ==========================================
+   CONTENEDOR PRINCIPAL - DIMENSIONES CONTROLADAS
+   ========================================== */
+.login-container {
+    display: flex;
+    max-width: 1000px; /* ✅ Máximo ancho controlado */
+    width: 100%;
+    background: var(--color-white);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
+    animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==========================================
+   PANEL IZQUIERDO - BRANDING
+   ========================================== */
+.geometric-panel {
+    flex: 1;
+    background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 100%);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 500px;
+    padding: 40px;
+    overflow: hidden;
+}
+
+/* Formas decorativas */
+.shape {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.15;
+}
+
+.shape-1 {
+    width: 300px;
+    height: 300px;
+    background: var(--color-white);
+    top: -100px;
+    left: -100px;
+}
+
+.shape-2 {
+    width: 200px;
+    height: 200px;
+    background: var(--color-accent-yellow);
+    bottom: 50px;
+    right: -50px;
+    clip-path: polygon(50% 0%, 100% 0%, 100% 100%, 50% 100%);
+}
+
+.shape-3 {
+    width: 150px;
+    height: 150px;
+    background: var(--color-white);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Branding */
+.brand-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    color: var(--color-white);
+    padding: 40px;
+}
+
+.brand-content i {
+    font-size: 5rem;
+    display: block;
+    margin-bottom: 25px;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+.brand-content h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 15px;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    letter-spacing: -1px;
+}
+
+.brand-content p {
+    font-size: 1.1rem;
+    opacity: 0.95;
+    font-weight: 300;
+}
+
+/* ==========================================
+   PANEL DERECHO - FORMULARIO
+   ========================================== */
+.form-panel {
+    flex: 1;
+    padding: 60px 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: var(--color-gray-light);
+}
+
+.form-panel h2 {
+    color: var(--color-text);
+    font-weight: 700;
+    margin-bottom: 40px;
+    font-size: 2rem;
+    text-align: center;
+}
+
+/* Campos del formulario */
+.mb-3 {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    color: var(--color-gray-dark);
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+}
+
+.form-control {
+    width: 100%;
+    border: 2px solid var(--color-gray);
+    border-radius: 12px;
+    padding: 14px 18px;
+    background: var(--color-white);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 4px rgba(21, 101, 192, 0.15);
+}
+
+.form-control::placeholder {
+    color: #9E9E9E;
+}
+
+/* Checkbox */
+.form-check {
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.form-check-input {
+    width: 18px;
+    height: 18px;
+    margin-right: 10px;
+    cursor: pointer;
+    accent-color: var(--color-primary);
+}
+
+.form-check-label {
+    color: var(--color-gray-dark);
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+/* Botón de login */
+.btn-primary {
+    width: 100%;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+    color: var(--color-white);
+    border: none;
+    border-radius: 12px;
+    padding: 16px 24px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(21, 101, 192, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(21, 101, 192, 0.4);
+}
+
+.btn-primary:active {
+    transform: translateY(-1px);
+}
+
+/* Enlaces */
+.text-center {
+    text-align: center;
+}
+
+.mt-3 {
+    margin-top: 1.5rem;
+}
+
+.mt-2 {
+    margin-top: 1rem;
+}
+
+.text-decoration-none {
+    text-decoration: none;
+    color: var(--color-primary);
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.text-decoration-none:hover {
+    color: var(--color-primary-dark);
+    text-decoration: underline;
+}
+
+/* Alertas */
+.alert {
+    padding: 14px 18px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: shake 0.5s ease-in-out;
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, #FFEBEE, #FFCDD2);
+    color: #C62828;
+    border-left: 4px solid #F44336;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+}
+/* ==========================================
+   CORRECCIÓN DE LAYOUT - SIN SUPERPOSICIÓN
+   ========================================== */
+
+/* Sidebar en desktop - bien posicionado */
+@media (min-width: 992px) {
+    .sidebar-container {
+        transform: translateX(0) !important;
+        position: fixed;
+        left: 0;
+        top: var(--header-height);
+        width: var(--sidebar-width);
+    }
+
+    .main-content-wrapper {
+        margin-left: var(--sidebar-width);
+        width: calc(100% - var(--sidebar-width));
+    }
+}
+
+/* Sidebar en móvil - completamente oculto/mostrado */
+@media (max-width: 991px) {
+    .sidebar-container {
+        position: fixed;
+        left: -100%;
+        transform: translateX(0);
+        z-index: 1040;
+        width: 280px;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+    }
+
+    .sidebar-container.show {
+        left: 0;
+        transform: translateX(0);
+    }
+
+    .main-content-wrapper {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    /* Overlay debe estar detrás del sidebar */
+    .sidebar-overlay {
+        position: fixed;
+        top: var(--header-height);
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1035;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .sidebar-overlay.show {
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+/* Asegurar que el contenido no se superponga */
+.main-content-inner {
+    padding: 2rem;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+/* Stats cards - que no se salgan */
+.stats-section {
+    width: 100%;
+    margin-bottom: 2rem;
+}
+
+/* Kanban board - scroll horizontal si es necesario */
+.kanban-board-inner {
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    width: 100%;
+    padding: 1rem 0.5rem;
+}
+
+/* Asegurar que las columnas no se encojan demasiado */
+.kanban-column {
+    flex: 0 0 320px;
+    max-width: 350px;
+    min-width: 300px;
+}
+
+/* ==========================================
+   RESPONSIVE - TABLET (max-width: 992px)
+   ========================================== */
+@media (max-width: 992px) {
+    .login-container {
+        max-width: 800px;
+    }
+
+    .geometric-panel {
+        min-height: 400px;
+        padding: 30px;
+    }
+
+    .brand-content i {
+        font-size: 4rem;
+    }
+
+    .brand-content h1 {
+        font-size: 2.5rem;
+    }
+
+    .brand-content p {
+        font-size: 1rem;
+    }
+
+    .form-panel {
+        padding: 50px 40px;
+    }
+
+    .form-panel h2 {
+        font-size: 1.75rem;
+    }
+}
+
+/* ==========================================
+   RESPONSIVE - MÓVIL GRANDE (max-width: 768px)
+   ========================================== */
+@media (max-width: 768px) {
+    body {
+        padding: 15px;
+        align-items: flex-start;
+        padding-top: 30px;
+    }
+
+    .login-container {
+        flex-direction: column;
+        max-width: 100%;
+        border-radius: 16px;
+    }
+
+    .geometric-panel {
+        min-height: 220px;
+        padding: 25px;
+    }
+
+    .brand-content {
+        padding: 20px;
+    }
+
+    .brand-content i {
+        font-size: 3rem;
+        margin-bottom: 15px;
+    }
+
+    .brand-content h1 {
+        font-size: 2rem;
+        margin-bottom: 10px;
+    }
+
+    .brand-content p {
+        font-size: 0.95rem;
+    }
+
+    /* Ocultar algunas formas en móvil */
+    .shape-1, .shape-2 {
+        display: none;
+    }
+
+    .form-panel {
+        padding: 40px 30px;
+        border-radius: 0 0 16px 16px;
+    }
+
+    .form-panel h2 {
+        font-size: 1.6rem;
+        margin-bottom: 30px;
+    }
+
+    .form-control {
+        padding: 12px 16px;
+        font-size: 0.95rem;
+    }
+
+    .btn-primary {
+        padding: 14px 20px;
+        font-size: 1rem;
+    }
+}
+
+/* ==========================================
+   RESPONSIVE - MÓVIL PEQUEÑO (max-width: 480px)
+   ========================================== */
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+        padding-top: 20px;
+    }
+
+    .login-container {
+        border-radius: 12px;
+    }
+
+    .geometric-panel {
+        min-height: 180px;
+        padding: 20px;
+    }
+
+    .brand-content {
+        padding: 15px;
+    }
+
+    .brand-content i {
+        font-size: 2.5rem;
+    }
+
+    .brand-content h1 {
+        font-size: 1.75rem;
+    }
+
+    .brand-content p {
+        font-size: 0.9rem;
+    }
+
+    .form-panel {
+        padding: 30px 25px;
+    }
+
+    .form-panel h2 {
+        font-size: 1.4rem;
+        margin-bottom: 25px;
+    }
+
+    .form-label {
+        font-size: 0.9rem;
+    }
+
+    .form-control {
+        padding: 11px 14px;
+        font-size: 0.9rem;
+    }
+
+    .btn-primary {
+        padding: 13px 18px;
+        font-size: 0.95rem;
+    }
+
+    .form-check-label {
+        font-size: 0.9rem;
+    }
+}
+
+/* ==========================================
+   RESPONSIVE - MÓVIL MUY PEQUEÑO (max-width: 360px)
+   ========================================== */
+@media (max-width: 360px) {
+    .brand-content h1 {
+        font-size: 1.5rem;
+    }
+
+    .form-panel h2 {
+        font-size: 1.3rem;
+    }
+
+    .form-control {
+        padding: 10px 12px;
+        font-size: 0.85rem;
+    }
+
+    .btn-primary {
+        padding: 12px 16px;
+        font-size: 0.9rem;
+    }
+}
+
+/* ==========================================
+   ORIENTACIÓN HORIZONTAL (LANDSCAPE)
+   ========================================== */
+@media (max-height: 600px) and (orientation: landscape) {
+    body {
+        align-items: center;
+        padding: 20px;
+    }
+
+    .login-container {
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .geometric-panel {
+        min-height: auto;
+        padding: 20px;
+    }
+
+    .brand-content i {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+    }
+
+    .brand-content h1 {
+        font-size: 1.75rem;
+    }
+
+    .brand-content p {
+        display: none;
+    }
+
+    .form-panel {
+        padding: 30px;
+    }
+
+    .form-panel h2 {
+        font-size: 1.4rem;
+        margin-bottom: 20px;
+    }
+
+    .mb-3 {
+        margin-bottom: 1rem;
+    }
+}
+
+/* ==========================================
+   ACCESIBILIDAD
+   ========================================== */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Focus visible */
+*:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-gray-light);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-primary);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-primary-dark);
+}

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - NotyGo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/client-home.css}">
+    <style>
+        :root {
+            --azul-primary: #1a56db;
+            --azul-dark:    #1e3a8a;
+            --azul-light:   #eff6ff;
+            --azul-mid:     #dbeafe;
+            --text-dark:    #111827;
+            --text-mid:     #374151;
+            --text-soft:    #6b7280;
+            --border:       #e5e7eb;
+            --bg-page:      #f3f6fb;
+            --white:        #ffffff;
+            --green:        #16a34a;
+            --green-bg:     #dcfce7;
+            --shadow-nav:   0 2px 8px rgba(0,0,0,0.12);
+            --shadow-card:  0 4px 24px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
+            --radius:       14px;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            background: var(--bg-page);
+            min-height: 100vh;
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* ── Navbar ──────────────────────────────────────────── */
+        .navbar {
+            background: linear-gradient(90deg, var(--azul-dark) 0%, var(--azul-primary) 100%) !important;
+            box-shadow: var(--shadow-nav);
+            padding: 0.8rem 0;
+            height: 60px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: #fff !important;
+            letter-spacing: 0.01em;
+            transition: opacity .2s;
+        }
+        .navbar-brand:hover { opacity: .85; }
+        .brand-text { color: #fff; }
+
+        /* ── Layout principal centrado ───────────────────────── */
+        .main-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 60px);
+            padding: 2rem 1rem;
+            width: 100%;
+        }
+
+        /* ── Card contenedora ────────────────────────────────── */
+        .perfil-card {
+            width: 100%;
+            max-width: 520px;
+            animation: fadeUp .45s ease both;
+            margin: 0 auto;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0);    }
+        }
+
+        /* ── Avatar ──────────────────────────────────────────── */
+        .perfil-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--azul-primary), #2563eb);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin: 0 auto 0;
+            border: 4px solid var(--white);
+            box-shadow: 0 4px 20px rgba(26,86,219,0.35);
+            position: relative;
+            z-index: 2;
+            transform: translateY(30px);
+        }
+
+        /* ── Panel blanco ────────────────────────────────────── */
+        .perfil-info {
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-card);
+            padding: 4rem 2rem 2rem;
+            border: 1px solid var(--border);
+        }
+
+        /* ── Nombre ──────────────────────────────────────────── */
+        .perfil-nombre {
+            font-size: clamp(1.2rem, 3.5vw, 1.55rem);
+            font-weight: 700;
+            color: var(--text-dark);
+            text-align: center;
+            margin-bottom: 0.2rem;
+        }
+
+        .perfil-email-top {
+            text-align: center;
+            font-size: 0.88rem;
+            color: var(--text-soft);
+            margin-bottom: 1.75rem;
+        }
+
+        /* ── Divisor ─────────────────────────────────────────── */
+        .perfil-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 1.5rem 0;
+        }
+
+        /* ── Filas ───────────────────────────────────────────── */
+        .perfil-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem 0.85rem;
+            border-radius: 9px;
+            margin-bottom: 0.4rem;
+            transition: background .18s;
+        }
+        .perfil-row:hover { background: var(--azul-light); }
+
+        .perfil-row-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            background: var(--azul-mid);
+            color: var(--azul-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .perfil-row-label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
+            color: var(--text-soft);
+            margin-bottom: 0.1rem;
+        }
+
+        .perfil-row-value {
+            font-size: 0.93rem;
+            font-weight: 500;
+            color: var(--text-dark);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+
+        /* ── Badges ──────────────────────────────────────────── */
+        .badge-tipo {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.28rem 0.7rem;
+            border-radius: 999px;
+            font-size: 0.76rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            background: var(--azul-primary);
+            color: #fff;
+        }
+
+        .badge-estado {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.28rem 0.7rem;
+            border-radius: 999px;
+            font-size: 0.76rem;
+            font-weight: 600;
+            background: var(--green-bg);
+            color: var(--green);
+            border: 1px solid #bbf7d0;
+        }
+        .badge-estado::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--green);
+            animation: blink 2s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: .35; }
+        }
+
+        /* ── Botón volver ────────────────────────────────────── */
+        .btn-volver {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.6rem 1.6rem;
+            border-radius: 9px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--azul-primary) !important;
+            background: var(--white);
+            border: 1.5px solid var(--azul-primary);
+            text-decoration: none;
+            transition: background .18s, color .18s, box-shadow .18s, transform .15s;
+            margin-top: 1rem;
+        }
+        .btn-volver:hover {
+            background: var(--azul-primary);
+            color: #fff !important;
+            box-shadow: 0 4px 14px rgba(26,86,219,0.3);
+            transform: translateY(-1px);
+        }
+
+        /* ── Responsive ──────────────────────────────────────── */
+        @media (max-width: 767.98px) {
+            .main-wrapper {
+                padding: 1.5rem 0.75rem 2rem;
+                min-height: calc(100vh - 56px);
+            }
+            .perfil-info  {
+                padding: 3.5rem 1.5rem 1.5rem;
+            }
+            .perfil-avatar {
+                width: 90px;
+                height: 90px;
+                font-size: 1.9rem;
+                transform: translateY(25px);
+            }
+            .perfil-row   {
+                gap: 0.75rem;
+                padding: 0.65rem 0.6rem;
+            }
+            .perfil-row-label {
+                font-size: 0.68rem;
+            }
+            .perfil-row-value {
+                font-size: 0.88rem;
+            }
+            .btn-volver {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 375px) {
+            .perfil-info {
+                padding: 3rem 1.25rem 1.25rem;
+            }
+            .perfil-nombre {
+                font-size: 1.3rem;
+            }
+            .perfil-email-top {
+                font-size: 0.82rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container-fluid px-3 px-md-4">
+        <a class="navbar-brand d-flex align-items-center" th:href="@{/cliente/home}">
+            <i class="fas fa-arrow-left me-2"></i>
+            <span class="brand-text">NotyGo</span>
+        </a>
+    </div>
+</nav>
+
+<!-- Contenido principal centrado -->
+<div class="main-wrapper">
+    <div class="perfil-card">
+
+        <!-- Avatar flotante -->
+        <div class="perfil-avatar">
+            <span th:text="${#strings.toUpperCase(usuarioNombre.length() >= 2 ? #strings.substring(usuarioNombre, 0, 2) : usuarioNombre)}">JP</span>
+        </div>
+
+        <!-- Panel blanco -->
+        <div class="perfil-info">
+
+            <h3 class="perfil-nombre" th:text="${usuarioNombre}">Juan Paz</h3>
+            <p class="perfil-email-top" th:text="${usuarioEmail}">juan@email.com</p>
+
+            <div class="perfil-divider"></div>
+
+            <!-- Nombre -->
+            <div class="perfil-row">
+                <div class="perfil-row-icon"><i class="fas fa-user"></i></div>
+                <div class="flex-fill">
+                    <div class="perfil-row-label">Nombre</div>
+                    <div class="perfil-row-value" th:text="${usuarioNombre}">Juan Paz</div>
+                </div>
+            </div>
+
+            <!-- Email -->
+            <div class="perfil-row">
+                <div class="perfil-row-icon"><i class="fas fa-envelope"></i></div>
+                <div class="flex-fill">
+                    <div class="perfil-row-label">Email</div>
+                    <div class="perfil-row-value" th:text="${usuarioEmail}">juan@email.com</div>
+                </div>
+            </div>
+
+            <!-- Tipo (antes Rol) -->
+            <div class="perfil-row">
+                <div class="perfil-row-icon"><i class="fas fa-id-badge"></i></div>
+                <div class="flex-fill">
+                    <div class="perfil-row-label">Tipo</div>
+                    <div class="perfil-row-value">
+                        <span class="badge-tipo" th:text="${usuarioRol}">USUARIO ESTANDAR</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estado -->
+            <div class="perfil-row">
+                <div class="perfil-row-icon"><i class="fas fa-circle-check"></i></div>
+                <div class="flex-fill">
+                    <div class="perfil-row-label">Estado</div>
+                    <div class="perfil-row-value">
+                        <span class="badge-estado">Activo</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botón -->
+            <div class="text-center">
+                <a th:href="@{/cliente/home}" class="btn-volver">
+                    <i class="fas fa-arrow-left"></i>Volver al Tablero
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

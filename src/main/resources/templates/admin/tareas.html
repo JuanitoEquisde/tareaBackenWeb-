@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tareas - Panel Administrativo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #f8f9fa; }
+        .navbar { background: linear-gradient(135deg, #1e3a8a, #1a56db); }
+        .badge-prioridad.alta { background: #fef2f2; color: #dc2626; }
+        .badge-prioridad.media { background: #fef3c7; color: #d97706; }
+        .badge-prioridad.baja { background: #dcfce7; color: #16a34a; }
+        .badge-estado-tarea.pendiente { background: #fef3c7; color: #d97706; }
+        .badge-estado-tarea.en_progreso { background: #eff6ff; color: #1a56db; }
+        .badge-estado-tarea.terminado { background: #dcfce7; color: #16a34a; }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        .stat-icon.blue { background: #eff6ff; color: #1a56db; }
+        .stat-icon.green { background: #dcfce7; color: #16a34a; }
+        .stat-icon.yellow { background: #fef3c7; color: #d97706; }
+        .stat-icon.red { background: #fef2f2; color: #dc2626; }
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+        .stat-label {
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/admin/dashboard}">
+            <i class="fas fa-shield-alt me-2"></i>Admin NotyGo
+        </a>
+        <div class="d-flex align-items-center gap-3">
+            <span class="text-white" th:text="${session.usuarioLogueado}">Admin</span>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="btn btn-outline-light btn-sm">Salir</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content - SIN SIDEBAR -->
+<div class="container-fluid p-4">
+
+    <!-- Header con botón volver -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Gestión de Tareas</h2>
+        <a th:href="@{/admin/dashboard}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left me-2"></i>Volver al Dashboard
+        </a>
+    </div>
+
+    <!-- Estadísticas (valores directos del modelo) -->
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-icon blue">
+                <i class="fas fa-tasks"></i>
+            </div>
+            <div>
+                <div class="stat-value" th:text="${totalTareas}">0</div>
+                <div class="stat-label">Total Tareas</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon yellow">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div>
+                <div class="stat-value" th:text="${pendientes}">0</div>
+                <div class="stat-label">Pendientes</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon blue">
+                <i class="fas fa-spinner"></i>
+            </div>
+            <div>
+                <div class="stat-value" th:text="${enProgreso}">0</div>
+                <div class="stat-label">En Progreso</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon green">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div>
+                <div class="stat-value" th:text="${terminadas}">0</div>
+                <div class="stat-label">Completadas</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form th:action="@{/admin/tareas}" method="get" class="row g-3">
+                <div class="col-md-3">
+                    <input type="text" class="form-control" name="titulo"
+                           placeholder="Buscar por título"
+                           th:value="${filtroTitulo}">
+                </div>
+                <div class="col-md-2">
+                    <select class="form-select" name="prioridad">
+                        <option value="">Todas las prioridades</option>
+                        <option value="ALTA" th:selected="${filtroPrioridad == 'ALTA'}">Alta</option>
+                        <option value="MEDIA" th:selected="${filtroPrioridad == 'MEDIA'}">Media</option>
+                        <option value="BAJA" th:selected="${filtroPrioridad == 'BAJA'}">Baja</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select class="form-select" name="estado">
+                        <option value="">Todos los estados</option>
+                        <option value="PENDIENTE" th:selected="${filtroEstado == 'PENDIENTE'}">Pendiente</option>
+                        <option value="EN_PROGRESO" th:selected="${filtroEstado == 'EN_PROGRESO'}">En Progreso</option>
+                        <option value="TERMINADO" th:selected="${filtroEstado == 'TERMINADO'}">Terminado</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search me-1"></i>Buscar
+                    </button>
+                </div>
+                <div class="col-md-2">
+                    <a th:href="@{/admin/tareas}" class="btn btn-outline-secondary w-100">
+                        <i class="fas fa-redo me-1"></i>Limpiar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tabla de Tareas -->
+    <div class="card">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">ID</th>
+                        <th>Título</th>
+                        <th>Descripción</th>
+                        <th>Usuario</th>
+                        <th>Categoría</th>
+                        <th>Prioridad</th>
+                        <th>Estado</th>
+                        <th>Fecha Límite</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- ✅ Iteración segura con tareas -->
+                    <tr th:each="tarea : ${tareas != null ? tareas : {}}">
+                        <td class="ps-4" th:text="${tarea.id}">1</td>
+                        <td th:text="${tarea.titulo}">Título</td>
+                        <td th:text="${#strings.abbreviate(tarea.descripcion, 50)}">Descripción</td>
+                        <td th:text="${tarea.usuario?.nombre}">Usuario</td>
+                        <td th:text="${tarea.categoria?.nombre}">Categoría</td>
+                        <td>
+                                <span class="badge badge-prioridad"
+                                      th:classappend="${tarea.prioridad == 'ALTA'} ? 'alta' : (${tarea.prioridad == 'MEDIA'} ? 'media' : 'baja')"
+                                      th:text="${tarea.prioridad}">
+                                    PRIORIDAD
+                                </span>
+                        </td>
+                        <td>
+                                <span class="badge badge-estado-tarea"
+                                      th:classappend="${tarea.estadoTarea == 'PENDIENTE'} ? 'pendiente' : (${tarea.estadoTarea == 'EN_PROGRESO'} ? 'en_progreso' : 'terminado')"
+                                      th:text="${tarea.estadoTarea}">
+                                    ESTADO
+                                </span>
+                        </td>
+                        <td th:text="${tarea.fechaLimite != null ? #temporals.format(tarea.fechaLimite, 'dd/MM/yyyy') : '-'}">01/01/2026</td>
+                    </tr>
+
+                    <!-- ✅ Mensaje si no hay tareas -->
+                    <tr th:if="${tareas == null or #lists.isEmpty(tareas)}">
+                        <td colspan="8" class="text-center py-4 text-muted">
+                            <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
+                            No se encontraron tareas
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${modoEdicion} ? 'Editar Tarea' : 'Nueva Tarea'">Tarea - NotyGo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/client-home.css}">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="background: #1565C0;">
+    <div class="container-fluid px-4">
+        <a class="navbar-brand d-flex align-items-center" th:href="@{/cliente/tareas}">
+            <i class="fas fa-arrow-left me-2"></i>
+            <span>NotyGo</span>
+        </a>
+        <h4 class="text-white mb-0" th:text="${modoEdicion} ? 'Editar Tarea' : 'Nueva Tarea'">Tarea</h4>
+    </div>
+</nav>
+
+<!-- Contenido -->
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow">
+                <div class="card-body p-4">
+
+                    <form th:action="${modoEdicion} ? @{/cliente/tareas/{id}/actualizar(id=${tarea.id})} : @{/cliente/tareas/guardar}"
+                          method="post"
+                          th:object="${tarea}">
+
+                        <!-- Título -->
+                        <div class="mb-4">
+                            <label for="titulo" class="form-label fw-bold">Título <span class="text-danger">*</span></label>
+                            <input type="text"
+                                   class="form-control form-control-lg"
+                                   id="titulo"
+                                   name="titulo"
+                                   th:field="*{titulo}"
+                                   placeholder="¿Qué necesitas hacer?"
+                                   required>
+                        </div>
+
+                        <!-- Descripción -->
+                        <div class="mb-4">
+                            <label for="descripcion" class="form-label fw-bold">Descripción</label>
+                            <textarea class="form-control"
+                                      id="descripcion"
+                                      name="descripcion"
+                                      th:field="*{descripcion}"
+                                      rows="3"
+                                      placeholder="Agrega detalles adicionales..."></textarea>
+                        </div>
+
+                        <div class="row g-3">
+                            <!-- Categoría -->
+                            <div class="col-md-6">
+                                <label for="categoria" class="form-label fw-bold">Categoría</label>
+                                <select class="form-select"
+                                        id="categoria"
+                                        name="categoriaId"
+                                        th:field="*{categoriaId}">
+                                    <option value="">Sin categoría</option>
+                                    <option th:each="cat : ${categorias}"
+                                            th:value="${cat.id}"
+                                            th:text="${cat.nombre}">
+                                    </option>
+                                </select>
+                            </div>
+
+                            <!-- Prioridad -->
+                            <div class="col-md-6">
+                                <label for="prioridad" class="form-label fw-bold">Prioridad <span class="text-danger">*</span></label>
+                                <select class="form-select"
+                                        id="prioridad"
+                                        name="prioridad"
+                                        th:field="*{prioridad}"
+                                        required>
+                                    <option value="BAJA">🟢 Baja</option>
+                                    <option value="MEDIA">🟡 Media</option>
+                                    <option value="ALTA">🔴 Alta</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mt-1">
+                            <!-- Fecha Límite -->
+                            <div class="col-md-6">
+                                <label for="fechaLimite" class="form-label fw-bold">Actualizar fecha límite <span class="text-danger">*</span></label>
+                                <input type="date"
+                                       class="form-control"
+                                       id="fechaLimite"
+                                       name="fechaLimite"
+                                       th:field="*{fechaLimite}"
+                                       required>
+                            </div>
+
+                            <!-- Estado -->
+                            <div class="col-md-6">
+                                <label for="estadoTarea" class="form-label fw-bold">Estado</label>
+                                <select class="form-select"
+                                        id="estadoTarea"
+                                        name="estadoTarea"
+                                        th:field="*{estadoTarea}">
+                                    <option value="PENDIENTE">Pendiente</option>
+                                    <option value="EN_PROGRESO">En Progreso</option>
+                                    <option value="TERMINADO">Terminado</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Etiquetas -->
+                        <div class="mb-4 mt-4">
+                            <label class="form-label fw-bold">Etiquetas</label>
+                            <div class="d-flex flex-wrap gap-2">
+                                <!-- ✅ CORREGIDO -->
+                                <div th:each="etq : ${etiquetas}" class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox"
+                                           th:value="${etq.id}"
+                                           th:id="'etq_' + ${etq.id}"
+                                           name="etiquetas"
+                                           th:checked="${tarea.etiquetasIds != null and #lists.contains(tarea.etiquetasIds, etq.id)}">
+                                    <label class="form-check-label badge px-3 py-2"
+                                           th:for="'etq_' + ${etq.id}"
+                                           th:text="${etq.nombre}"
+                                           th:style="'background-color: ' + ${etq.color} + '; color: white;'">
+                                        Etiqueta
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="d-flex gap-3 mt-5">
+                            <button type="submit" class="btn btn-primary px-4 flex-grow-1">
+                                <i class="fas fa-save me-2"></i>Guardar
+                            </button>
+                            <a th:href="@{/cliente/tareas}" class="btn btn-outline-secondary px-4">
+                                <i class="fas fa-times me-2"></i>Cancelar
+                            </a>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

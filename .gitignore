@@ -1,0 +1,21 @@
+# Java
+*.class
+*.log
+*.jar
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Secretos
+src/main/resources/application-local.properties
+*.bak
+*.mdf
+*.ldf
+
+# Sistema
+.DS_Store
+Thumbs.db

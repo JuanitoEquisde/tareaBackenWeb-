@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="NotyGo - Gestión de Tareas">
+    <title th:text="${title} ?: 'NotyGo'">NotyGo</title>
+
+    <!-- Favicon -->
+    <link rel="icon" th:href="@{/images/favicon.ico}">
+
+    <!-- Bootstrap 5.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- FullCalendar -->
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.css' rel='stylesheet'>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- CSS Personalizado -->
+    <link th:href="@{/css/client-home.css}" rel="stylesheet">
+</head>
+
+<body>
+<!-- Navbar -->
+<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-primary-custom sticky-top">
+    <div class="container-fluid px-4">
+        <a class="navbar-brand d-flex align-items-center gap-2" th:href="@{/cliente/home}">
+            <i class="fas fa-calendar-check fa-lg"></i>
+            <span class="brand-text fw-bold">NotyGo</span>
+        </a>
+
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <!-- Buscador -->
+            <form class="d-flex mx-auto search-form" role="search" th:action="@{/cliente/tareas/buscar}" method="get">
+                <div class="input-group input-group-lg">
+                        <span class="input-group-text bg-light border-0">
+                            <i class="fas fa-search text-muted"></i>
+                        </span>
+                    <input class="form-control border-0"
+                           type="search"
+                           name="q"
+                           placeholder="Buscar tareas..."
+                           aria-label="Search"
+                           id="searchInput">
+                </div>
+            </form>
+
+            <!-- Menú derecho -->
+            <ul class="navbar-nav ms-auto align-items-center gap-2">
+                <li class="nav-item">
+                    <button class="btn btn-light btn-create-task rounded-pill px-4"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modalNuevaTarea">
+                        <i class="fas fa-plus me-2"></i>
+                        <span>Nueva Tarea</span>
+                    </button>
+                </li>
+
+                <!-- Notificaciones -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link position-relative" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-bell fa-lg"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notifBadge">
+                                0
+                            </span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end notification-dropdown" id="notificationList">
+                        <li><span class="dropdown-item text-muted text-center">Sin notificaciones</span></li>
+                    </ul>
+                </li>
+
+                <!-- Perfil -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center gap-2"
+                       href="#"
+                       role="button"
+                       data-bs-toggle="dropdown">
+                        <div class="avatar avatar-sm"
+                             th:text="${#strings.toUpperCase(#strings.substring(usuario.nombre, 0, 2))}">
+                            JP
+                        </div>
+                        <span class="d-none d-lg-inline" th:text="${usuario.nombre}">Usuario</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow">
+                        <li>
+                            <h6 class="dropdown-header">
+                                <span th:text="${usuario.nombre}">Usuario</span>
+                                <small class="d-block text-muted" th:text="${usuario.rol}">Rol</small>
+                            </h6>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" th:href="@{/cliente/perfil}">
+                            <i class="fas fa-user me-2"></i>Mi Perfil
+                        </a></li>
+                        <li><a class="dropdown-item" th:href="@{/cliente/configuracion}">
+                            <i class="fas fa-cog me-2"></i>Configuración
+                        </a></li>
+                        <li><a class="dropdown-item" th:href="@{/cliente/tema}">
+                            <i class="fas fa-palette me-2"></i>Tema
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" th:href="@{/logout}">
+                            <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+                        </a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Sidebar -->
+<aside th:fragment="sidebar" class="sidebar d-md-block">
+    <div class="position-sticky pt-3 px-3">
+        <!-- Info Usuario -->
+        <div class="user-info-card mb-4 p-3 rounded-3">
+            <div class="avatar-large mb-3 mx-auto">
+                <span th:text="${#strings.toUpperCase(#strings.substring(usuario.nombre, 0, 2))}">JP</span>
+            </div>
+            <h6 class="text-center mb-1 fw-bold" th:text="${usuario.nombre}">Juan Paz</h6>
+            <small class="text-muted d-block text-center" th:text="${usuario.rol}">Usuario Estándar</small>
+            <div class="progress mt-3" style="height: 4px;">
+                <div class="progress-bar bg-success" style="width: 75%"></div>
+            </div>
+            <small class="text-muted d-block text-center mt-1" style="font-size: 0.75rem;">75% completado esta semana</small>
+        </div>
+
+        <!-- Menú Principal -->
+        <ul class="nav flex-column gap-1" id="mainMenu">
+            <li class="nav-item">
+                <a class="nav-link rounded-3 d-flex align-items-center gap-3"
+                   th:href="@{/cliente/home}"
+                   th:classappend="${#httpServletRequest.requestURI == '/cliente/home'} ? 'active'">
+                    <i class="fas fa-home fa-fw"></i>
+                    <span>Mi Tablero</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link rounded-3 d-flex align-items-center gap-3"
+                   th:href="@{/cliente/calendario}">
+                    <i class="fas fa-calendar-alt fa-fw"></i>
+                    <span>Calendario</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link rounded-3 d-flex align-items-center gap-3"
+                   th:href="@{/cliente/tareas}">
+                    <i class="fas fa-tasks fa-fw"></i>
+                    <span>Todas las Tareas</span>
+                    <span class="badge bg-primary ms-auto" th:text="${totalTareas}">0</span>
+                </a>
+            </li>
+
+              <li class="nav-item">
+                <a class="nav-link rounded-3 d-flex align-items-center gap-3"
+                   th:href="@{/cliente/categorias}">
+                    <i class="fas fa-folder fa-fw"></i>
+                    <span>Categorías</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link rounded-3 d-flex align-items-center gap-3"
+                   th:href="@{/cliente/etiquetas}">
+                    <i class="fas fa-tags fa-fw"></i>
+                    <span>Etiquetas</span>
+                </a>
+            </li>
+
+
+        </ul>
+
+        <!-- Mis Categorías -->
+        <div class="mt-4">
+            <h6 class="sidebar-heading px-3 mb-2 text-uppercase text-muted small fw-bold">
+                <span>Mis Categorías</span>
+                <a href="#" class="text-decoration-none float-end" data-bs-toggle="modal" data-bs-target="#modalNuevaCategoria">
+                    <i class="fas fa-plus small"></i>
+                </a>
+            </h6>
+            <ul class="nav flex-column gap-1" id="listaCategorias">
+                <li th:each="categoria : ${categorias}" class="nav-item">
+                    <a class="nav-link rounded-3 categoria-link d-flex align-items-center justify-content-between"
+                       th:href="@{/cliente/categoria/{id}(id=${categoria.id})}">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge-category rounded-circle" th:style="'background-color: ' + ${categoria.color}"></span>
+                            <span th:text="${categoria.nombre}">Universidad</span>
+                        </div>
+                        <span class="badge rounded-pill bg-light text-dark" th:text="${categoria.cantidadTareas}">0</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Etiquetas -->
+        <div class="mt-4">
+            <h6 class="sidebar-heading px-3 mb-2 text-uppercase text-muted small fw-bold">
+                <span>Etiquetas Populares</span>
+            </h6>
+            <div class="px-3 d-flex flex-wrap gap-2" id="listaEtiquetas">
+                    <span th:each="etiqueta : ${etiquetas}"
+                          class="badge badge-etiqueta px-3 py-2"
+                          th:text="${etiqueta.nombre}"
+                          th:style="'background-color: ' + ${etiqueta.color} + '; color: white; cursor: pointer;'">
+                        Urgente
+                    </span>
+            </div>
+        </div>
+    </div>
+</aside>
+
+<!-- Scripts -->
+<div th:fragment="scripts">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script th:src="@{/js/client-home.js}"></script>
+</div>
+</body>
+</html>

@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario - NotyGo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/client-home.css}">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.12);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.15);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        .calendar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        /* Header mejorado */
+        .calendar-header {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .calendar-header h3 {
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-nav {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            font-weight: 600;
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+            font-size: 0.9rem;
+        }
+
+        .btn-nav:hover {
+            background: white;
+            color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        /* Layout principal - Calendar + Sidebar */
+        .calendar-main-layout {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        /* Grid del calendario */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+
+        .calendar-day-header {
+            text-align: center;
+            font-weight: 700;
+            padding: 0.75rem 0.25rem;
+            color: #667eea;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .calendar-day {
+            background: white;
+            border-radius: 12px;
+            min-height: 90px;
+            padding: 0.5rem;
+            border: 2px solid transparent;
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .calendar-day:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: #667eea;
+        }
+
+        .calendar-day.previous-month {
+            background: #f5f5f5;
+            opacity: 0.6;
+            border: 2px solid #e0e0e0;
+            cursor: default;
+        }
+
+        .calendar-day.previous-month:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .calendar-day.today {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-color: #2196f3;
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+        }
+
+        .day-number {
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 0.4rem;
+            color: #333;
+            display: inline-block;
+            width: 28px;
+            height: 28px;
+            line-height: 28px;
+            text-align: center;
+            border-radius: 50%;
+        }
+
+        .calendar-day.today .day-number {
+            background: linear-gradient(135deg, #2196f3, #03a9f4);
+            color: white;
+            box-shadow: 0 2px 6px rgba(33, 150, 243, 0.4);
+        }
+
+        /* Indicadores de tareas */
+        .task-indicator {
+            font-size: 0.7rem;
+            padding: 4px 8px;
+            border-radius: 6px;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .task-pendiente {
+            background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+            color: #d63031;
+        }
+
+        .task-en-progreso {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+        }
+
+        .task-terminado {
+            background: linear-gradient(135deg, #55efc4, #00b894);
+            color: white;
+        }
+
+        .task-indicator i {
+            font-size: 0.65rem;
+        }
+
+        /* Sidebar - Leyenda */
+        .calendar-sidebar {
+            position: sticky;
+            top: 100px;
+        }
+
+        .legend-container {
+            background: white;
+            padding: 1.25rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .legend-container h5 {
+            color: #667eea;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 0.75rem;
+            transition: var(--transition);
+        }
+
+        .legend-item:hover {
+            background: #e9ecef;
+            transform: translateX(4px);
+        }
+
+        .legend-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .legend-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 5px;
+            flex-shrink: 0;
+        }
+
+        .legend-item span {
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .calendar-main-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .calendar-sidebar {
+                position: static;
+            }
+
+            .calendar-grid {
+                gap: 6px;
+            }
+
+            .calendar-day {
+                min-height: 70px;
+                padding: 0.4rem;
+            }
+
+            .day-number {
+                font-size: 0.85rem;
+                width: 26px;
+                height: 26px;
+                line-height: 26px;
+            }
+
+            .task-indicator {
+                font-size: 0.65rem;
+                padding: 3px 6px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .calendar-container {
+                padding: 1rem 0.5rem;
+            }
+
+            .calendar-header h3 {
+                font-size: 1.25rem;
+            }
+
+            .btn-nav {
+                padding: 0.4rem 0.75rem;
+                font-size: 0.8rem;
+            }
+
+            .calendar-day-header {
+                font-size: 0.65rem;
+                padding: 0.6rem 0.2rem;
+            }
+
+            .calendar-day {
+                min-height: 60px;
+                padding: 0.3rem;
+            }
+
+            .day-number {
+                font-size: 0.8rem;
+                width: 24px;
+                height: 24px;
+                line-height: 24px;
+                margin-bottom: 0.3rem;
+            }
+
+            .task-indicator {
+                display: none;
+            }
+
+            .task-count-badge {
+                display: inline-block;
+                background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+                color: white;
+                font-size: 0.65rem;
+                padding: 2px 6px;
+                border-radius: 10px;
+                font-weight: 700;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .calendar-grid {
+                gap: 4px;
+            }
+
+            .calendar-day {
+                min-height: 50px;
+                padding: 0.25rem;
+            }
+
+            .day-number {
+                font-size: 0.75rem;
+                width: 22px;
+                height: 22px;
+                line-height: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="background: var(--primary-gradient); box-shadow: var(--shadow-md);">
+    <div class="container-fluid px-3 px-md-4">
+        <a class="navbar-brand d-flex align-items-center" th:href="@{/cliente/home}" style="color: white; font-weight: 700; font-size: 1.5rem;">
+            <i class="fas fa-arrow-left me-2"></i>
+            <span>NotyGo</span>
+        </a>
+    </div>
+</nav>
+
+<div class="calendar-container">
+
+    <!-- Header del Calendario -->
+    <div class="calendar-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <h3>
+            <i class="fas fa-calendar-alt"></i>
+            <span th:text="${nombreMes + ' ' + anioActual}">Mes Año</span>
+        </h3>
+        <div class="d-flex gap-2 flex-wrap">
+            <a th:href="@{/cliente/calendario(mes=${mesAnterior}, anio=${anioAnterior})}"
+               class="btn btn-nav">
+                <i class="fas fa-chevron-left"></i> <span class="d-none d-sm-inline">Anterior</span>
+            </a>
+            <a th:href="@{/cliente/calendario}" class="btn btn-nav">
+                <i class="fas fa-calendar-day me-1"></i> Hoy
+            </a>
+            <a th:href="@{/cliente/calendario(mes=${mesSiguiente}, anio=${anioSiguiente})}"
+               class="btn btn-nav">
+                <span class="d-none d-sm-inline">Siguiente</span> <i class="fas fa-chevron-right"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Layout Principal: Calendario + Sidebar -->
+    <div class="calendar-main-layout">
+
+        <!-- Grid del Calendario -->
+        <div class="calendar-grid">
+            <!-- Días de la semana -->
+            <div class="calendar-day-header">Lun</div>
+            <div class="calendar-day-header">Mar</div>
+            <div class="calendar-day-header">Mié</div>
+            <div class="calendar-day-header">Jue</div>
+            <div class="calendar-day-header">Vie</div>
+            <div class="calendar-day-header">Sáb</div>
+            <div class="calendar-day-header">Dom</div>
+
+            <!-- Días del mes anterior (en gris) -->
+            <div th:each="i : ${#numbers.sequence(1, primerDiaSemana - 1)}"
+                 class="calendar-day previous-month">
+                <div class="day-number"
+                     th:text="${diasMesAnterior - (primerDiaSemana - 1) + i}">28</div>
+            </div>
+
+            <!-- Días del mes actual -->
+            <div th:each="dia : ${#numbers.sequence(1, diasEnMes)}"
+                 class="calendar-day"
+                 th:classappend="${dia == diaActual && mesActual == mesActualHoy && anioActual == anioActualHoy} ? 'today' : ''"
+                 th:attr="data-dia=${dia}">
+
+                <div class="day-number" th:text="${dia}">1</div>
+
+                <!-- Contador de tareas (visible en móvil) -->
+                <div th:if="${tareasPorDia != null}" class="d-md-none">
+                    <span th:if="${tareasPorDia[T(java.time.LocalDate).of(anioActual, mesActual, dia)] != null}"
+                          class="task-count-badge"
+                          th:text="${tareasPorDia[T(java.time.LocalDate).of(anioActual, mesActual, dia)].size()}">0</span>
+                </div>
+
+                <!-- Tareas del día (visible en desktop/tablet) -->
+                <div th:if="${tareasPorDia != null}" class="d-none d-md-block">
+                    <div th:each="tarea : ${tareasPorDia[T(java.time.LocalDate).of(anioActual, mesActual, dia)]}"
+                         class="task-indicator"
+                         th:classappend="'task-' + ${#strings.toLowerCase(tarea.estadoTarea)}"
+                         th:title="${tarea.titulo + ' - ' + tarea.estadoTarea}">
+                        <i th:if="${tarea.estadoTarea == 'PENDIENTE'}" class="fas fa-clock"></i>
+                        <i th:if="${tarea.estadoTarea == 'EN_PROGRESO'}" class="fas fa-spinner"></i>
+                        <i th:if="${tarea.estadoTarea == 'TERMINADO'}" class="fas fa-check"></i>
+                        <span th:text="${tarea.titulo}">Tarea</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar con Leyenda -->
+        <aside class="calendar-sidebar">
+            <div class="legend-container">
+                <h5>
+                    <i class="fas fa-info-circle"></i>
+                    Leyenda
+                </h5>
+                <div class="legend-item">
+                    <div class="legend-icon" style="background: linear-gradient(135deg, #ffeaa7, #fdcb6e);"></div>
+                    <span><strong>Pendiente</strong><br><small style="opacity: 0.8;">Tareas por hacer</small></span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-icon" style="background: linear-gradient(135deg, #74b9ff, #0984e3);"></div>
+                    <span><strong>En Progreso</strong><br><small style="opacity: 0.8;">En realización</small></span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-icon" style="background: linear-gradient(135deg, #55efc4, #00b894);"></div>
+                    <span><strong>Terminado</strong><br><small style="opacity: 0.8;">Completadas</small></span>
+                </div>
+            </div>
+        </aside>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Animación de entrada escalonada
+    document.addEventListener('DOMContentLoaded', function() {
+        const days = document.querySelectorAll('.calendar-day:not(.previous-month)');
+        days.forEach((day, index) => {
+            day.style.opacity = '0';
+            day.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                day.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+                day.style.opacity = '1';
+                day.style.transform = 'translateY(0)';
+            }, index * 20);
+        });
+    });
+</script>
+</body>
+</html>

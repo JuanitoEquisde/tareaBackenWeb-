@@ -1,0 +1,118 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #1565C0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 20px;
+}
+
+/* Contenedor principal del registro */
+.registro-container {
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    justify-content: center;
+}
+
+/* Panel del formulario */
+.form-panel {
+    width: 100%;
+    padding: 50px 40px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.form-panel h2 {
+    color: #212121;
+    font-weight: 700;
+    font-size: 1.8rem;
+}
+
+/* Grupos de formulario */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    color: #424242;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+}
+
+.form-control {
+    width: 100%;
+    border: 2px solid #E0E0E0;
+    border-radius: 8px;
+    padding: 12px 16px;
+    background: white;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #1565C0;
+    box-shadow: 0 0 0 4px rgba(21, 101, 192, 0.1);
+}
+
+.form-control::placeholder {
+    color: #BDBDBD;
+}
+
+/* Botón de registro */
+.btn-register {
+    background-color: #1565C0;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 14px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-register:hover {
+    background-color: #0D47A1;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(21, 101, 192, 0.3);
+}
+
+.btn-register:active {
+    transform: translateY(0);
+}
+
+/* Link de retorno */
+.link-login {
+    color: #1565C0;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.link-login:hover {
+    color: #0D47A1;
+    text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    .form-panel {
+        padding: 40px 30px;
+    }
+
+    .form-panel h2 {
+        font-size: 1.5rem;
+    }
+}
