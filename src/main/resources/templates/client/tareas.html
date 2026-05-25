@@ -4,829 +4,1113 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Todas las Tareas - NotyGo</title>
-
-    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <!-- Animate.css -->
-    <link href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/client-home.css}">
 
     <style>
-        /* =============================================
-           VARIABLES
-        ============================================= */
+        /* ====== VARIABLES ====== */
         :root {
-            --header-bg:              #1a73e8;
-            --header-bg-dark:         #1558b0;
-            --accent:                 #1a73e8;
-            --badge-alta-bg:          #e53935;
-            --badge-media-bg:         #fb8c00;
-            --badge-baja-bg:          #43a047;
-            --badge-progreso-bg:      #bbdefb;
-            --badge-progreso-color:   #0d47a1;
-            --badge-terminado-bg:     #c8e6c9;
-            --badge-terminado-color:  #2e7d32;
-            --badge-pendiente-bg:     #f0f0f0;
-            --badge-pendiente-color:  #555;
-            --bg-page:                #f4f6f9;
-            --bg-card:                #ffffff;
-            --border:                 #e2e6ea;
-            --text-main:              #1a1a2e;
-            --text-muted:             #6c757d;
-            --table-hover:            #f0f4ff;
-            --row-border:             #eef1f5;
+            --color-primary:      #1565C0;
+            --color-primary-dark: #0D47A1;
+            --color-primary-light:#1976D2;
+            --color-secondary:    #2196F3;
+            --color-gray-100:     #F8F9FA;
+            --color-gray-200:     #E9ECEF;
+            --color-gray-300:     #DEE2E6;
+            --color-gray-500:     #ADB5BD;
+            --color-gray-900:     #212529;
+            --sidebar-width:      260px;
+            --navbar-height:      64px;
+            --br-sm:  8px;
+            --br-md:  12px;
+            --br-lg:  16px;
+            --sh-sm:  0 1px 4px rgba(0,0,0,.08);
+            --sh-md:  0 4px 16px rgba(0,0,0,.10);
+            --sh-lg:  0 8px 32px rgba(0,0,0,.14);
+            --tr:     0.25s cubic-bezier(.4,0,.2,1);
+            --tr-f:   0.15s ease;
         }
 
-        *, *::before, *::after { box-sizing: border-box; }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: var(--bg-page);
-            color: var(--text-main);
+            font-family: 'Nunito', sans-serif;
+            background: #EEF2F7;
+            color: var(--color-gray-900);
             min-height: 100vh;
         }
 
-        .app-header {
-            background: var(--header-bg);
-            padding: 0.9rem 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 200;
-            box-shadow: 0 2px 8px rgba(26,115,232,0.25);
+        /* ====== NAVBAR ====== */
+        .navbar {
+            height: var(--navbar-height);
+            background: linear-gradient(90deg, var(--color-primary-dark) 0%, var(--color-primary) 100%);
+            box-shadow: 0 2px 12px rgba(13,71,161,.18);
+            z-index: 1100;
+            padding: 0 1.5rem;
         }
-
-        .header-brand {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: white;
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.35rem;
+            letter-spacing: -.5px;
+            color: white !important;
             text-decoration: none;
-            font-size: 1rem;
-            font-weight: 600;
-            transition: opacity .2s;
+            display: flex;
+            align-items: center;
+            gap: .5rem;
         }
-        .header-brand:hover { opacity: .85; color: white; }
+        .search-form .input-group {
+            background: rgba(255,255,255,.15);
+            border-radius: 50px;
+            overflow: hidden;
+            border: 1.5px solid rgba(255,255,255,.22);
+            transition: border-color var(--tr-f), background var(--tr-f);
+            min-width: 280px;
+        }
+        .search-form .input-group:focus-within {
+            background: rgba(255,255,255,.25);
+            border-color: rgba(255,255,255,.55);
+        }
+        .search-form .input-group-text {
+            background: transparent !important;
+            border: none !important;
+            color: rgba(255,255,255,.75) !important;
+            padding-left: 1rem;
+        }
+        .search-form .form-control {
+            background: transparent !important;
+            border: none !important;
+            color: white !important;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 500;
+            font-size: .9rem;
+        }
+        .search-form .form-control::placeholder { color: rgba(255,255,255,.6); }
+        .search-form .form-control:focus { box-shadow: none; }
 
-        .header-title {
-            color: white;
-            font-size: 1.15rem;
-            font-weight: 600;
-            margin: 0;
-            letter-spacing: .01em;
+        .nav-actions { display: flex; align-items: center; gap: .75rem; }
+
+        .btn-create-task {
+            display: flex; align-items: center; gap: .5rem;
+            background: white; color: var(--color-primary);
+            border: none; border-radius: 50px;
+            padding: .45rem 1.1rem;
+            font-weight: 700; font-size: .875rem;
+            font-family: 'Nunito', sans-serif;
+            cursor: pointer; white-space: nowrap;
+            transition: all var(--tr);
+        }
+        .btn-create-task:hover {
+            background: var(--color-gray-100);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(0,0,0,.15);
         }
 
-        .page-wrapper {
-            padding: 1.5rem;
-            max-width: 1400px;
-            margin: 0 auto;
+        .navbar .nav-link { color: rgba(255,255,255,.9) !important; }
+        .navbar .dropdown-toggle::after { display: none; }
+
+        .avatar {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: rgba(255,255,255,.22);
+            border: 2px solid rgba(255,255,255,.45);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: .75rem; color: white;
         }
 
-        .filters-card {
-            background: var(--bg-card);
-            border-radius: 12px;
-            padding: 1.1rem 1.25rem;
+        .dropdown-menu {
+            border: none; border-radius: var(--br-md);
+            box-shadow: var(--sh-lg); padding: .5rem;
+            font-family: 'Nunito', sans-serif;
+        }
+        .dropdown-item {
+            border-radius: var(--br-sm);
+            padding: .5rem .75rem;
+            font-size: .875rem; font-weight: 600;
+            transition: background var(--tr-f);
+        }
+        .dropdown-item:hover { background: var(--color-gray-100); }
+
+        .menu-toggle {
+            background: rgba(255,255,255,.15) !important;
+            border: 1.5px solid rgba(255,255,255,.25) !important;
+            border-radius: 10px !important;
+            width: 40px; height: 40px;
+            display: flex; align-items: center; justify-content: center;
+            transition: all var(--tr-f);
+            color: white !important;
+            text-decoration: none; padding: 0 !important;
+        }
+        .menu-toggle:hover { background: rgba(255,255,255,.28) !important; }
+        .menu-toggle.active { background: rgba(255,255,255,.3) !important; }
+
+        /* ====== LAYOUT ====== */
+        .main-wrapper { display: flex; min-height: calc(100vh - var(--navbar-height)); }
+
+        /* ====== SIDEBAR ====== */
+        .sidebar-container {
+            width: var(--sidebar-width); min-width: var(--sidebar-width);
+            background: white;
+            box-shadow: 2px 0 16px rgba(0,0,0,.07);
+            position: fixed;
+            top: var(--navbar-height); left: 0;
+            height: calc(100vh - var(--navbar-height));
+            overflow-y: auto; overflow-x: hidden;
+            z-index: 1050;
+            transition: transform var(--tr);
+            scrollbar-width: thin;
+            scrollbar-color: var(--color-gray-300) transparent;
+        }
+        .sidebar-container::-webkit-scrollbar { width: 4px; }
+        .sidebar-container::-webkit-scrollbar-thumb { background: var(--color-gray-300); border-radius: 99px; }
+
+        @media (max-width: 991px) {
+            .sidebar-container { transform: translateX(-100%); box-shadow: none; }
+            .sidebar-container.show { transform: translateX(0); box-shadow: 4px 0 24px rgba(0,0,0,.18); }
+        }
+
+        .sidebar-inner { padding: 1.5rem 1rem; }
+
+        .user-info-section {
+            text-align: center;
+            padding-bottom: 1.25rem;
+            border-bottom: 1.5px solid var(--color-gray-200);
             margin-bottom: 1.25rem;
-            border: 1px solid var(--border);
-            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+        .avatar-large-wrapper { display: flex; justify-content: center; }
+        .avatar-large {
+            width: 64px; height: 64px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 1.2rem; color: white;
+            box-shadow: 0 4px 16px rgba(21,101,192,.35);
+            letter-spacing: 1px; margin-bottom: .75rem;
+        }
+        .user-info-section h6 {
+            font-weight: 700; font-size: .95rem;
+            color: var(--color-gray-900); margin-bottom: .3rem;
+        }
+        .user-info-section small {
+            font-size: .72rem; font-weight: 600;
+            color: var(--color-gray-500); letter-spacing: .8px;
+            background: var(--color-gray-100);
+            padding: 2px 10px; border-radius: 99px;
         }
 
-        .filters-inner {
-            display: flex;
-            align-items: flex-end;
-            gap: 0.75rem;
-            flex-wrap: wrap;
+        .main-menu { list-style: none; padding: 0; margin: 0; }
+        .main-menu .nav-item { margin-bottom: 4px; }
+        .main-menu .nav-link {
+            display: flex; align-items: center; gap: .75rem;
+            padding: .65rem .85rem; border-radius: var(--br-sm);
+            font-weight: 600; font-size: .875rem; color: #555;
+            text-decoration: none; transition: all var(--tr-f);
+            position: relative;
+        }
+        .main-menu .nav-link i {
+            font-size: 1rem; width: 20px; text-align: center;
+            color: var(--color-gray-500); transition: color var(--tr-f);
+        }
+        .main-menu .nav-link:hover { background: #EEF2F7; color: var(--color-primary); }
+        .main-menu .nav-link:hover i { color: var(--color-primary); }
+        .main-menu .nav-link.active {
+            background: linear-gradient(90deg,#EEF2F7 0%,#DDEEFF 100%);
+            color: var(--color-primary); font-weight: 700;
+        }
+        .main-menu .nav-link.active i { color: var(--color-primary); }
+        .main-menu .nav-link.active::before {
+            content: ''; position: absolute; left: 0; top: 20%; height: 60%; width: 3px;
+            background: var(--color-primary); border-radius: 0 4px 4px 0;
         }
 
-        .filter-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.3rem;
-            flex: 1;
-            min-width: 160px;
-        }
-
-        .filter-group.search-group { flex: 2; min-width: 220px; }
-
-        .filter-label {
-            font-size: 0.72rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            letter-spacing: .04em;
+        .sidebar-section { padding-top: .5rem; }
+        .sidebar-heading {
+            font-size: .68rem !important; font-weight: 800 !important;
+            color: var(--color-gray-500) !important; letter-spacing: 1.2px;
+            padding: 0 .85rem; margin-bottom: .5rem !important;
             text-transform: uppercase;
         }
+        .categories-list { list-style: none; padding: 0; }
+        .categories-list .nav-item { margin-bottom: 2px; }
+        .categoria-link {
+            display: flex; align-items: center; padding: .5rem .85rem;
+            border-radius: var(--br-sm); font-size: .85rem; font-weight: 600;
+            color: #555; text-decoration: none; transition: all var(--tr-f);
+        }
+        .categoria-link:hover { background: #EEF2F7; color: var(--color-primary); }
+        .badge-category { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+        .tags-container { padding: 0 .5rem; display: flex; flex-wrap: wrap; gap: 6px; }
+        .badge-etiqueta {
+            font-size: .72rem; font-weight: 700;
+            padding: 3px 10px; border-radius: 99px; cursor: pointer;
+            transition: opacity var(--tr-f), transform var(--tr-f);
+        }
+        .badge-etiqueta:hover { opacity: .8; transform: scale(1.05); }
 
+        /* ====== OVERLAY ====== */
+        .sidebar-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,.45); z-index: 1040;
+            backdrop-filter: blur(2px); opacity: 0;
+            transition: opacity var(--tr);
+        }
+        .sidebar-overlay.show { display: block; opacity: 1; }
+
+        /* ====== MAIN CONTENT ====== */
+        .main-content-wrapper {
+            margin-left: var(--sidebar-width);
+            flex: 1; min-width: 0;
+        }
+        @media (max-width: 991px) { .main-content-wrapper { margin-left: 0; } }
+        .main-content-inner { padding: 1.75rem 1.5rem; }
+
+        /* ====== PAGE TITLE ====== */
+        .page-header {
+            display: flex; align-items: center; gap: 1rem;
+            margin-bottom: 1.5rem;
+            animation: slideDown .4s cubic-bezier(.4,0,.2,1);
+        }
+        .page-header-icon {
+            width: 48px; height: 48px; border-radius: var(--br-md);
+            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 1.2rem;
+            box-shadow: 0 4px 14px rgba(21,101,192,.3);
+        }
+        .page-header h2 {
+            font-size: 1.4rem; font-weight: 800;
+            color: var(--color-gray-900); margin: 0;
+            letter-spacing: -.3px;
+        }
+        .page-header small {
+            font-size: .8rem; font-weight: 600; color: var(--color-gray-500);
+        }
+
+        /* ====== FILTERS CARD ====== */
+        .filters-card {
+            background: white; border-radius: var(--br-lg);
+            padding: 1.1rem 1.25rem; margin-bottom: 1.25rem;
+            box-shadow: var(--sh-md);
+            animation: slideDown .4s .05s cubic-bezier(.4,0,.2,1) both;
+        }
+        .filters-inner {
+            display: flex; align-items: flex-end;
+            gap: .75rem; flex-wrap: wrap;
+        }
+        .filter-group {
+            display: flex; flex-direction: column; gap: .3rem;
+            flex: 1; min-width: 160px;
+        }
+        .filter-group.search-group { flex: 2; min-width: 220px; }
+        .filter-label {
+            font-size: .68rem; font-weight: 800;
+            color: var(--color-gray-500); letter-spacing: .8px;
+            text-transform: uppercase;
+        }
         .filter-control {
-            height: 40px;
-            padding: 0 0.75rem;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            background: #fff;
-            font-size: 0.875rem;
-            color: var(--text-main);
-            transition: border-color .2s, box-shadow .2s;
-            width: 100%;
+            height: 42px; padding: 0 .85rem;
+            border: 1.5px solid var(--color-gray-300);
+            border-radius: var(--br-sm);
+            background: #fff; font-size: .875rem;
+            color: var(--color-gray-900);
+            font-family: 'Nunito', sans-serif; font-weight: 600;
+            transition: border-color .2s, box-shadow .2s; width: 100%;
         }
         .filter-control:focus {
             outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(26,115,232,0.15);
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(21,101,192,.12);
         }
-
-        .search-wrap {
-            position: relative;
-        }
-        .search-wrap .bi-search {
-            position: absolute;
-            left: 11px;
-            top: 50%;
+        .search-wrap { position: relative; }
+        .search-wrap .fa-search {
+            position: absolute; left: 12px; top: 50%;
             transform: translateY(-50%);
-            color: #aaa;
-            font-size: 0.875rem;
-            pointer-events: none;
+            color: var(--color-gray-500); font-size: .85rem; pointer-events: none;
         }
-        .search-wrap .filter-control { padding-left: 2rem; }
+        .search-wrap .filter-control { padding-left: 2.2rem; }
 
         .btn-filter-submit {
-            height: 40px;
-            padding: 0 1.25rem;
-            background: var(--accent);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.875rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            white-space: nowrap;
-            transition: background .2s, transform .1s;
-            flex-shrink: 0;
+            height: 42px; padding: 0 1.25rem;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+            color: white; border: none; border-radius: var(--br-sm);
+            font-weight: 700; font-size: .875rem; cursor: pointer;
+            display: flex; align-items: center; gap: .4rem;
+            white-space: nowrap; flex-shrink: 0;
+            font-family: 'Nunito', sans-serif;
+            transition: transform .15s, box-shadow .15s;
         }
-        .btn-filter-submit:hover { background: var(--header-bg-dark); }
-        .btn-filter-submit:active { transform: scale(.97); }
+        .btn-filter-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(21,101,192,.3);
+        }
 
         .btn-clear {
-            height: 40px;
-            width: 40px;
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-muted);
-            font-size: 1rem;
-            flex-shrink: 0;
-            transition: background .2s, color .2s;
+            height: 42px; width: 42px;
+            background: white; border: 1.5px solid var(--color-gray-300);
+            border-radius: var(--br-sm); cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--color-gray-500); font-size: .95rem; flex-shrink: 0;
+            transition: all var(--tr-f);
         }
-        .btn-clear:hover { background: #ffeaea; color: #e53935; border-color: #e53935; }
+        .btn-clear:hover { background: #FFEBEE; color: #C62828; border-color: #C62828; }
 
+        /* ====== TABLE CARD ====== */
         .table-card {
-            background: var(--bg-card);
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            overflow: hidden;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            background: white; border-radius: var(--br-lg);
+            box-shadow: var(--sh-md); overflow: visible;
+            animation: fadeInUp .45s .1s cubic-bezier(.4,0,.2,1) both;
         }
 
-        .tasks-table {
-            width: 100%;
-            border-collapse: collapse;
+        .table-header-bar {
+            padding: 1rem 1.25rem;
+            border-bottom: 1.5px solid var(--color-gray-200);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .table-header-bar h6 {
+            font-size: .82rem; font-weight: 800;
+            color: var(--color-gray-500); text-transform: uppercase;
+            letter-spacing: .8px; margin: 0;
+        }
+        .table-count-badge {
+            background: #EEF2F7; color: var(--color-primary);
+            font-size: .75rem; font-weight: 800;
+            padding: .25rem .75rem; border-radius: 99px;
         }
 
+        .tasks-table { width: 100%; border-collapse: collapse; }
         .tasks-table thead th {
-            background: #fafbfc;
-            padding: 0.75rem 1rem;
-            font-size: 0.78rem;
-            font-weight: 700;
-            color: var(--text-muted);
-            letter-spacing: .05em;
-            text-transform: uppercase;
-            border-bottom: 1px solid var(--border);
-            white-space: nowrap;
-            user-select: none;
+            background: #FAFBFC;
+            padding: .8rem 1rem;
+            font-size: .72rem; font-weight: 800;
+            color: var(--color-gray-500);
+            letter-spacing: .8px; text-transform: uppercase;
+            border-bottom: 1.5px solid var(--color-gray-200);
+            white-space: nowrap; user-select: none;
         }
-
-        .tasks-table thead th.sortable {
-            cursor: pointer;
-        }
-        .tasks-table thead th.sortable:hover { color: var(--accent); }
-
-        .sort-icon { font-size: 0.75rem; margin-left: 3px; opacity: .5; }
+        .tasks-table thead th.sortable { cursor: pointer; }
+        .tasks-table thead th.sortable:hover { color: var(--color-primary); }
+        .sort-icon { font-size: .65rem; margin-left: 3px; opacity: .4; }
 
         .tasks-table tbody tr {
-            border-bottom: 1px solid var(--row-border);
-            transition: background .15s;
+            border-bottom: 1px solid #F0F2F5;
+            transition: background .15s, transform .15s;
         }
         .tasks-table tbody tr:last-child { border-bottom: none; }
-        .tasks-table tbody tr:hover { background: var(--table-hover); }
+        .tasks-table tbody tr:hover { background: #F5F8FF; }
 
         .tasks-table td {
-            padding: 0.85rem 1rem;
-            font-size: 0.875rem;
-            vertical-align: middle;
+            padding: .95rem 1rem;
+            font-size: .875rem; vertical-align: middle;
+            overflow: visible;
         }
 
         .task-name {
-            font-weight: 600;
-            color: var(--text-main);
-            margin-bottom: 2px;
+            font-weight: 700; color: var(--color-gray-900);
+            margin-bottom: 3px; font-size: .9rem;
         }
         .task-desc {
-            font-size: 0.78rem;
-            color: var(--text-muted);
-            line-height: 1.4;
+            font-size: .775rem; color: var(--color-gray-500); line-height: 1.4;
         }
+
+        /* Priority badges */
+        .badge-priority {
+            display: inline-flex; align-items: center; gap: .3rem;
+            padding: .28rem .75rem;
+            border-radius: 99px; font-size: .72rem; font-weight: 800;
+            letter-spacing: .03em; white-space: nowrap;
+            font-family: 'Nunito', sans-serif;
+        }
+        .badge-alta     { background: #FFEBEE; color: #C62828; }
+        .badge-media    { background: #FFF8E1; color: #E65100; }
+        .badge-baja     { background: #E8F5E9; color: #2E7D32; }
+
+        /* Status badges */
+        .badge-status {
+            display: inline-flex; align-items: center; gap: .3rem;
+            padding: .28rem .75rem;
+            border-radius: 99px; font-size: .72rem; font-weight: 800;
+            font-family: 'Nunito', sans-serif;
+        }
+        .badge-pendiente  { background: #FFF3CD; color: #856404; }
+        .badge-progreso   { background: #CCE5FF; color: #004085; }
+        .badge-terminado  { background: #D4EDDA; color: #155724; }
+
+        /* Category chip */
+        .category-chip {
+            display: inline-flex; align-items: center; gap: .35rem;
+            padding: .28rem .7rem;
+            border: 1.5px solid var(--color-gray-300);
+            border-radius: 8px; background: white;
+            font-size: .775rem; color: #444; font-weight: 600;
+            white-space: nowrap;
+        }
+
+        /* Actions dropdown */
+        .actions-wrapper { position: relative; display: inline-block; }
 
         .btn-actions {
-            background: none;
-            border: none;
-            padding: 4px 8px;
-            border-radius: 6px;
-            cursor: pointer;
-            color: var(--text-muted);
-            font-size: 1.1rem;
-            transition: background .15s, color .15s;
+            background: none; border: none;
+            padding: 6px 8px; border-radius: var(--br-sm);
+            cursor: pointer; color: var(--color-gray-500);
+            font-size: 1rem; transition: background .15s, color .15s;
         }
-        .btn-actions:hover { background: #eef1f5; color: var(--accent); }
-
-        .badge-priority {
-            display: inline-block;
-            padding: 0.28rem 0.65rem;
-            border-radius: 99px;
-            font-size: 0.72rem;
-            font-weight: 700;
-            letter-spacing: .03em;
-            white-space: nowrap;
-        }
-        .badge-alta     { background: var(--badge-alta-bg);     color: white; }
-        .badge-media    { background: var(--badge-media-bg);    color: white; }
-        .badge-baja     { background: var(--badge-baja-bg);     color: white; }
-
-        .category-chip {
-            display: inline-block;
-            padding: 0.25rem 0.6rem;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            background: white;
-            font-size: 0.78rem;
-            color: #444;
-            white-space: nowrap;
-        }
-
-        .actions-wrapper {
-            position: relative;
-            display: inline-block;
-        }
-        /* Asegurar que el dropdown sea visible */
-     .dropdown-menu {
-    z-index: 1000 !important;
-    position: absolute;
-}
-
-/* Si está dentro de una tabla con overflow */
-.table-responsive {
-    overflow: visible !important;
-}
-
-/* Para el contenedor de acciones */
-.acciones-dropdown {
-    position: relative;
-    z-index: 999;
-}
+        .btn-actions:hover { background: #EEF2F7; color: var(--color-primary); }
 
         .dropdown-actions {
-    display: none;
-    position: absolute;  /* Cambia de fixed a absolute */
-    right: 0;
-    top: 100%;  /* Aparece debajo del botón */
-    margin-top: 4px;  /* Espacio entre botón y dropdown */
-    background: white;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
-    min-width: 150px;
-    z-index: 1000;
-    overflow: hidden;
-}
-
-        .dropdown-actions.open { display: block; }
-        .tasks-table td {
-        overflow: visible !important;  /* Permite que el dropdown se vea */
+            display: none; position: absolute; right: 0; top: 100%;
+            margin-top: 4px; background: white;
+            border-radius: var(--br-md);
+            border: 1.5px solid var(--color-gray-200);
+            box-shadow: var(--sh-lg); min-width: 160px;
+            z-index: 1100; overflow: hidden;
         }
+        .dropdown-actions.open { display: block; animation: popIn .15s ease; }
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(.95) translateY(-4px); }
+            to   { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
         .dropdown-actions .d-item {
-            padding: 0.6rem 0.9rem;
-            font-size: 0.85rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: #333;
-            transition: background .15s;
+            padding: .6rem .9rem; font-size: .85rem; cursor: pointer;
+            display: flex; align-items: center; gap: .55rem;
+            color: #333; font-weight: 600;
+            transition: background .12s;
+            font-family: 'Nunito', sans-serif;
         }
-        .dropdown-actions .d-item:hover { background: #f4f6f9; }
-        .dropdown-actions .d-item.danger { color: #e53935; }
-        .dropdown-actions .d-item.danger:hover { background: #fff5f5; }
+        .dropdown-actions .d-item:hover { background: #F4F6F9; }
+        .dropdown-actions .d-item.danger { color: #C62828; }
+        .dropdown-actions .d-item.danger:hover { background: #FFF5F5; }
 
+        /* Date overdue */
+        .date-overdue { color: #C62828; font-weight: 700; }
+        .date-ok       { color: #444; font-weight: 600; }
+
+        /* Empty state */
         .empty-state {
-            text-align: center;
-            padding: 3.5rem 1rem;
-            color: var(--text-muted);
+            text-align: center; padding: 3.5rem 1rem;
+            color: var(--color-gray-500);
         }
-        .empty-state .bi { font-size: 2.5rem; opacity: .35; margin-bottom: .75rem; }
-        .empty-state p { margin: 0; font-size: 0.9rem; }
+        .empty-state i { font-size: 2.8rem; opacity: .25; display: block; margin-bottom: .75rem; }
+        .empty-state p { margin: 0; font-size: .9rem; font-weight: 600; }
 
-        .mobile-task-list { display: none; }
-
-        @media (max-width: 767.98px) {
-            .page-wrapper { padding: 0.75rem; }
-            .table-card { display: none; }
-            .mobile-task-list { display: flex; flex-direction: column; gap: 0.75rem; }
-            .filters-inner { flex-direction: column; gap: 0.6rem; }
-            .filter-group, .filter-group.search-group { flex: none; width: 100%; min-width: unset; }
-            .btn-filter-row { display: flex; gap: 0.5rem; width: 100%; }
-            .btn-filter-submit { flex: 1; justify-content: center; }
-
-            .m-task-card {
-                background: var(--bg-card);
-                border-radius: 12px;
-                border: 1px solid var(--border);
-                padding: 1rem;
-                box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-                animation-duration: .35s;
-            }
-
-            .m-task-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: flex-start;
-                margin-bottom: 0.75rem;
-                gap: 0.5rem;
-            }
-
-            .m-task-grid {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 0.6rem 0.75rem;
-            }
-
-            .m-field { display: flex; flex-direction: column; gap: 3px; }
-            .m-label {
-                font-size: 0.62rem;
-                font-weight: 700;
-                color: var(--text-muted);
-                text-transform: uppercase;
-                letter-spacing: .05em;
-            }
+        /* ====== ROW ANIMATIONS ====== */
+        .fade-row {
+            animation: fadeInUp .35s cubic-bezier(.4,0,.2,1) both;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-14px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
 
+        /* ====== MOBILE CARDS ====== */
+        .mobile-task-list { display: none; flex-direction: column; gap: .75rem; }
+
+        .m-task-card {
+            background: white; border-radius: var(--br-lg);
+            border: 1.5px solid var(--color-gray-200);
+            padding: 1rem 1.1rem;
+            box-shadow: var(--sh-sm);
+            transition: transform var(--tr), box-shadow var(--tr);
+            animation: fadeInUp .35s cubic-bezier(.4,0,.2,1) both;
+        }
+        .m-task-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--sh-md);
+            border-color: var(--color-primary-light);
+        }
+        .m-task-header {
+            display: flex; justify-content: space-between;
+            align-items: flex-start; margin-bottom: .75rem; gap: .5rem;
+        }
+        .m-task-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: .6rem .75rem; margin-top: .75rem;
+            padding-top: .75rem;
+            border-top: 1.5px solid var(--color-gray-200);
+        }
+        .m-field { display: flex; flex-direction: column; gap: 4px; }
+        .m-label {
+            font-size: .62rem; font-weight: 800;
+            color: var(--color-gray-500); text-transform: uppercase; letter-spacing: .8px;
+        }
+
+        /* ====== CONFIRM MODAL ====== */
         .modal-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.45);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,.45); z-index: 2000;
+            align-items: center; justify-content: center;
+            backdrop-filter: blur(3px);
         }
         .modal-overlay.open { display: flex; }
 
         .modal-box {
-            background: white;
-            border-radius: 14px;
-            padding: 1.5rem;
-            max-width: 340px;
-            width: 92%;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.18);
-            animation: animate__bounceIn .35s;
+            background: white; border-radius: var(--br-lg);
+            padding: 1.75rem; max-width: 360px; width: 92%;
+            box-shadow: var(--sh-lg);
+            animation: zoomIn .25s cubic-bezier(.4,0,.2,1);
+            text-align: center;
+        }
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(.9); }
+            to   { opacity: 1; transform: scale(1); }
         }
 
-        .modal-box h4 {
-            font-size: 1.05rem;
-            font-weight: 700;
-            margin: 0 0 .75rem;
-            display: flex;
-            align-items: center;
-            gap: .45rem;
+        .modal-box .modal-icon {
+            width: 60px; height: 60px; border-radius: 50%;
+            background: #FFEBEE; margin: 0 auto 1rem;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .modal-box .modal-icon i { font-size: 1.4rem; color: #C62828; }
+        .modal-box h4 { font-size: 1.05rem; font-weight: 800; margin-bottom: .5rem; }
+        .modal-box p { font-size: .85rem; color: var(--color-gray-500); font-weight: 600; margin-bottom: 0; }
+        .modal-title-name { font-weight: 700; color: var(--color-gray-900); font-size: .9rem; }
+        .modal-actions { display: flex; gap: .6rem; justify-content: center; margin-top: 1.4rem; }
+
+        .btn-cancel-modal {
+            padding: .5rem 1.25rem; background: var(--color-gray-200);
+            border: none; border-radius: 99px; font-weight: 700;
+            font-size: .875rem; cursor: pointer; color: #555;
+            font-family: 'Nunito', sans-serif; transition: background var(--tr-f);
+        }
+        .btn-cancel-modal:hover { background: var(--color-gray-300); }
+
+        .btn-delete-modal {
+            padding: .5rem 1.25rem; background: #C62828;
+            color: white; border: none; border-radius: 99px;
+            font-weight: 700; font-size: .875rem; cursor: pointer;
+            font-family: 'Nunito', sans-serif; transition: background var(--tr-f), transform var(--tr-f);
+        }
+        .btn-delete-modal:hover { background: #B71C1C; transform: translateY(-1px); }
+
+        /* ====== BOOTSTRAP MODAL (Nueva Tarea) ====== */
+        .modal-content {
+            border: none !important; border-radius: var(--br-lg) !important;
+            box-shadow: var(--sh-lg) !important; font-family: 'Nunito', sans-serif !important;
+        }
+        .modal-header.bg-primary {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)) !important;
+            border-radius: var(--br-lg) var(--br-lg) 0 0 !important; border: none !important;
+        }
+        .modal-title { font-weight: 800 !important; }
+        .modal .btn-primary {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)) !important;
+            border: none !important; border-radius: 99px !important;
+            font-weight: 700 !important; font-family: 'Nunito', sans-serif !important;
         }
 
-        .modal-title-name {
-            font-weight: 700;
-            color: var(--text-main);
-            font-size: .9rem;
-            margin-bottom: .25rem;
+        /* ====== RESPONSIVE ====== */
+        @media (max-width: 991px) {
+            .main-content-inner { padding: 1.25rem 1rem; }
+            .table-card { display: none; }
+            .mobile-task-list { display: flex; }
         }
-
-        .modal-actions {
-            display: flex;
-            gap: 0.6rem;
-            justify-content: flex-end;
-            margin-top: 1.25rem;
+        @media (max-width: 576px) {
+            .main-content-inner { padding: 1rem .75rem; }
+            .filters-inner { flex-direction: column; gap: .6rem; }
+            .filter-group, .filter-group.search-group { flex: none; width: 100%; min-width: unset; }
+            .btn-filter-row { display: flex; gap: .5rem; width: 100%; }
+            .btn-filter-submit { flex: 1; justify-content: center; }
         }
-
-        .btn-cancel {
-            padding: .5rem 1.1rem;
-            background: #f0f2f5;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: .875rem;
-            cursor: pointer;
-            color: #555;
-            transition: background .15s;
-        }
-        .btn-cancel:hover { background: #e2e6ea; }
-
-        .btn-delete {
-            padding: .5rem 1.1rem;
-            background: #e53935;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: .875rem;
-            cursor: pointer;
-            transition: background .15s;
-        }
-        .btn-delete:hover { background: #c62828; }
-
-        .fade-row {
-            animation: fadeInUp .3s ease both;
-        }
-        @keyframes fadeInUp {
-            from { opacity:0; transform: translateY(8px); }
-            to   { opacity:1; transform: translateY(0); }
-        }
-        /* Asegura que el dropdown no se corte en la tabla */
-.table-card {
-    overflow: visible !important;
-}
-
-.tasks-table tbody tr {
-    position: relative;  /* Necesario para el dropdown absolute */
-}
-
-/* En móvil, asegura que se vea bien */
-@media (max-width: 767.98px) {
-    .m-task-card {
-        position: relative;
-        overflow: visible;
-    }
-
-    .m-task-header .actions-wrapper {
-        position: relative;
-    }
-}
     </style>
 </head>
 <body>
 
-<!-- ========== HEADER ========== -->
-<header class="app-header">
-    <a href="/cliente/home" class="header-brand">
-        <i class="bi bi-arrow-left"></i>
-        NotyGo
-    </a>
-    <h1 class="header-title">Todas las Tareas</h1>
-</header>
+<!-- ========== NAVBAR ========== -->
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container-fluid px-3 px-md-4 d-flex align-items-center gap-2">
 
-<!-- ========== CONTENT ========== -->
-<div class="page-wrapper">
+        <button class="btn btn-link menu-toggle d-lg-none"
+                id="menuToggle" aria-label="Abrir menú" aria-expanded="false">
+            <i class="fas fa-bars" id="menuToggleIcon"></i>
+        </button>
 
-    <!-- FILTERS -->
-    <div class="filters-card animate__animated animate__fadeIn">
-        <form th:action="@{/cliente/tareas}" method="get" id="filterForm">
-            <div class="filters-inner">
-                <!-- Buscar -->
-                <div class="filter-group search-group">
-                    <label class="filter-label">Buscar</label>
-                    <div class="search-wrap">
-                        <i class="bi bi-search"></i>
-                        <input type="text" name="buscar" class="filter-control" placeholder="Título o descripción..."
-                               th:value="${buscar}">
+        <a class="navbar-brand" th:href="@{/cliente/home}">
+            <i class="fas fa-calendar-check"></i>
+            <span>NotyGo</span>
+        </a>
+
+        <div class="d-none d-lg-block ms-3 flex-grow-1" style="max-width:380px;">
+            <form class="d-flex search-form" role="search" th:action="@{/cliente/tareas/buscar}" method="get">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    <input class="form-control" type="search" name="q" placeholder="Buscar tareas...">
+                </div>
+            </form>
+        </div>
+
+        <div class="nav-actions ms-auto">
+            <button class="btn-create-task" data-bs-toggle="modal" data-bs-target="#modalNuevaTarea">
+                <i class="fas fa-plus"></i>
+                <span class="d-none d-sm-inline">Nueva Tarea</span>
+            </button>
+
+            <div class="dropdown">
+                <a class="nav-link position-relative" href="#" role="button" data-bs-toggle="dropdown">
+                    <i class="fas fa-bell fa-lg"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                          id="notifBadge" style="font-size:.62rem;">0</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end shadow">
+                    <li><span class="dropdown-item text-muted text-center small">Sin notificaciones</span></li>
+                </ul>
+            </div>
+
+            <div class="dropdown">
+                <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#"
+                   role="button" data-bs-toggle="dropdown">
+                    <div class="avatar">
+                        <span th:text="${usuario != null and usuario.nombre != null and #strings.length(usuario.nombre) >= 2 ? #strings.toUpperCase(usuario.nombre.substring(0,2)) : 'US'}">US</span>
+                    </div>
+                    <span class="d-none d-md-inline" style="font-size:.875rem;font-weight:700;"
+                          th:text="${usuario != null ? usuario.nombre : 'Usuario'}">Usuario</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end shadow">
+                    <li>
+                        <h6 class="dropdown-header text-center">
+                            <span th:text="${usuario != null ? usuario.nombre : 'Usuario'}">Usuario</span>
+                            <small class="d-block text-muted"
+                                   th:text="${usuario != null and usuario.rol != null ? #strings.toUpperCase(usuario.rol.nombre) : 'ROL'}">ROL</small>
+                        </h6>
+                    </li>
+                    <li><hr class="dropdown-divider my-1"></li>
+                    <li><a class="dropdown-item" th:href="@{/cliente/perfil}"><i class="fas fa-user me-2 text-primary"></i>Mi Perfil</a></li>
+                    <li><a class="dropdown-item" th:href="@{/cliente/configuracion}"><i class="fas fa-cog me-2 text-secondary"></i>Configuración</a></li>
+                    <li><hr class="dropdown-divider my-1"></li>
+                    <li>
+                        <form th:action="@{/logout}" method="post" class="w-100">
+                            <button type="submit" class="dropdown-item text-danger border-0 bg-transparent w-100 text-start px-3 py-2" style="cursor:pointer;font-weight:700;">
+                                <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Overlay -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="main-wrapper">
+
+    <!-- ========== SIDEBAR ========== -->
+    <nav id="sidebar" class="sidebar-container">
+        <div class="sidebar-inner">
+
+            <div class="user-info-section mb-4">
+                <div class="avatar-large-wrapper mb-2">
+                    <div class="avatar-large">
+                        <span th:text="${usuario != null and usuario.nombre != null and #strings.length(usuario.nombre) >= 2 ? #strings.toUpperCase(usuario.nombre.substring(0,2)) : 'US'}">US</span>
                     </div>
                 </div>
+                <h6 th:text="${usuario != null ? usuario.nombre : 'Usuario'}">Usuario</h6>
+                <small th:text="${usuario != null and usuario.rol != null ? #strings.toUpperCase(usuario.rol.nombre) : 'ROL'}">ROL</small>
+            </div>
 
-                <!-- Estado
-                  <div class="filter-group">
-                    <label class="filter-label">Estado</label>
-                    <select name="estado" class="filter-control">
-                        <option value="">Todos</option>
-                        <option value="PENDIENTE" th:selected="${estado == 'PENDIENTE'}">Pendiente</option>
-                        <option value="EN_PROGRESO" th:selected="${estado == 'EN_PROGRESO'}">En Progreso</option>
-                        <option value="TERMINADO" th:selected="${estado == 'TERMINADO'}">Terminado</option>
-                    </select>
-                </div>-->
+            <ul class="nav flex-column main-menu mb-3">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/cliente/home}">
+                        <i class="fas fa-home"></i><span>Mi Tablero</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/cliente/calendario}">
+                        <i class="fas fa-calendar-alt"></i><span>Calendario</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/cliente/tareas}">
+                        <i class="fas fa-tasks"></i><span>Todas las Tareas</span>
+                    </a>
+                </li>
+            </ul>
 
+            <div class="sidebar-section mt-2">
+                <h6 class="sidebar-heading">MIS CATEGORÍAS</h6>
+                <ul class="nav flex-column categories-list" id="listaCategorias">
+                    <li th:each="categoria : ${categorias != null ? categorias : {}}" class="nav-item">
+                        <a class="nav-link categoria-link" th:href="@{/cliente/categoria/{id}(id=${categoria.id})}">
+                            <span class="badge-category me-2"
+                                  th:style="'background-color: ' + (${categoria.color != null ? categoria.color : '#1565C0'})"></span>
+                            <span class="categoria-nombre" th:text="${categoria.nombre}">Categoría</span>
+                        </a>
+                    </li>
+                    <li th:if="${categorias == null or #lists.isEmpty(categorias)}" class="nav-item">
+                        <span class="nav-link text-muted" style="font-size:.8rem;">Sin categorías</span>
+                    </li>
+                </ul>
+            </div>
 
-                <!-- Prioridad -->
-                <div class="filter-group">
-                    <label class="filter-label">Prioridad</label>
-                    <select name="prioridad" class="filter-control">
-                        <option value="">Todas</option>
-                        <option value="ALTA" th:selected="${prioridad == 'ALTA'}">Alta</option>
-                        <option value="MEDIA" th:selected="${prioridad == 'MEDIA'}">Media</option>
-                        <option value="BAJA" th:selected="${prioridad == 'BAJA'}">Baja</option>
-                    </select>
-                </div>
-
-                <!-- Categoría -->
-                <div class="filter-group">
-                    <label class="filter-label">Categoría</label>
-                    <select name="categoria" class="filter-control">
-                        <option value="">Todas</option>
-                        <option th:each="cat : ${categorias}" th:value="${cat.id}" th:text="${cat.nombre}"
-                                th:selected="${categoriaId == cat.id}"></option>
-                    </select>
-                </div>
-
-                <!-- Botones -->
-                <div class="btn-filter-row" style="flex-shrink:0;">
-                    <button type="submit" class="btn-filter-submit"><i class="bi bi-funnel-fill"></i> Filtrar</button>
-                    <a href="/cliente/tareas" class="btn-clear" title="Limpiar filtros"><i class="bi bi-x-lg"></i></a>
+            <div class="sidebar-section mt-3">
+                <h6 class="sidebar-heading">ETIQUETAS</h6>
+                <div class="tags-container" id="listaEtiquetas">
+                    <span th:each="etiqueta : ${etiquetas != null ? etiquetas : {}}"
+                          class="badge-etiqueta"
+                          th:text="${etiqueta.nombre}"
+                          th:style="'background-color: ' + ${etiqueta.color} + '; color: white;'">
+                        Etiqueta
+                    </span>
                 </div>
             </div>
-        </form>
-    </div>
+        </div>
+    </nav>
 
-    <!-- ===================== DESKTOP TABLE ===================== -->
-    <div class="table-card animate__animated animate__fadeInUp">
-        <table class="tasks-table">
-            <thead>
-            <tr>
-                <th class="sortable">Tarea <i class="bi bi-arrow-down-up sort-icon"></i></th>
-                <th>Categoría</th>
-                <th class="sortable">Prioridad <i class="bi bi-arrow-down-up sort-icon"></i></th>
-                <th class="sortable">Fecha Límite <i class="bi bi-arrow-down-up sort-icon"></i></th>
-                <!--<th>Estado</th> -->
-                <th style="text-align:right;">Acciones</th>
-            </tr>
-            </thead>
-            <tbody>
+    <!-- ========== MAIN CONTENT ========== -->
+    <main class="main-content-wrapper">
+        <div class="main-content-inner">
 
-            <!-- Empty state -->
-            <tr th:if="${#lists.isEmpty(tareas)}">
-                <td colspan="6">
+            <!-- Page header -->
+            <div class="page-header">
+                <div class="page-header-icon">
+                    <i class="fas fa-tasks"></i>
+                </div>
+                <div>
+                    <h2>Todas las Tareas</h2>
+                    <small>Gestiona y filtra todas tus tareas</small>
+                </div>
+            </div>
+
+            <!-- FILTERS -->
+            <div class="filters-card">
+                <form th:action="@{/cliente/tareas}" method="get" id="filterForm">
+                    <div class="filters-inner">
+                        <div class="filter-group search-group">
+                            <label class="filter-label">Buscar</label>
+                            <div class="search-wrap">
+                                <i class="fas fa-search"></i>
+                                <input type="text" name="buscar" class="filter-control"
+                                       placeholder="Título o descripción..."
+                                       th:value="${buscar}">
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Prioridad</label>
+                            <select name="prioridad" class="filter-control">
+                                <option value="">Todas</option>
+                                <option value="ALTA"  th:selected="${prioridad == 'ALTA'}">🔴 Alta</option>
+                                <option value="MEDIA" th:selected="${prioridad == 'MEDIA'}">🟡 Media</option>
+                                <option value="BAJA"  th:selected="${prioridad == 'BAJA'}">🟢 Baja</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Categoría</label>
+                            <select name="categoria" class="filter-control">
+                                <option value="">Todas</option>
+                                <option th:each="cat : ${categorias != null ? categorias : {}}"
+                                        th:value="${cat.id}"
+                                        th:text="${cat.nombre}"
+                                        th:selected="${categoriaId == cat.id}"></option>
+                            </select>
+                        </div>
+                        <div class="btn-filter-row" style="flex-shrink:0; display:flex; gap:.5rem; align-items:flex-end;">
+                            <button type="submit" class="btn-filter-submit">
+                                <i class="fas fa-filter"></i> Filtrar
+                            </button>
+                            <a href="/cliente/tareas" class="btn-clear" title="Limpiar filtros">
+                                <i class="fas fa-times"></i>
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- ====== DESKTOP TABLE ====== -->
+            <div class="table-card">
+                <div class="table-header-bar">
+                    <h6><i class="fas fa-list me-2"></i>Listado de Tareas</h6>
+                    <span class="table-count-badge"
+                          th:text="${tareas != null ? #lists.size(tareas) : 0} + ' tareas'">0 tareas</span>
+                </div>
+                <div style="overflow-x:auto;">
+                    <table class="tasks-table">
+                        <thead>
+                        <tr>
+                            <th class="sortable">Tarea <i class="fas fa-sort sort-icon"></i></th>
+                            <th>Categoría</th>
+                            <th class="sortable">Prioridad <i class="fas fa-sort sort-icon"></i></th>
+                            <th>Estado</th>
+                            <th class="sortable">Fecha Límite <i class="fas fa-sort sort-icon"></i></th>
+                            <th style="text-align:right; padding-right:1.25rem;">Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        <tr th:if="${tareas == null or #lists.isEmpty(tareas)}">
+                            <td colspan="6">
+                                <div class="empty-state">
+                                    <i class="fas fa-clipboard-list"></i>
+                                    <p>No se encontraron tareas.<br>
+                                        <small style="font-weight:600;color:var(--color-gray-500);">Intenta ajustar los filtros.</small>
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr th:each="tarea, iter : ${tareas != null ? tareas : {}}"
+                            class="fade-row"
+                            th:style="'animation-delay:' + ${iter.index * 35} + 'ms'">
+
+                            <!-- Tarea -->
+                            <td>
+                                <div class="task-name" th:text="${tarea.titulo}">Título</div>
+                                <div class="task-desc" th:text="${#strings.abbreviate(tarea.descripcion, 65)}">Desc</div>
+                            </td>
+
+                            <!-- Categoría -->
+                            <td>
+                                <span class="category-chip" th:if="${tarea.categoria != null}">
+                                    <i class="fas fa-folder" style="font-size:.7rem; color:var(--color-gray-500);"></i>
+                                    <span th:text="${tarea.categoria.nombre}">Trabajo</span>
+                                </span>
+                                <span style="color:var(--color-gray-500); font-size:.8rem;" th:if="${tarea.categoria == null}">—</span>
+                            </td>
+
+                            <!-- Prioridad -->
+                            <td>
+                                <span class="badge-priority"
+                                      th:classappend="${tarea.prioridad == 'ALTA'} ? 'badge-alta' : (${tarea.prioridad == 'MEDIA'} ? 'badge-media' : 'badge-baja')">
+                                    <i th:if="${tarea.prioridad == 'ALTA'}"  class="fas fa-arrow-up"    style="font-size:.6rem;"></i>
+                                    <i th:if="${tarea.prioridad == 'MEDIA'}" class="fas fa-minus"       style="font-size:.6rem;"></i>
+                                    <i th:if="${tarea.prioridad == 'BAJA'}"  class="fas fa-arrow-down"  style="font-size:.6rem;"></i>
+                                    <span th:text="${tarea.prioridad}">ALTA</span>
+                                </span>
+                            </td>
+
+                            <!-- Estado -->
+                            <td>
+                                <span class="badge-status"
+                                      th:classappend="${tarea.estadoTarea == 'PENDIENTE'} ? 'badge-pendiente' : (${tarea.estadoTarea == 'EN_PROGRESO'} ? 'badge-progreso' : 'badge-terminado')">
+                                    <i th:if="${tarea.estadoTarea == 'PENDIENTE'}"  class="fas fa-clock"   style="font-size:.6rem;"></i>
+                                    <i th:if="${tarea.estadoTarea == 'EN_PROGRESO'}" class="fas fa-spinner" style="font-size:.6rem;"></i>
+                                    <i th:if="${tarea.estadoTarea == 'TERMINADO'}"  class="fas fa-check"   style="font-size:.6rem;"></i>
+                                    <span th:text="${tarea.estadoTarea == 'EN_PROGRESO' ? 'En Progreso' : (tarea.estadoTarea == 'PENDIENTE' ? 'Pendiente' : 'Terminado')}">Estado</span>
+                                </span>
+                            </td>
+
+                            <!-- Fecha -->
+                            <td style="white-space:nowrap; font-size:.85rem;">
+                                <span th:if="${tarea.fechaLimite != null and tarea.fechaLimite.isBefore(T(java.time.LocalDate).now()) and tarea.estadoTarea != 'TERMINADO'}"
+                                      class="date-overdue">
+                                    <i class="fas fa-exclamation-circle me-1" style="font-size:.75rem;"></i>
+                                    <span th:text="${tarea.fechaLimite != null ? #temporals.format(tarea.fechaLimite, 'dd/MM/yyyy') : 'Sin fecha'}">29/05/2026</span>
+                                </span>
+                                <span th:unless="${tarea.fechaLimite != null and tarea.fechaLimite.isBefore(T(java.time.LocalDate).now()) and tarea.estadoTarea != 'TERMINADO'}"
+                                      class="date-ok"
+                                      th:text="${tarea.fechaLimite != null ? #temporals.format(tarea.fechaLimite, 'dd/MM/yyyy') : 'Sin fecha'}">29/05/2026</span>
+                            </td>
+
+                            <!-- Acciones -->
+                            <td style="text-align:right; padding-right:1.1rem;">
+                                <div class="actions-wrapper">
+                                    <button class="btn-actions" onclick="toggleActions(this)" type="button">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                    <div class="dropdown-actions">
+                                        <div class="d-item"
+                                             th:onclick="'window.location.href=\'' + @{/cliente/tareas/{id}/editar(id=${tarea.id})} + '\''">
+                                            <i class="fas fa-edit text-primary"></i> Editar
+                                        </div>
+                                        <div class="d-item danger"
+                                             th:onclick="'openModal(\'modal-' + ${tarea.id} + '\')'">
+                                            <i class="fas fa-trash"></i> Eliminar
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ====== MOBILE CARDS ====== -->
+            <div class="mobile-task-list">
+
+                <div th:if="${tareas == null or #lists.isEmpty(tareas)}" class="m-task-card">
                     <div class="empty-state">
-                        <div><i class="bi bi-clipboard2-x"></i></div>
-                        <p>No se encontraron tareas.<br><small>Intenta ajustar los filtros.</small></p>
+                        <i class="fas fa-clipboard-list"></i>
+                        <p>No se encontraron tareas.</p>
                     </div>
-                </td>
-            </tr>
-
-            <!-- Task rows -->
-            <tr th:each="tarea, iter : ${tareas}" class="fade-row"
-                th:style="'animation-delay:' + ${iter.index * 40} + 'ms'">
-                <!-- Tarea -->
-                <td>
-                    <div class="task-name" th:text="${tarea.titulo}">Título</div>
-                    <div class="task-desc" th:text="${#strings.abbreviate(tarea.descripcion, 70)}">Desc</div>
-                </td>
-
-                <!-- Categoría -->
-                <td>
-                    <span class="category-chip" th:if="${tarea.categoria != null}" th:text="${tarea.categoria.nombre}">Trabajo</span>
-                    <span style="color:#aaa; font-size:.78rem;" th:if="${tarea.categoria == null}">—</span>
-                </td>
-
-                <!-- Prioridad -->
-                <td>
-                    <span class="badge-priority"
-                          th:classappend="${tarea.prioridad == 'ALTA'} ? 'badge-alta' : (${tarea.prioridad == 'MEDIA'} ? 'badge-media' : 'badge-baja')"
-                          th:text="${tarea.prioridad}">ALTA</span>
-                </td>
-
-                <!-- Fecha Límite - ✅ CORREGIDO: isBefore() para LocalDate -->
-                <td style="white-space:nowrap; font-size:.85rem;">
-                    <span th:if="${tarea.fechaLimite != null and tarea.fechaLimite.isBefore(T(java.time.LocalDate).now()) and tarea.estadoTarea != 'TERMINADO'}"
-                          style="color: #e53935; font-weight: 600;">
-                        <i class="bi bi-exclamation-circle me-1"></i>
-                        <span th:text="${tarea.fechaLimite != null ? #temporals.format(tarea.fechaLimite, 'dd/MM/yyyy') : 'Sin fecha'}">29/05/2026</span>
-                    </span>
-                    <span th:unless="${tarea.fechaLimite != null and tarea.fechaLimite.isBefore(T(java.time.LocalDate).now()) and tarea.estadoTarea != 'TERMINADO'}"
-                          style="color: #444;"
-                          th:text="${tarea.fechaLimite != null ? #temporals.format(tarea.fechaLimite, 'dd/MM/yyyy') : 'Sin fecha'}">29/05/2026</span>
-                </td>
-
-                <!-- Estado - SELECT
-                 <td>
-                    <select class="form-select form-select-sm"
-                            onchange="cambiarEstadoTarea([[${tarea.id}]], this.value)" th:value="${tarea.estadoTarea}">
-                        <option value="PENDIENTE">Pendiente</option>
-                        <option value="EN_PROGRESO">En Progreso</option>
-                        <option value="TERMINADO">Terminado</option>
-                    </select>
-                </td>-->
-
-
-                <!-- Acciones -->
-                <td style="text-align:right;">
-                    <div class="actions-wrapper">
-                        <button class="btn-actions" onclick="toggleActions(this)" type="button"><i
-                                class="bi bi-three-dots-vertical"></i></button>
-                        <div class="dropdown-actions">
-                            <div class="d-item"
-                                 th:onclick="'window.location.href=\'' + @{/cliente/tareas/{id}/editar(id=${tarea.id})} + '\''">
-                                <i class="bi bi-pencil"></i> Editar
-                            </div>
-                            <div class="d-item danger" th:onclick="'openModal(\'modal-' + ${tarea.id} + '\')'"><i
-                                    class="bi bi-trash"></i> Eliminar
-                            </div>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <!-- ===================== MOBILE CARDS ===================== -->
-    <div class="mobile-task-list">
-        <!-- Empty state -->
-        <div th:if="${#lists.isEmpty(tareas)}" class="m-task-card animate__animated animate__fadeIn">
-            <div class="empty-state">
-                <div><i class="bi bi-clipboard2-x"></i></div>
-                <p>No se encontraron tareas.</p></div>
-        </div>
-
-        <div th:each="tarea, iter : ${tareas}" class="m-task-card animate__animated animate__fadeInUp"
-             th:style="'animation-delay:' + ${iter.index * 50} + 'ms'">
-            <div class="m-task-header">
-                <div style="flex:1; min-width:0;">
-                    <div class="task-name" th:text="${tarea.titulo}">Título</div>
-                    <div class="task-desc" th:text="${#strings.abbreviate(tarea.descripcion, 80)}">Desc</div>
                 </div>
-                <div class="actions-wrapper">
-                    <button class="btn-actions" onclick="toggleActions(this)" type="button"><i
-                            class="bi bi-three-dots-vertical"></i></button>
-                    <div class="dropdown-actions">
-                        <div class="d-item"
-                             th:onclick="'window.location.href=\'' + @{/cliente/tareas/{id}/editar(id=${tarea.id})} + '\''">
-                            <i class="bi bi-pencil"></i> Editar
+
+                <div th:each="tarea, iter : ${tareas != null ? tareas : {}}"
+                     class="m-task-card"
+                     th:style="'animation-delay:' + ${iter.index * 45} + 'ms'">
+
+                    <div class="m-task-header">
+                        <div style="flex:1; min-width:0;">
+                            <div class="task-name" th:text="${tarea.titulo}">Título</div>
+                            <div class="task-desc" th:text="${#strings.abbreviate(tarea.descripcion, 70)}">Desc</div>
                         </div>
-                        <div class="d-item danger" th:onclick="'openModal(\'modal-' + ${tarea.id} + '\')'"><i
-                                class="bi bi-trash"></i> Eliminar
+                        <div class="actions-wrapper">
+                            <button class="btn-actions" onclick="toggleActions(this)" type="button">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <div class="dropdown-actions">
+                                <div class="d-item"
+                                     th:onclick="'window.location.href=\'' + @{/cliente/tareas/{id}/editar(id=${tarea.id})} + '\''">
+                                    <i class="fas fa-edit text-primary"></i> Editar
+                                </div>
+                                <div class="d-item danger"
+                                     th:onclick="'openModal(\'modal-' + ${tarea.id} + '\')'">
+                                    <i class="fas fa-trash"></i> Eliminar
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 flex-wrap mb-2">
+                        <span class="badge-priority"
+                              th:classappend="${tarea.prioridad == 'ALTA'} ? 'badge-alta' : (${tarea.prioridad == 'MEDIA'} ? 'badge-media' : 'badge-baja')"
+                              th:text="${tarea.prioridad}">ALTA</span>
+                        <span class="badge-status"
+                              th:classappend="${tarea.estadoTarea == 'PENDIENTE'} ? 'badge-pendiente' : (${tarea.estadoTarea == 'EN_PROGRESO'} ? 'badge-progreso' : 'badge-terminado')"
+                              th:text="${tarea.estadoTarea == 'EN_PROGRESO' ? 'En Progreso' : (tarea.estadoTarea == 'PENDIENTE' ? 'Pendiente' : 'Terminado')}">Estado</span>
+                    </div>
+
+                    <div class="m-task-grid">
+                        <div class="m-field">
+                            <span class="m-label">Categoría</span>
+                            <span class="category-chip" th:if="${tarea.categoria != null}">
+                                <i class="fas fa-folder" style="font-size:.65rem;color:var(--color-gray-500);"></i>
+                                <span th:text="${tarea.categoria.nombre}">Trabajo</span>
+                            </span>
+                            <span style="color:var(--color-gray-500);font-size:.8rem;" th:if="${tarea.categoria == null}">Sin categoría</span>
+                        </div>
+                        <div class="m-field">
+                            <span class="m-label">Fecha límite</span>
+                            <span th:if="${tarea.fechaLimite != null and tarea.fechaLimite.isBefore(T(java.time.LocalDate).now()) and tarea.estadoTarea != 'TERMINADO'}"
+                                  class="date-overdue" style="font-size:.8rem;">
+                                <i class="fas fa-exclamation-circle me-1"></i>
+                                <span th:text="${tarea.fechaLimite != null ? #temporals.format(tarea.fechaLimite, 'dd/MM/yyyy') : 'Sin fecha'}">Fecha</span>
+                            </span>
+                            <span th:unless="${tarea.fechaLimite != null and tarea.fechaLimite.isBefore(T(java.time.LocalDate).now()) and tarea.estadoTarea != 'TERMINADO'}"
+                                  class="date-ok" style="font-size:.82rem;"
+                                  th:text="${tarea.fechaLimite != null ? #temporals.format(tarea.fechaLimite, 'dd/MM/yyyy') : 'Sin fecha'}">Fecha</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="m-task-grid">
-                <div class="m-field">
-                    <span class="m-label">Prioridad</span>
-                    <span class="badge-priority"
-                          th:classappend="${tarea.prioridad == 'ALTA'} ? 'badge-alta' : (${tarea.prioridad == 'MEDIA'} ? 'badge-media' : 'badge-baja')"
-                          th:text="${tarea.prioridad}">ALTA</span>
-                </div>
-                <!--
-                <div class="m-field">
-                    <span class="m-label">Estado</span>
-                    <select class="form-select form-select-sm"
-                            onchange="cambiarEstadoTarea([[${tarea.id}]], this.value)" th:value="${tarea.estadoTarea}">
-                        <option value="PENDIENTE">Pendiente</option>
-                        <option value="EN_PROGRESO">En Progreso</option>
-                        <option value="TERMINADO">Terminado</option>
-                    </select>
-                </div>
-                -->
-                <div class="m-field">
-                    <span class="m-label">Categoría</span>
-                    <span class="category-chip" th:if="${tarea.categoria != null}" th:text="${tarea.categoria.nombre}">Trabajo</span>
-                    <span style="color:#aaa; font-size:.78rem;" th:if="${tarea.categoria == null}">Sin categoría</span>
-                </div>
-                <div class="m-field">
-                    <span class="m-label">Fecha límite</span>
-                    <span th:if="${tarea.fechaLimite != null and tarea.fechaLimite.isBefore(T(java.time.LocalDate).now()) and tarea.estadoTarea != 'TERMINADO'}"
-                          style="color: #e53935; font-weight: 500;">
-                        <i class="bi bi-exclamation-circle me-1"></i>
-                        <span th:text="${tarea.fechaLimite != null ? #temporals.format(tarea.fechaLimite, 'dd/MM/yyyy') : 'Sin fecha'}">29/05/2026</span>
-                    </span>
-                    <span th:unless="${tarea.fechaLimite != null and tarea.fechaLimite.isBefore(T(java.time.LocalDate).now()) and tarea.estadoTarea != 'TERMINADO'}"
-                          style="font-size:.825rem; color:#333; font-weight:500;"
-                          th:text="${tarea.fechaLimite != null ? #temporals.format(tarea.fechaLimite, 'dd/MM/yyyy') : 'Sin fecha'}">29/05/2026</span>
-                </div>
-            </div>
         </div>
-    </div>
+    </main>
 </div>
 
-<!-- ========== MODALES ELIMINAR ========== -->
-<div th:each="tarea : ${tareas}">
-    <div class="modal-overlay" th:id="'modal-' + ${tarea.id}" onclick="if(event.target===this) closeModal(this.id)">
-        <div class="modal-box animate__animated animate__zoomIn animate__faster">
-            <h4><i class="bi bi-exclamation-triangle-fill" style="color:#fb8c00;"></i> Confirmar eliminación</h4>
-            <p style="font-size:.85rem; color:#666; margin:0 0 .5rem;">¿Deseas eliminar la tarea?</p>
-            <p style="font-size:.78rem; color:#999; margin:0;">Esta acción no se puede deshacer.</p>
+<!-- ====== MODALES ELIMINAR ====== -->
+<div th:each="tarea : ${tareas != null ? tareas : {}}">
+    <div class="modal-overlay" th:id="'modal-' + ${tarea.id}"
+         onclick="if(event.target===this) closeModal(this.id)">
+        <div class="modal-box">
+            <div class="modal-icon"><i class="fas fa-trash"></i></div>
+            <h4>Eliminar tarea</h4>
+            <p>¿Deseas eliminar esta tarea?</p>
+            <p class="modal-title-name mt-1" th:text="${tarea.titulo}">Título</p>
+            <small style="color:var(--color-gray-500);font-size:.78rem;">Esta acción no se puede deshacer.</small>
             <div class="modal-actions">
-                <button class="btn-cancel" th:onclick="'closeModal(\'modal-' + ${tarea.id} + '\')'">Cancelar</button>
-                <form th:action="@{/cliente/tareas/{id}/eliminar(id=${tarea.id})}" method="post"
-                      style="display:inline;">
-                    <button type="submit" class="btn-delete"><i class="bi bi-trash me-1"></i>Eliminar</button>
+                <button class="btn-cancel-modal" th:onclick="'closeModal(\'modal-' + ${tarea.id} + '\')'">Cancelar</button>
+                <form th:action="@{/cliente/tareas/{id}/eliminar(id=${tarea.id})}" method="post" style="display:inline;">
+                    <button type="submit" class="btn-delete-modal">
+                        <i class="fas fa-trash me-1"></i>Eliminar
+                    </button>
                 </form>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Bootstrap JS -->
+<!-- ====== MODAL NUEVA TAREA ====== -->
+<div class="modal fade" id="modalNuevaTarea" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white border-0">
+                <h5 class="modal-title fw-bold"><i class="fas fa-plus-circle me-2"></i>Nueva Tarea</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p class="text-muted">Formulario de nueva tarea</p>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    /* ---- Dropdown acciones ---- */
-    function toggleActions(btn) {
-    const dd = btn.nextElementSibling;
-    const isOpen = dd.classList.contains('open');
+    /* ====== SIDEBAR ====== */
+    let sidebarOpen = false;
+    const menuToggle = document.getElementById('menuToggle');
+    const menuIcon   = document.getElementById('menuToggleIcon');
+    const sidebar    = document.getElementById('sidebar');
+    const overlay    = document.getElementById('sidebarOverlay');
 
-    // Cierra todos los dropdowns abiertos
-    document.querySelectorAll('.dropdown-actions.open').forEach(d => {
-        d.classList.remove('open');
-        d.style.display = 'none';
-        d.style.top = '';
-        d.style.right = '';
-    });
-
-    if (!isOpen) {
-        // Calcula la posición
-        const rect = btn.getBoundingClientRect();
-        const tableCard = document.querySelector('.table-card');
-        const tableRect = tableCard.getBoundingClientRect();
-
-        // Posición vertical: debajo del botón
-        const spaceBelow = window.innerHeight - rect.bottom;
-        const dropdownHeight = 100; // Altura aproximada del dropdown
-
-        if (spaceBelow < dropdownHeight) {
-            // Si no hay espacio abajo, muestra arriba
-            dd.style.top = 'auto';
-            dd.style.bottom = '100%';
-            dd.style.marginBottom = '4px';
-        } else {
-            // Muestra debajo
-            dd.style.top = '100%';
-            dd.style.bottom = 'auto';
-            dd.style.marginTop = '4px';
-        }
-
-        // Posición horizontal: alineado a la derecha del botón
-        const spaceRight = window.innerWidth - rect.right;
-        if (spaceRight < 150) {
-            // Si no hay espacio a la derecha, alinea al borde derecho
-            dd.style.right = '0';
-        } else {
-            dd.style.right = '0';
-        }
-
-        dd.classList.add('open');
-        dd.style.display = 'block';
+    function openSidebar() {
+        sidebar.classList.add('show');
+        overlay.classList.add('show');
+        menuIcon.className = 'fas fa-times';
+        menuToggle.classList.add('active');
+        menuToggle.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+        sidebarOpen = true;
     }
-}
+    function closeSidebar() {
+        sidebar.classList.remove('show');
+        overlay.classList.remove('show');
+        menuIcon.className = 'fas fa-bars';
+        menuToggle.classList.remove('active');
+        menuToggle.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+        sidebarOpen = false;
+    }
 
+    menuToggle.addEventListener('click', e => {
+        e.preventDefault(); e.stopPropagation();
+        sidebarOpen ? closeSidebar() : openSidebar();
+    });
+    overlay.addEventListener('click', closeSidebar);
+    document.querySelectorAll('#sidebar .nav-link, #sidebar .categoria-link').forEach(l =>
+        l.addEventListener('click', () => { if (window.innerWidth < 992) closeSidebar(); })
+    );
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && sidebarOpen) closeSidebar(); });
+    window.addEventListener('resize', () => { if (window.innerWidth >= 992 && sidebarOpen) closeSidebar(); });
+
+    /* ====== ACTIONS DROPDOWN ====== */
+    function toggleActions(btn) {
+        const dd = btn.nextElementSibling;
+        const isOpen = dd.classList.contains('open');
+
+        document.querySelectorAll('.dropdown-actions.open').forEach(d => d.classList.remove('open'));
+
+        if (!isOpen) {
+            const rect = btn.getBoundingClientRect();
+            const spaceBelow = window.innerHeight - rect.bottom;
+            if (spaceBelow < 120) {
+                dd.style.top = 'auto'; dd.style.bottom = '100%';
+                dd.style.marginBottom = '4px'; dd.style.marginTop = '0';
+            } else {
+                dd.style.top = '100%'; dd.style.bottom = 'auto';
+                dd.style.marginTop = '4px'; dd.style.marginBottom = '0';
+            }
+            dd.classList.add('open');
+        }
+    }
     document.addEventListener('click', e => {
         if (!e.target.closest('.actions-wrapper'))
             document.querySelectorAll('.dropdown-actions.open').forEach(d => d.classList.remove('open'));
     });
 
-    /* ---- Modal ---- */
+    /* ====== CONFIRM MODAL ====== */
     function openModal(id) {
         const m = document.getElementById(id);
-        if (m) {
-            m.classList.add('open');
-            m.querySelector('.modal-box').classList.add('animate__zoomIn');
-        }
+        if (m) m.classList.add('open');
     }
     function closeModal(id) {
         const m = document.getElementById(id);
         if (m) m.classList.remove('open');
     }
-
-    /* ---- Cambiar estado de tarea ---- */
-    function cambiarEstadoTarea(id, nuevoEstado) {
-        if (!confirm('¿Cambiar el estado de esta tarea a ' + nuevoEstado + '?')) {
-            location.reload();
-            return;
-        }
-        fetch('/cliente/tareas/' + id + '/estado', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ estado: nuevoEstado })
-        })
-        .then(response => {
-            if (response.ok) location.reload();
-            else { alert('Error al cambiar el estado'); location.reload(); }
-        })
-        .catch(error => { console.error('Error:', error); alert('Error al cambiar el estado'); location.reload(); });
-    }
-
-    /* ---- Animación de filas ---- */
-    document.querySelectorAll('.fade-row').forEach((row, i) => {
-        row.style.animationDelay = (i * 40) + 'ms';
-    });
 </script>
 </body>
 </html>
