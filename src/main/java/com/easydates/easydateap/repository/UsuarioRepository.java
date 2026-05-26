@@ -13,10 +13,11 @@ import java.util.Optional;
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     Optional<Usuario> findByEmail(String email);
     @Query("SELECT u FROM Usuario u JOIN FETCH u.rol WHERE u.email = :email")
+
     Optional<Usuario> findByEmailWithRol(@Param("email") String email);
     boolean existsByEmail(String email);
 
-    //Buscar usuarios con filtros (para admin)
+    //Buscar usuarios con filtros admn
     @Query("SELECT u FROM Usuario u JOIN u.rol r WHERE " +
             "(:nombre IS NULL OR LOWER(u.nombre) LIKE LOWER(CONCAT('%', :nombre, '%'))) AND " +
             "(:email IS NULL OR LOWER(u.email) LIKE LOWER(CONCAT('%', :email, '%'))) AND " +
