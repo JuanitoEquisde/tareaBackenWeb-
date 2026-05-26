@@ -215,9 +215,10 @@ public class UsuarioServiceImpl implements IUsuarioService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Usuario> buscarConFiltros(String nombre, String email, String estado, String rol) {
+    public List<Usuario> buscarConFiltros(Integer id, String nombre, String email, String estado, String rol) {
         return usuarioRepository.findAll().stream()
                 .filter(u -> u != null && !"ELIMINADO".equals(u.getEstado()))
+                .filter(u -> id == null || (u.getId() != null && u.getId().equals(id)))
                 .filter(u -> nombre == null || nombre.trim().isEmpty() ||
                         (u.getNombre() != null && u.getNombre().toLowerCase().contains(nombre.toLowerCase().trim())))
                 .filter(u -> email == null || email.trim().isEmpty() ||
@@ -237,7 +238,6 @@ public class UsuarioServiceImpl implements IUsuarioService {
 
         // Obtener todos los usuarios y filtrar en memoria
         return usuarioRepository.findAll().stream()
-                // ✅ Siempre excluir usuarios eliminados del sistema
                 .filter(u -> u != null && !"ELIMINADO".equals(u.getEstado()))
                 .filter(u -> {
                     boolean coincideNombre = (nombre == null || nombre.trim().isEmpty()) ||

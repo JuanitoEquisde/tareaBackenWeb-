@@ -29,7 +29,7 @@ public interface IUsuarioService {
     List<Usuario> listarEliminados();                      // Solo usuarios con estado ELIMINADO
 
     // 🔍 BÚSQUEDAS CON FILTROS (excluyen automáticamente "ELIMINADO")
-    List<Usuario> buscarConFiltros(String nombre, String email, String estado, String rol);  // AND
+    List<Usuario> buscarConFiltros(Integer id, String nombre, String email, String estado, String rol);  // AND
     List<Usuario> buscarConFiltrosOr(String nombre, String email, String estado, String rol); // OR
 
     // 📊 ESTADÍSTICAS Y UTILIDADES

@@ -4,1075 +4,445 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Usuarios - Panel Administrativo</title>
-
-    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Animate.css -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
     <style>
         :root {
-            --admin-bg: #f0f2f5;
-            --admin-sidebar: #1e3a8a;
-            --admin-sidebar-hover: #1e40af;
-            --admin-primary: #3b82f6;
-            --admin-primary-hover: #2563eb;
-            --admin-success: #10b981;
-            --admin-warning: #f59e0b;
-            --admin-danger: #ef4444;
-            --admin-text: #1f2937;
-            --admin-text-muted: #6b7280;
-            --admin-border: #e5e7eb;
+            --admin-bg: #f0f2f5; --admin-sidebar: #1e3a8a; --admin-sidebar-hover: #1e40af;
+            --admin-primary: #3b82f6; --admin-primary-hover: #2563eb; --admin-success: #10b981;
+            --admin-warning: #f59e0b; --admin-danger: #ef4444; --admin-text: #1f2937;
+            --admin-text-muted: #6b7280; --admin-border: #e5e7eb;
             --admin-card-shadow: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -1px rgba(0,0,0,0.04);
             --admin-radius: 14px;
         }
-
         * { box-sizing: border-box; }
-
         body {
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 50%, #f0f9ff 100%);
-            min-height: 100vh;
-            color: var(--admin-text);
+            min-height: 100vh; color: var(--admin-text);
         }
-
-        /* ── Navbar ── */
         .admin-navbar {
             background: linear-gradient(135deg, var(--admin-sidebar) 0%, #1d4ed8 100%);
-            color: white;
-            padding: 0.875rem 2rem;
-            box-shadow: 0 4px 20px rgba(30,58,138,0.25);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            color: white; padding: 0.875rem 2rem;
+            box-shadow: 0 4px 20px rgba(30,58,138,0.25); position: sticky; top: 0; z-index: 1000;
         }
         .admin-navbar .navbar-brand {
-            font-weight: 800;
-            font-size: 1.3rem;
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            transition: transform 0.3s;
-            text-decoration: none;
-            letter-spacing: -0.02em;
+            font-weight: 800; font-size: 1.3rem; color: white;
+            display: flex; align-items: center; gap: 0.75rem;
+            transition: transform 0.3s; text-decoration: none; letter-spacing: -0.02em;
         }
         .admin-navbar .navbar-brand:hover { transform: scale(1.04); }
         .admin-navbar .brand-icon {
-            width: 36px;
-            height: 36px;
-            background: rgba(255,255,255,0.15);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
+            width: 36px; height: 36px; background: rgba(255,255,255,0.15);
+            border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem;
         }
-        .admin-navbar .user-info {
-            display: flex;
-            align-items: center;
-            gap: 1.25rem;
-        }
+        .admin-navbar .user-info { display: flex; align-items: center; gap: 1.25rem; }
         .admin-navbar .user-chip {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: rgba(255,255,255,0.12);
-            border-radius: 50px;
-            padding: 0.375rem 0.875rem;
-            font-size: 0.85rem;
-            font-weight: 500;
+            display: flex; align-items: center; gap: 0.5rem;
+            background: rgba(255,255,255,0.12); border-radius: 50px;
+            padding: 0.375rem 0.875rem; font-size: 0.85rem; font-weight: 500;
         }
         .admin-navbar .btn-logout {
-            background: rgba(255,255,255,0.15);
-            border: 1.5px solid rgba(255,255,255,0.25);
-            color: white;
-            padding: 0.45rem 1.1rem;
-            border-radius: 50px;
-            font-size: 0.82rem;
-            font-weight: 600;
-            transition: all 0.25s;
-            cursor: pointer;
+            background: rgba(255,255,255,0.15); border: 1.5px solid rgba(255,255,255,0.25);
+            color: white; padding: 0.45rem 1.1rem; border-radius: 50px;
+            font-size: 0.82rem; font-weight: 600; transition: all 0.25s; cursor: pointer;
         }
-        .admin-navbar .btn-logout:hover {
-            background: rgba(255,255,255,0.25);
-            transform: translateY(-1px);
-        }
-
-        /* ── Layout ── */
-        .admin-wrapper {
-            display: flex;
-            min-height: calc(100vh - 70px);
-        }
-
-        /* ── Sidebar ─ */
+        .admin-navbar .btn-logout:hover { background: rgba(255,255,255,0.25); transform: translateY(-1px); }
+        .admin-wrapper { display: flex; min-height: calc(100vh - 70px); }
         .admin-sidebar {
-            width: 248px;
-            background: white;
-            padding: 1.5rem 0.875rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
-            flex-shrink: 0;
-            box-shadow: 2px 0 12px rgba(0,0,0,0.04);
-            transition: transform 0.3s ease;
+            width: 248px; background: white; padding: 1.5rem 0.875rem;
+            display: flex; flex-direction: column; gap: 0.25rem; flex-shrink: 0;
+            box-shadow: 2px 0 12px rgba(0,0,0,0.04); transition: transform 0.3s ease;
         }
         .admin-sidebar .sidebar-label {
-            font-size: 0.65rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--admin-text-muted);
-            padding: 0.5rem 1rem 0.25rem;
-            margin-top: 0.5rem;
+            font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.1em; color: var(--admin-text-muted);
+            padding: 0.5rem 1rem 0.25rem; margin-top: 0.5rem;
         }
         .admin-sidebar .nav-link {
-            color: var(--admin-text-muted);
-            padding: 0.75rem 1rem;
-            border-radius: 10px;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-weight: 500;
-            font-size: 0.9rem;
-            transition: all 0.25s;
+            color: var(--admin-text-muted); padding: 0.75rem 1rem; border-radius: 10px;
+            text-decoration: none; display: flex; align-items: center; gap: 0.75rem;
+            font-weight: 500; font-size: 0.9rem; transition: all 0.25s;
         }
-        .admin-sidebar .nav-link:hover,
-        .admin-sidebar .nav-link.active {
+        .admin-sidebar .nav-link:hover, .admin-sidebar .nav-link.active {
             background: linear-gradient(135deg, var(--admin-primary), var(--admin-primary-hover));
-            color: white;
-            transform: translateX(4px);
+            color: white; transform: translateX(4px);
             box-shadow: 0 4px 14px rgba(59,130,246,0.28);
         }
-        .admin-sidebar .nav-link i {
-            width: 20px;
-            text-align: center;
-            font-size: 1rem;
-            opacity: 0.85;
-        }
-        .admin-sidebar .divider {
-            height: 1px;
-            background: var(--admin-border);
-            margin: 1rem 0.5rem;
-            opacity: 0.6;
-        }
-
-        /* ── Main Content ── */
-        .admin-main {
-            flex: 1;
-            padding: 2rem;
-            overflow-x: hidden;
-        }
-
-        /* ── Page Header ── */
+        .admin-sidebar .nav-link i { width: 20px; text-align: center; font-size: 1rem; opacity: 0.85; }
+        .admin-sidebar .divider { height: 1px; background: var(--admin-border); margin: 1rem 0.5rem; opacity: 0.6; }
+        .admin-main { flex: 1; padding: 2rem; overflow-x: hidden; }
         .page-header {
-            background: white;
-            border-radius: var(--admin-radius);
-            padding: 1.25rem 1.75rem;
-            margin-bottom: 1.5rem;
-            box-shadow: var(--admin-card-shadow);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            animation: fadeInDown 0.5s ease;
-            border: 1px solid rgba(0,0,0,0.04);
+            background: white; border-radius: var(--admin-radius); padding: 1.25rem 1.75rem;
+            margin-bottom: 1.5rem; box-shadow: var(--admin-card-shadow);
+            display: flex; justify-content: space-between; align-items: center;
+            animation: fadeInDown 0.5s ease; border: 1px solid rgba(0,0,0,0.04);
         }
         .page-header h2 {
-            font-weight: 800;
-            color: var(--admin-text);
-            margin: 0;
-            font-size: 1.35rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            letter-spacing: -0.02em;
+            font-weight: 800; color: var(--admin-text); margin: 0; font-size: 1.35rem;
+            display: flex; align-items: center; gap: 0.75rem; letter-spacing: -0.02em;
         }
         .page-header h2 .header-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--admin-primary);
-            font-size: 1rem;
+            width: 40px; height: 40px; background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            color: var(--admin-primary); font-size: 1rem;
         }
-
-        /* ── Button Create ── */
         .btn-create {
-            background: linear-gradient(135deg, var(--admin-success), #059669);
-            color: white;
-            border: none;
-            padding: 0.625rem 1.375rem;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 0.875rem;
-            font-family: inherit;
-            transition: all 0.25s;
-            box-shadow: 0 4px 12px rgba(16,185,129,0.28);
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            cursor: pointer;
+            background: linear-gradient(135deg, var(--admin-success), #059669); color: white;
+            border: none; padding: 0.625rem 1.375rem; border-radius: 50px;
+            font-weight: 700; font-size: 0.875rem; font-family: inherit;
+            transition: all 0.25s; box-shadow: 0 4px 12px rgba(16,185,129,0.28);
+            display: inline-flex; align-items: center; gap: 0.5rem; cursor: pointer;
         }
-        .btn-create:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(16,185,129,0.38);
-        }
-
-        /* ── Filters Card ── */
+        .btn-create:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(16,185,129,0.38); }
         .filters-card {
-            background: white;
-            border-radius: var(--admin-radius);
-            padding: 1.375rem 1.75rem;
-            margin-bottom: 1.5rem;
-            box-shadow: var(--admin-card-shadow);
-            animation: fadeInUp 0.5s ease 0.1s both;
-            border: 1px solid rgba(0,0,0,0.04);
+            background: white; border-radius: var(--admin-radius); padding: 1.375rem 1.75rem;
+            margin-bottom: 1.5rem; box-shadow: var(--admin-card-shadow);
+            animation: fadeInUp 0.5s ease 0.1s both; border: 1px solid rgba(0,0,0,0.04);
         }
         .filters-card .form-label {
-            font-size: 0.72rem;
-            font-weight: 700;
-            color: var(--admin-text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            margin-bottom: 0.4rem;
+            font-size: 0.72rem; font-weight: 700; color: var(--admin-text-muted);
+            text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.4rem;
         }
-        .filters-card .form-control,
-        .filters-card .form-select {
-            border: 1.5px solid var(--admin-border);
-            border-radius: 9px;
-            padding: 0.575rem 0.875rem;
-            font-size: 0.875rem;
-            font-family: inherit;
-            transition: all 0.25s;
-            background: #fafbfc;
+        .filters-card .form-control, .filters-card .form-select {
+            border: 1.5px solid var(--admin-border); border-radius: 9px;
+            padding: 0.575rem 0.875rem; font-size: 0.875rem; font-family: inherit;
+            transition: all 0.25s; background: #fafbfc;
         }
-        .filters-card .form-control:focus,
-        .filters-card .form-select:focus {
-            border-color: var(--admin-primary);
-            box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
-            background: white;
+        .filters-card .form-control:focus, .filters-card .form-select:focus {
+            border-color: var(--admin-primary); box-shadow: 0 0 0 3px rgba(59,130,246,0.12); background: white;
         }
         .filters-card .btn-primary {
             background: linear-gradient(135deg, var(--admin-primary), var(--admin-primary-hover));
-            border: none;
-            padding: 0.575rem 1.375rem;
-            border-radius: 9px;
-            font-weight: 700;
-            font-size: 0.875rem;
-            font-family: inherit;
-            transition: all 0.25s;
-            box-shadow: 0 4px 12px rgba(59,130,246,0.28);
+            border: none; padding: 0.575rem 1.375rem; border-radius: 9px;
+            font-weight: 700; font-size: 0.875rem; font-family: inherit;
+            transition: all 0.25s; box-shadow: 0 4px 12px rgba(59,130,246,0.28);
         }
-        .filters-card .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(59,130,246,0.38);
-        }
+        .filters-card .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(59,130,246,0.38); }
         .filters-card .btn-outline-secondary {
-            border: 1.5px solid var(--admin-border);
-            padding: 0.575rem 1.375rem;
-            border-radius: 9px;
-            font-weight: 600;
-            font-size: 0.875rem;
-            font-family: inherit;
-            color: var(--admin-text-muted);
-            background: white;
-            transition: all 0.25s;
+            border: 1.5px solid var(--admin-border); padding: 0.575rem 1.375rem; border-radius: 9px;
+            font-weight: 600; font-size: 0.875rem; font-family: inherit;
+            color: var(--admin-text-muted); background: white; transition: all 0.25s;
         }
         .filters-card .btn-outline-secondary:hover {
-            background: #fee2e2;
-            border-color: #fca5a5;
-            color: #dc2626;
-            transform: translateY(-1px);
+            background: #fee2e2; border-color: #fca5a5; color: #dc2626; transform: translateY(-1px);
         }
-
-        /* ── Table Card ── */
         .table-card {
-            background: white;
-            border-radius: var(--admin-radius);
-            box-shadow: var(--admin-card-shadow);
-            overflow: visible;
-            animation: fadeInUp 0.5s ease 0.2s both;
-            border: 1px solid rgba(0,0,0,0.04);
+            background: white; border-radius: var(--admin-radius); box-shadow: var(--admin-card-shadow);
+            overflow: visible; animation: fadeInUp 0.5s ease 0.2s both; border: 1px solid rgba(0,0,0,0.04);
         }
-        .table-card .table-responsive {
-            overflow-x: auto;
-            border-radius: var(--admin-radius);
-        }
-        .table-card .table {
-            margin: 0;
-            border-collapse: separate;
-            border-spacing: 0;
-        }
-        .table-card thead tr {
-            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-        }
+        .table-card .table-responsive { overflow-x: auto; border-radius: var(--admin-radius); }
+        .table-card .table { margin: 0; border-collapse: separate; border-spacing: 0; }
+        .table-card thead tr { background: linear-gradient(135deg, #f8fafc, #f1f5f9); }
         .table-card th {
-            font-weight: 700;
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--admin-text-muted);
-            padding: 0.875rem 1.25rem;
-            border-bottom: 1.5px solid var(--admin-border);
-            border-top: none;
-            white-space: nowrap;
+            font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em;
+            color: var(--admin-text-muted); padding: 0.875rem 1.25rem;
+            border-bottom: 1.5px solid var(--admin-border); border-top: none; white-space: nowrap;
         }
-        .table-card td {
-            padding: 0.875rem 1.25rem;
-            vertical-align: middle;
-            font-size: 0.875rem;
-            border-color: #f3f4f6;
-        }
-        .table-card tbody tr {
-            transition: all 0.2s;
-        }
-        .table-card tbody tr:hover {
-            background: linear-gradient(135deg, #f0f9ff, #eff6ff);
-        }
-        .table-card tbody tr:last-child td {
-            border-bottom: none;
-        }
-
-        /* ── User Avatar ── */
+        .table-card td { padding: 0.875rem 1.25rem; vertical-align: middle; font-size: 0.875rem; border-color: #f3f4f6; }
+        .table-card tbody tr { transition: all 0.2s; }
+        .table-card tbody tr:hover { background: linear-gradient(135deg, #f0f9ff, #eff6ff); }
+        .table-card tbody tr:last-child td { border-bottom: none; }
         .user-avatar {
-            width: 34px;
-            height: 34px;
-            border-radius: 9px;
+            width: 34px; height: 34px; border-radius: 9px;
             background: linear-gradient(135deg, #dbeafe, #bfdbfe);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 0.75rem;
-            color: #1d4ed8;
-            margin-right: 0.625rem;
-            flex-shrink: 0;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 0.75rem; color: #1d4ed8; margin-right: 0.625rem; flex-shrink: 0;
         }
-        .user-cell {
-            display: flex;
-            align-items: center;
-        }
-
-        /* ── Badges ── */
+        .user-cell { display: flex; align-items: center; }
         .badge-rol {
-            padding: 0.35rem 0.875rem;
-            border-radius: 50px;
-            font-size: 0.68rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
+            padding: 0.35rem 0.875rem; border-radius: 50px; font-size: 0.68rem;
+            font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+            display: inline-flex; align-items: center; gap: 0.3rem;
         }
-        .badge-rol.admin {
-            background: #fee2e2;
-            color: #b91c1c;
-            border: 1.5px solid #fecaca;
-        }
-        .badge-rol.user {
-            background: #dbeafe;
-            color: #1d4ed8;
-            border: 1.5px solid #bfdbfe;
-        }
-        .badge-rol.premium {
-            background: #e9d5ff;
-            color: #7c3aed;
-            border: 1.5px solid #ddd6fe;
-        }
-        .badge-rol.default {
-            background: #f3f4f6;
-            color: #4b5563;
-            border: 1.5px solid #e5e7eb;
-        }
+        .badge-rol.admin { background: #fee2e2; color: #b91c1c; border: 1.5px solid #fecaca; }
+        .badge-rol.user { background: #dbeafe; color: #1d4ed8; border: 1.5px solid #bfdbfe; }
+        .badge-rol.premium { background: #e9d5ff; color: #7c3aed; border: 1.5px solid #ddd6fe; }
+        .badge-rol.default { background: #f3f4f6; color: #4b5563; border: 1.5px solid #e5e7eb; }
         .badge-estado {
-            padding: 0.35rem 0.875rem;
-            border-radius: 50px;
-            font-size: 0.68rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
+            padding: 0.35rem 0.875rem; border-radius: 50px; font-size: 0.68rem;
+            font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+            display: inline-flex; align-items: center; gap: 0.3rem;
         }
-        .badge-estado.activo {
-            background: #d1fae5;
-            color: #065f46;
-            border: 1.5px solid #a7f3d0;
-        }
-        .badge-estado.inactivo {
-            background: #fef3c7;
-            color: #92400e;
-            border: 1.5px solid #fde68a;
-        }
-        .status-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            display: inline-block;
-        }
-        .status-dot.activo { background: #059669; }
-        .status-dot.inactivo { background: #d97706; }
-
-        /* ── Action Buttons ── */
+        .badge-estado.activo { background: #d1fae5; color: #065f46; border: 1.5px solid #a7f3d0; }
+        .badge-estado.inactivo { background: #fef3c7; color: #92400e; border: 1.5px solid #fde68a; }
+        .status-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+        .status-dot.activo { background: #059669; } .status-dot.inactivo { background: #d97706; }
         .btn-action {
-            padding: 0.4rem 0.7rem;
-            border-radius: 8px;
-            border: 1.5px solid;
-            font-size: 0.82rem;
-            font-weight: 600;
-            transition: all 0.22s;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-            cursor: pointer;
-            background: white;
-            font-family: inherit;
+            padding: 0.4rem 0.7rem; border-radius: 8px; border: 1.5px solid;
+            font-size: 0.82rem; font-weight: 600; transition: all 0.22s;
+            display: inline-flex; align-items: center; gap: 0.3rem;
+            cursor: pointer; background: white; font-family: inherit;
         }
-        .btn-action.edit {
-            border-color: #bfdbfe;
-            color: var(--admin-primary);
-        }
+        .btn-action.edit { border-color: #bfdbfe; color: var(--admin-primary); }
         .btn-action.edit:hover {
-            background: var(--admin-primary);
-            border-color: var(--admin-primary);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(59,130,246,0.28);
+            background: var(--admin-primary); border-color: var(--admin-primary); color: white;
+            transform: translateY(-2px); box-shadow: 0 4px 12px rgba(59,130,246,0.28);
         }
-        .btn-action.delete {
-            border-color: #fecaca;
-            color: var(--admin-danger);
-            z-index: 1000;
-            position: relative;
-        }
+        .btn-action.delete { border-color: #fecaca; color: var(--admin-danger); z-index: 1000; position: relative; }
         .btn-action.delete:hover {
-            background: var(--admin-danger);
-            border-color: var(--admin-danger);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(239,68,68,0.28);
+            background: var(--admin-danger); border-color: var(--admin-danger); color: white;
+            transform: translateY(-2px); box-shadow: 0 4px 12px rgba(239,68,68,0.28);
         }
-
-        /* ── Dropdown ── */
         .dropdown-menu {
-            z-index: 9999 !important;
-            border: none;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-            border-radius: 12px;
-            padding: 0.5rem;
-            min-width: 260px;
-            border: 1px solid rgba(0,0,0,0.06);
+            z-index: 9999 !important; border: none; box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            border-radius: 12px; padding: 0.5rem; min-width: 260px; border: 1px solid rgba(0,0,0,0.06);
         }
         .dropdown-item {
-            padding: 0.7rem 0.875rem;
-            border-radius: 8px;
-            transition: all 0.18s;
-            font-size: 0.875rem;
-            font-family: inherit;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            padding: 0.7rem 0.875rem; border-radius: 8px; transition: all 0.18s;
+            font-size: 0.875rem; font-family: inherit; display: flex; align-items: center; gap: 0.5rem;
         }
-        .dropdown-item:hover {
-            background: #fef9ec;
-            color: #92400e;
-            transform: none;
-        }
+        .dropdown-item:hover { background: #fef9ec; color: #92400e; transform: none; }
         .dropdown-item i { width: 18px; flex-shrink: 0; }
-        .dropdown-divider {
-            margin: 0.25rem 0;
-            border-color: var(--admin-border);
-        }
+        .dropdown-divider { margin: 0.25rem 0; border-color: var(--admin-border); }
         .dropdown-item-content { display: flex; flex-direction: column; }
-        .dropdown-item-content small {
-            font-size: 0.68rem;
-            color: var(--admin-text-muted);
-            margin-top: 1px;
-        }
-
-        /* ── Empty State ── */
-        .empty-state {
-            text-align: center;
-            padding: 4rem 2rem;
-            color: var(--admin-text-muted);
-        }
-        .empty-state i {
-            font-size: 3.5rem;
-            opacity: 0.2;
-            margin-bottom: 1rem;
-        }
+        .dropdown-item-content small { font-size: 0.68rem; color: var(--admin-text-muted); margin-top: 1px; }
+        .empty-state { text-align: center; padding: 4rem 2rem; color: var(--admin-text-muted); }
+        .empty-state i { font-size: 3.5rem; opacity: 0.2; margin-bottom: 1rem; }
         .empty-state h5 { font-weight: 600; color: #374151; }
-
-        /* ── Back Button ── */
         .btn-back {
-            background: white;
-            border: 1.5px solid var(--admin-border);
-            padding: 0.625rem 1.75rem;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.875rem;
-            font-family: inherit;
-            transition: all 0.25s;
-            box-shadow: var(--admin-card-shadow);
-            color: var(--admin-text-muted);
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
+            background: white; border: 1.5px solid var(--admin-border); padding: 0.625rem 1.75rem;
+            border-radius: 50px; font-weight: 600; font-size: 0.875rem; font-family: inherit;
+            transition: all 0.25s; box-shadow: var(--admin-card-shadow);
+            color: var(--admin-text-muted); text-decoration: none;
+            display: inline-flex; align-items: center; gap: 0.5rem;
         }
         .btn-back:hover {
-            background: var(--admin-text);
-            border-color: var(--admin-text);
-            color: white;
+            background: var(--admin-text); border-color: var(--admin-text); color: white;
             transform: translateY(-2px);
         }
-
-        /* ── Toggle sidebar mobile ── */
         .btn-toggle-sidebar {
-            background: rgba(255,255,255,0.15);
-            border: 1.5px solid rgba(255,255,255,0.25);
-            color: white;
-            font-size: 1.1rem;
-            padding: 0.45rem 0.7rem;
-            cursor: pointer;
-            border-radius: 8px;
-            display: none;
-            transition: all 0.25s;
+            background: rgba(255,255,255,0.15); border: 1.5px solid rgba(255,255,255,0.25);
+            color: white; font-size: 1.1rem; padding: 0.45rem 0.7rem;
+            cursor: pointer; border-radius: 8px; display: none; transition: all 0.25s;
         }
         .btn-toggle-sidebar:hover { background: rgba(255,255,255,0.25); }
-
-        /* ══════════════════════════════════════
-           PAGINATION — Compact & Modern
-           ══════════════════════════════════════ */
         .pagination-wrapper {
-            margin-top: 1.75rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.75rem;
-            animation: fadeInUp 0.5s ease 0.3s both;
+            margin-top: 1.75rem; display: flex; flex-direction: column;
+            align-items: center; gap: 0.75rem; animation: fadeInUp 0.5s ease 0.3s both;
         }
-
         .google-pagination {
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-            list-style: none;
-            padding: 0.5rem 0.75rem;
-            margin: 0;
-            background: white;
-            border-radius: 50px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            display: flex; align-items: center; gap: 0.25rem; list-style: none;
+            padding: 0.5rem 0.75rem; margin: 0; background: white;
+            border-radius: 50px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);
             border: 1px solid rgba(0,0,0,0.05);
         }
-
         .google-pagination li { display: inline-flex; }
-
-        .google-pagination a,
-        .google-pagination span {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 36px;
-            height: 36px;
-            padding: 0 0.5rem;
-            border-radius: 50px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            font-family: inherit;
-            color: var(--admin-text-muted);
-            text-decoration: none;
-            transition: all 0.2s;
+        .google-pagination a, .google-pagination span {
+            display: flex; align-items: center; justify-content: center;
+            min-width: 36px; height: 36px; padding: 0 0.5rem; border-radius: 50px;
+            font-size: 0.85rem; font-weight: 600; font-family: inherit;
+            color: var(--admin-text-muted); text-decoration: none; transition: all 0.2s;
         }
-
-        .google-pagination a:hover {
-            background: #eff6ff;
-            color: var(--admin-primary);
-        }
-
-        .google-pagination .active span,
-        .google-pagination .active a {
+        .google-pagination a:hover { background: #eff6ff; color: var(--admin-primary); }
+        .google-pagination .active span, .google-pagination .active a {
             background: linear-gradient(135deg, var(--admin-primary), var(--admin-primary-hover));
-            color: white;
-            font-weight: 700;
-            box-shadow: 0 3px 10px rgba(59,130,246,0.35);
-            min-width: 36px;
+            color: white; font-weight: 700; box-shadow: 0 3px 10px rgba(59,130,246,0.35); min-width: 36px;
         }
-
-        .google-pagination .disabled a,
-        .google-pagination .disabled span {
-            color: #d1d5db;
-            cursor: not-allowed;
-            pointer-events: none;
+        .google-pagination .disabled a, .google-pagination .disabled span {
+            color: #d1d5db; cursor: not-allowed; pointer-events: none;
         }
-
-        .google-pagination .ellipsis span {
-            color: #9ca3af;
-            cursor: default;
-            min-width: 24px;
-        }
-
-        .google-pagination .pg-nav a,
-        .google-pagination .pg-nav span {
-            background: #f8fafc;
-            border: 1.5px solid var(--admin-border);
-            color: var(--admin-text-muted);
-            min-width: 36px;
+        .google-pagination .ellipsis span { color: #9ca3af; cursor: default; min-width: 24px; }
+        .google-pagination .pg-nav a, .google-pagination .pg-nav span {
+            background: #f8fafc; border: 1.5px solid var(--admin-border);
+            color: var(--admin-text-muted); min-width: 36px;
         }
         .google-pagination .pg-nav:not(.disabled) a:hover {
-            background: var(--admin-primary);
-            border-color: var(--admin-primary);
-            color: white;
+            background: var(--admin-primary); border-color: var(--admin-primary); color: white;
         }
-
-        .pagination-info {
-            font-size: 0.8rem;
-            color: var(--admin-text-muted);
-            font-weight: 500;
-        }
+        .pagination-info { font-size: 0.8rem; color: var(--admin-text-muted); font-weight: 500; }
         .pagination-info strong { color: var(--admin-text); }
-
-        /* ══════════════════════════════════════
-           MODALS — Refined & Professional
-           ══════════════════════════════════════ */
-        .modal-content {
-            border: none;
-            border-radius: 18px;
-            box-shadow: 0 24px 64px rgba(0,0,0,0.18);
-            overflow: hidden;
-        }
-
-        /* Create modal header */
+        .modal-content { border: none; border-radius: 18px; box-shadow: 0 24px 64px rgba(0,0,0,0.18); overflow: hidden; }
         .modal-header-success {
             background: linear-gradient(135deg, var(--admin-success), #059669);
-            color: white;
-            padding: 1.375rem 1.75rem;
-            border: none;
+            color: white; padding: 1.375rem 1.75rem; border: none;
         }
         .modal-header-success .modal-title {
-            font-weight: 700;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
+            font-weight: 700; font-size: 1rem; display: flex; align-items: center; gap: 0.6rem;
         }
         .modal-header-success .header-icon-sm {
-            width: 32px;
-            height: 32px;
-            background: rgba(255,255,255,0.15);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9rem;
+            width: 32px; height: 32px; background: rgba(255,255,255,0.15);
+            border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem;
         }
-
-        /* Edit modal header */
         .modal-header-primary {
-            background: linear-gradient(135deg, #1e3a8a, #1d4ed8);
-            color: white;
-            padding: 1.375rem 1.75rem;
-            border: none;
+            background: linear-gradient(135deg, #1e3a8a, #1d4ed8); color: white;
+            padding: 1.375rem 1.75rem; border: none;
         }
         .modal-header-primary .modal-title {
-            font-weight: 700;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
+            font-weight: 700; font-size: 1rem; display: flex; align-items: center; gap: 0.6rem;
         }
         .modal-header-primary .header-icon-sm {
-            width: 32px;
-            height: 32px;
-            background: rgba(255,255,255,0.15);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9rem;
+            width: 32px; height: 32px; background: rgba(255,255,255,0.15);
+            border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem;
         }
-
-        /* Delete sistema modal header */
         .modal-header-warning {
-            background: linear-gradient(135deg, #fffbeb, #fef3c7);
-            color: #92400e;
-            padding: 1.375rem 1.75rem;
-            border-bottom: 1.5px solid #fde68a;
+            background: linear-gradient(135deg, #fffbeb, #fef3c7); color: #92400e;
+            padding: 1.375rem 1.75rem; border-bottom: 1.5px solid #fde68a;
         }
         .modal-header-warning .modal-title {
-            font-weight: 700;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
+            font-weight: 700; font-size: 1rem; display: flex; align-items: center; gap: 0.6rem;
         }
         .modal-header-warning .header-icon-sm {
-            width: 32px;
-            height: 32px;
-            background: #fde68a;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9rem;
-            color: #d97706;
+            width: 32px; height: 32px; background: #fde68a; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center; font-size: 0.9rem; color: #d97706;
         }
-
-        /* Delete permanente modal header */
         .modal-header-danger {
-            background: linear-gradient(135deg, #fef2f2, #fee2e2);
-            color: #991b1b;
-            padding: 1.375rem 1.75rem;
-            border-bottom: 1.5px solid #fecaca;
+            background: linear-gradient(135deg, #fef2f2, #fee2e2); color: #991b1b;
+            padding: 1.375rem 1.75rem; border-bottom: 1.5px solid #fecaca;
         }
         .modal-header-danger .modal-title {
-            font-weight: 700;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
+            font-weight: 700; font-size: 1rem; display: flex; align-items: center; gap: 0.6rem;
         }
         .modal-header-danger .header-icon-sm {
-            width: 32px;
-            height: 32px;
-            background: #fecaca;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9rem;
-            color: #dc2626;
+            width: 32px; height: 32px; background: #fecaca; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center; font-size: 0.9rem; color: #dc2626;
         }
-
-        .modal-body {
-            padding: 1.75rem;
-            background: #fafbfc;
-        }
-        .modal-footer {
-            padding: 1rem 1.75rem;
-            background: white;
-            border-top: 1.5px solid #f3f4f6;
-            gap: 0.5rem;
-        }
-
-        /* User info card in modals */
+        .modal-body { padding: 1.75rem; background: #fafbfc; }
+        .modal-footer { padding: 1rem 1.75rem; background: white; border-top: 1.5px solid #f3f4f6; gap: 0.5rem; }
         .modal-user-card {
-            background: white;
-            border: 1.5px solid var(--admin-border);
-            border-radius: 12px;
-            padding: 1rem 1.25rem;
-            display: flex;
-            align-items: center;
-            gap: 0.875rem;
+            background: white; border: 1.5px solid var(--admin-border); border-radius: 12px;
+            padding: 1rem 1.25rem; display: flex; align-items: center; gap: 0.875rem;
         }
         .modal-user-card .user-avatar-lg {
-            width: 42px;
-            height: 42px;
-            border-radius: 10px;
+            width: 42px; height: 42px; border-radius: 10px;
             background: linear-gradient(135deg, #dbeafe, #bfdbfe);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 1rem;
-            color: #1d4ed8;
-            flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 1rem; color: #1d4ed8; flex-shrink: 0;
         }
-        .modal-user-card .user-details {}
-        .modal-user-card .user-name {
-            font-weight: 700;
-            font-size: 0.95rem;
-            color: var(--admin-text);
-            margin-bottom: 2px;
-        }
-        .modal-user-card .user-email {
-            font-size: 0.8rem;
-            color: var(--admin-text-muted);
-        }
-
-        /* Modal notice boxes */
+        .modal-user-card .user-name { font-weight: 700; font-size: 0.95rem; color: var(--admin-text); margin-bottom: 2px; }
+        .modal-user-card .user-email { font-size: 0.8rem; color: var(--admin-text-muted); }
         .modal-notice {
-            border-radius: 10px;
-            padding: 0.875rem 1rem;
-            display: flex;
-            align-items: flex-start;
-            gap: 0.625rem;
-            font-size: 0.85rem;
-            font-weight: 500;
+            border-radius: 10px; padding: 0.875rem 1rem; display: flex;
+            align-items: flex-start; gap: 0.625rem; font-size: 0.85rem; font-weight: 500;
         }
-        .modal-notice.notice-warning {
-            background: #fffbeb;
-            border: 1.5px solid #fde68a;
-            color: #92400e;
-        }
-        .modal-notice.notice-danger {
-            background: #fef2f2;
-            border: 1.5px solid #fecaca;
-            color: #991b1b;
-        }
-        .modal-notice.notice-info {
-            background: #eff6ff;
-            border: 1.5px solid #bfdbfe;
-            color: #1e40af;
-        }
+        .modal-notice.notice-warning { background: #fffbeb; border: 1.5px solid #fde68a; color: #92400e; }
+        .modal-notice.notice-danger { background: #fef2f2; border: 1.5px solid #fecaca; color: #991b1b; }
+        .modal-notice.notice-info { background: #eff6ff; border: 1.5px solid #bfdbfe; color: #1e40af; }
         .modal-notice i { margin-top: 1px; flex-shrink: 0; }
-
-        /* Modal form fields */
         .modal-body .form-label {
-            font-size: 0.72rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: var(--admin-text-muted);
-            margin-bottom: 0.4rem;
+            font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.06em; color: var(--admin-text-muted); margin-bottom: 0.4rem;
         }
-        .modal-body .form-control,
-        .modal-body .form-select {
-            border: 1.5px solid var(--admin-border);
-            border-radius: 9px;
-            padding: 0.575rem 0.875rem;
-            font-size: 0.875rem;
-            font-family: inherit;
-            background: white;
-            transition: all 0.22s;
+        .modal-body .form-control, .modal-body .form-select {
+            border: 1.5px solid var(--admin-border); border-radius: 9px;
+            padding: 0.575rem 0.875rem; font-size: 0.875rem; font-family: inherit;
+            background: white; transition: all 0.22s;
         }
-        .modal-body .form-control:focus,
-        .modal-body .form-select:focus {
-            border-color: var(--admin-primary);
-            box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+        .modal-body .form-control:focus, .modal-body .form-select:focus {
+            border-color: var(--admin-primary); box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
         }
-
-        /* Modal buttons */
         .btn-modal-cancel {
-            border: 1.5px solid var(--admin-border);
-            background: white;
-            color: var(--admin-text-muted);
-            padding: 0.55rem 1.25rem;
-            border-radius: 9px;
-            font-weight: 600;
-            font-size: 0.875rem;
-            font-family: inherit;
-            transition: all 0.22s;
-            cursor: pointer;
+            border: 1.5px solid var(--admin-border); background: white; color: var(--admin-text-muted);
+            padding: 0.55rem 1.25rem; border-radius: 9px; font-weight: 600;
+            font-size: 0.875rem; font-family: inherit; transition: all 0.22s; cursor: pointer;
         }
-        .btn-modal-cancel:hover {
-            background: #f3f4f6;
-            color: var(--admin-text);
-        }
+        .btn-modal-cancel:hover { background: #f3f4f6; color: var(--admin-text); }
         .btn-modal-save {
             background: linear-gradient(135deg, var(--admin-primary), var(--admin-primary-hover));
-            border: none;
-            color: white;
-            padding: 0.55rem 1.375rem;
-            border-radius: 9px;
-            font-weight: 700;
-            font-size: 0.875rem;
-            font-family: inherit;
-            transition: all 0.22s;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            box-shadow: 0 4px 12px rgba(59,130,246,0.28);
+            border: none; color: white; padding: 0.55rem 1.375rem; border-radius: 9px;
+            font-weight: 700; font-size: 0.875rem; font-family: inherit;
+            transition: all 0.22s; cursor: pointer; display: inline-flex;
+            align-items: center; gap: 0.4rem; box-shadow: 0 4px 12px rgba(59,130,246,0.28);
         }
-        .btn-modal-save:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(59,130,246,0.35);
-        }
+        .btn-modal-save:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(59,130,246,0.35); }
         .btn-modal-create {
-            background: linear-gradient(135deg, var(--admin-success), #059669);
-            border: none;
-            color: white;
-            padding: 0.55rem 1.375rem;
-            border-radius: 9px;
-            font-weight: 700;
-            font-size: 0.875rem;
-            font-family: inherit;
-            transition: all 0.22s;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
+            background: linear-gradient(135deg, var(--admin-success), #059669); border: none;
+            color: white; padding: 0.55rem 1.375rem; border-radius: 9px; font-weight: 700;
+            font-size: 0.875rem; font-family: inherit; transition: all 0.22s; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 0.4rem;
             box-shadow: 0 4px 12px rgba(16,185,129,0.28);
         }
-        .btn-modal-create:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(16,185,129,0.38);
-        }
+        .btn-modal-create:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(16,185,129,0.38); }
         .btn-modal-delete-sistema {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            border: none;
-            color: white;
-            padding: 0.55rem 1.375rem;
-            border-radius: 9px;
-            font-weight: 700;
-            font-size: 0.875rem;
-            font-family: inherit;
-            transition: all 0.22s;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
+            background: linear-gradient(135deg, #f59e0b, #d97706); border: none; color: white;
+            padding: 0.55rem 1.375rem; border-radius: 9px; font-weight: 700;
+            font-size: 0.875rem; font-family: inherit; transition: all 0.22s; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 0.4rem;
             box-shadow: 0 4px 12px rgba(245,158,11,0.28);
         }
-        .btn-modal-delete-sistema:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(245,158,11,0.38);
-        }
+        .btn-modal-delete-sistema:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(245,158,11,0.38); }
         .btn-modal-delete-perm {
-            background: linear-gradient(135deg, var(--admin-danger), #dc2626);
-            border: none;
-            color: white;
-            padding: 0.55rem 1.375rem;
-            border-radius: 9px;
-            font-weight: 700;
-            font-size: 0.875rem;
-            font-family: inherit;
-            transition: all 0.22s;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
+            background: linear-gradient(135deg, var(--admin-danger), #dc2626); border: none;
+            color: white; padding: 0.55rem 1.375rem; border-radius: 9px; font-weight: 700;
+            font-size: 0.875rem; font-family: inherit; transition: all 0.22s; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 0.4rem;
             box-shadow: 0 4px 12px rgba(239,68,68,0.28);
         }
-        .btn-modal-delete-perm:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(239,68,68,0.38);
-        }
-
-        /* ── Toast ── */
-        .toast {
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.18);
-        }
-
-        /* ── Animations ── */
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-16px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(16px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* ── Responsive ── */
+        .btn-modal-delete-perm:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(239,68,68,0.38); }
+        .toast { border: none; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.18); }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
         @media (max-width: 991.98px) {
             .admin-sidebar {
-                position: fixed;
-                left: -260px;
-                top: 70px;
-                height: calc(100vh - 70px);
-                z-index: 999;
-                box-shadow: 4px 0 16px rgba(0,0,0,0.1);
+                position: fixed; left: -260px; top: 70px; height: calc(100vh - 70px);
+                z-index: 999; box-shadow: 4px 0 16px rgba(0,0,0,0.1);
             }
             .admin-sidebar.show { transform: translateX(260px); }
             .admin-main { padding: 1rem; }
             .btn-toggle-sidebar { display: block; }
             .page-header { flex-direction: column; gap: 1rem; text-align: center; }
-            .google-pagination a,
-            .google-pagination span { min-width: 32px; height: 32px; font-size: 0.8rem; }
+            .google-pagination a, .google-pagination span { min-width: 32px; height: 32px; font-size: 0.8rem; }
         }
-        @media (min-width: 992px) {
-            .btn-toggle-sidebar { display: none !important; }
-        }
+        @media (min-width: 992px) { .btn-toggle-sidebar { display: none !important; } }
     </style>
 </head>
 <body>
 
-<!-- Navbar Admin -->
 <nav class="admin-navbar">
     <div class="d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center gap-3">
-            <button class="btn-toggle-sidebar d-lg-none" onclick="toggleSidebar()">
-                <i class="fas fa-bars"></i>
-            </button>
+            <button class="btn-toggle-sidebar d-lg-none" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
             <a class="navbar-brand" th:href="@{/admin/dashboard}">
-                <span class="brand-icon"><i class="fas fa-shield-alt"></i></span>
-                <span>Admin NotyGo</span>
+                <span class="brand-icon"><i class="fas fa-shield-alt"></i></span><span>Admin NotyGo</span>
             </a>
         </div>
         <div class="user-info">
-            <span class="user-chip d-none d-sm-flex">
-                <i class="fas fa-user-circle"></i>
-                <span th:text="${session.usuarioLogueado}">Admin</span>
-            </span>
+            <span class="user-chip d-none d-sm-flex"><i class="fas fa-user-circle"></i><span th:text="${session.usuarioLogueado}">Admin</span></span>
             <form th:action="@{/logout}" method="post" style="display:inline;">
-                <button type="submit" class="btn-logout">
-                    <i class="fas fa-sign-out-alt me-1"></i>Salir
-                </button>
+                <button type="submit" class="btn-logout"><i class="fas fa-sign-out-alt me-1"></i>Salir</button>
             </form>
         </div>
     </div>
 </nav>
 
-<!-- Wrapper -->
 <div class="admin-wrapper">
-
-    <!-- Sidebar -->
     <aside class="admin-sidebar" id="adminSidebar">
         <nav class="nav flex-column">
             <span class="sidebar-label">Principal</span>
-            <a th:href="@{/admin/dashboard}" class="nav-link">
-                <i class="fas fa-home"></i> Dashboard
-            </a>
-            <a th:href="@{/admin/usuarios}" class="nav-link active">
-                <i class="fas fa-users"></i> Usuarios
-            </a>
-            <a th:href="@{/admin/tareas}" class="nav-link">
-                <i class="fas fa-tasks"></i> Tareas
-            </a>
-            <a th:href="@{/admin/auditoria}" class="nav-link">
-                <i class="fas fa-history"></i> Auditoría
-            </a>
+            <a th:href="@{/admin/dashboard}" class="nav-link"><i class="fas fa-home"></i> Dashboard</a>
+            <a th:href="@{/admin/usuarios}" class="nav-link active"><i class="fas fa-users"></i> Usuarios</a>
+            <a th:href="@{/admin/tareas}" class="nav-link"><i class="fas fa-tasks"></i> Tareas</a>
+            <a th:href="@{/admin/auditoria}" class="nav-link"><i class="fas fa-history"></i> Auditoría</a>
             <div class="divider"></div>
-            <a th:href="@{/cliente/home}" class="nav-link">
-                <i class="fas fa-arrow-left"></i> Volver al Cliente
-            </a>
+            <a th:href="@{/cliente/home}" class="nav-link"><i class="fas fa-arrow-left"></i> Volver al Cliente</a>
         </nav>
     </aside>
 
-    <!-- Main Content -->
     <main class="admin-main">
-
-        <!-- Page Header -->
         <div class="page-header">
-            <h2>
-                <span class="header-icon"><i class="fas fa-users"></i></span>
-                Gestión de Usuarios
-            </h2>
-            <!-- ✅ BOTÓN CREAR USUARIO -->
-            <button type="button" class="btn-create" onclick="abrirModalCrear()">
-                <i class="fas fa-user-plus"></i>
-                <span class="d-none d-sm-inline">Crear Usuario</span>
-            </button>
+            <h2><span class="header-icon"><i class="fas fa-users"></i></span>Gestión de Usuarios</h2>
+            <button type="button" class="btn-create" onclick="abrirModalCrear()"><i class="fas fa-user-plus"></i><span class="d-none d-sm-inline">Crear Usuario</span></button>
         </div>
 
-        <!-- Filters -->
         <div class="filters-card">
             <form th:action="@{/admin/usuarios}" method="get" class="row g-3 align-items-end">
+                <!-- ✅ CAMPO ID CORREGIDO: Dentro del form, con estilo col-md-2 -->
+                <div class="col-md-2">
+                    <label class="form-label">ID</label>
+                    <input type="number" class="form-control" name="id"
+                           placeholder="Buscar por ID..."
+                           th:value="${filtroId}" min="1">
+                </div>
+
                 <div class="col-md-3">
                     <label class="form-label">Nombre</label>
-                    <input type="text" class="form-control" name="nombre"
-                           placeholder="Buscar por nombre..."
-                           th:value="${filtroNombre}">
+                    <input type="text" class="form-control" name="nombre" placeholder="Buscar por nombre..." th:value="${filtroNombre}">
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Email</label>
-                    <input type="email" class="form-control" name="email"
-                           placeholder="Buscar por email..."
-                           th:value="${filtroEmail}">
+                    <input type="email" class="form-control" name="email" placeholder="Buscar por email..." th:value="${filtroEmail}">
                 </div>
                 <div class="col-md-2">
                     <label class="form-label">Estado</label>
@@ -1083,37 +453,25 @@
                     </select>
                 </div>
                 <div class="col-md-2 d-flex">
-                    <button type="submit" class="btn btn-primary w-100">
-                        <i class="fas fa-search me-2"></i>Buscar
-                    </button>
+                    <button type="submit" class="btn btn-primary w-100"><i class="fas fa-search me-2"></i>Buscar</button>
                 </div>
                 <div class="col-md-2 d-flex">
-                    <a th:href="@{/admin/usuarios}" class="btn btn-outline-secondary w-100">
-                        <i class="fas fa-redo me-2"></i>Limpiar
-                    </a>
+                    <a th:href="@{/admin/usuarios}" class="btn btn-outline-secondary w-100"><i class="fas fa-redo me-2"></i>Limpiar</a>
                 </div>
             </form>
         </div>
 
-        <!-- Table -->
         <div class="table-card">
             <div class="table-responsive">
                 <table class="table table-hover mb-0">
                     <thead>
                     <tr>
-                        <th class="ps-4">ID</th>
-                        <th>Nombre</th>
-                        <th>Email</th>
-                        <th>Rol</th>
-                        <th>Estado</th>
-                        <th class="text-end pe-4">Acciones</th>
+                        <th class="ps-4">ID</th><th>Nombre</th><th>Email</th><th>Rol</th><th>Estado</th><th class="text-end pe-4">Acciones</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:each="usuario : ${usuarios != null ? usuarios : {}}">
-                        <td class="ps-4">
-                            <span class="fw-700 text-muted" style="font-size:0.8rem;">#<span th:text="${usuario.id}">1</span></span>
-                        </td>
+                        <td class="ps-4"><span class="fw-700 text-muted" style="font-size:0.8rem;">#<span th:text="${usuario.id}">1</span></span></td>
                         <td>
                             <div class="user-cell">
                                 <div class="user-avatar" th:text="${#strings.substring(usuario.nombre, 0, 1)}">N</div>
@@ -1122,58 +480,35 @@
                         </td>
                         <td class="text-muted" th:text="${usuario.email}">email@test.com</td>
                         <td>
-                            <!-- ✅ CORREGIDO: Badge de rol según nombre real -->
                             <span class="badge badge-rol"
                                   th:classappend="${usuario.rol?.nombre == 'ADMINISTRADOR'} ? 'admin' : (${usuario.rol?.nombre == 'USUARIO ESTANDAR' || usuario.rol?.nombre == 'Usuario Estandar'} ? 'user' : (${usuario.rol?.nombre == 'PREMIUM' || usuario.rol?.nombre == 'Premium'} ? 'premium' : 'default'))"
-                                  th:text="${usuario.rol?.nombre != null ? usuario.rol.nombre : 'SIN ROL'}">
-                                ROL
-                            </span>
+                                  th:text="${usuario.rol?.nombre != null ? usuario.rol.nombre : 'SIN ROL'}">ROL</span>
                         </td>
                         <td>
-                            <span class="badge badge-estado"
-                                  th:classappend="${usuario.estado == 'ACTIVO'} ? 'activo' : 'inactivo'">
+                            <span class="badge badge-estado" th:classappend="${usuario.estado == 'ACTIVO'} ? 'activo' : 'inactivo'">
                                 <span class="status-dot" th:classappend="${usuario.estado == 'ACTIVO'} ? 'activo' : 'inactivo'"></span>
                                 <span th:text="${usuario.estado}">ACTIVO</span>
                             </span>
                         </td>
                         <td class="text-end pe-4">
                             <div class="btn-group" role="group">
-                                <!-- Editar -->
-                                <button type="button"
-                                        class="btn-action edit"
-                                        th:data-usuario-id="${usuario.id}"
-                                        th:data-usuario-nombre="${usuario.nombre}"
-                                        th:data-usuario-email="${usuario.email}"
-                                        th:data-usuario-rol="${usuario.rol?.id}"
-                                        th:data-usuario-estado="${usuario.estado}"
-                                        onclick="abrirModalEditar(this)"
-                                        title="Editar usuario">
+                                <button type="button" class="btn-action edit"
+                                        th:data-usuario-id="${usuario.id}" th:data-usuario-nombre="${usuario.nombre}"
+                                        th:data-usuario-email="${usuario.email}" th:data-usuario-rol="${usuario.rol?.id}"
+                                        th:data-usuario-estado="${usuario.estado}" onclick="abrirModalEditar(this)" title="Editar usuario">
                                     <i class="fas fa-edit"></i>
                                 </button>
-
-                                <!-- Dropdown eliminar -->
                                 <div class="btn-group" role="group" th:if="${session.usuarioId != usuario.id}">
-                                    <button type="button"
-                                            class="btn-action delete dropdown-toggle"
-                                            data-bs-toggle="dropdown"
-                                            aria-expanded="false"
-                                            title="Eliminar usuario"
-                                            style="z-index: 1000;">
+                                    <button type="button" class="btn-action delete dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" title="Eliminar usuario" style="z-index: 1000;">
                                         <i class="fas fa-trash-alt"></i>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end" style="z-index: 9999; min-width: 250px;">
                                         <li>
-                                            <a class="dropdown-item"
-                                               href="javascript:void(0)"
-                                               th:data-usuario-id="${usuario.id}"
-                                               th:data-usuario-nombre="${usuario.nombre}"
-                                               th:data-usuario-email="${usuario.email}"
-                                               onclick="abrirModalEliminarSistema(this)">
+                                            <a class="dropdown-item" href="javascript:void(0)"
+                                               th:data-usuario-id="${usuario.id}" th:data-usuario-nombre="${usuario.nombre}"
+                                               th:data-usuario-email="${usuario.email}" onclick="abrirModalEliminarSistema(this)">
                                                 <i class="fas fa-user-slash text-warning"></i>
-                                                <div class="dropdown-item-content">
-                                                    <span>Desactivar usuario</span>
-                                                    <small>El usuario quedará oculto en el sistema</small>
-                                                </div>
+                                                <div class="dropdown-item-content"><span>Desactivar usuario</span><small>El usuario quedará oculto en el sistema</small></div>
                                             </a>
                                         </li>
                                     </ul>
@@ -1181,79 +516,39 @@
                             </div>
                         </td>
                     </tr>
-
-                    <!-- Mensaje vacío -->
                     <tr th:if="${usuarios == null or #lists.isEmpty(usuarios)}">
-                        <td colspan="6">
-                            <div class="empty-state">
-                                <i class="fas fa-search"></i>
-                                <h5 class="mb-2">No se encontraron usuarios</h5>
-                                <p class="mb-0 text-muted">Prueba ajustando los filtros de búsqueda</p>
-                            </div>
-                        </td>
+                        <td colspan="6"><div class="empty-state"><i class="fas fa-search"></i><h5 class="mb-2">No se encontraron usuarios</h5><p class="mb-0 text-muted">Prueba ajustando los filtros de búsqueda</p></div></td>
                     </tr>
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- PAGINACIÓN -->
+        <!-- ✅ PAGINACIÓN CORREGIDA: id=${filtroId} aparece UNA sola vez en cada enlace -->
         <div class="pagination-wrapper" th:if="${totalPaginas > 1}">
             <ul class="google-pagination">
-                <!-- Anterior -->
                 <li class="pg-nav" th:classappend="${paginaActual == 1} ? 'disabled' : ''">
-                    <a th:href="@{/admin/usuarios(page=${paginaActual - 1}, size=${tamanoPagina}, nombre=${filtroNombre}, email=${filtroEmail}, estado=${filtroEstado})}"
-                       th:if="${paginaActual > 1}" title="Página anterior">
-                        <i class="fas fa-chevron-left" style="font-size:0.75rem;"></i>
-                    </a>
-                    <span th:if="${paginaActual == 1}">
-                        <i class="fas fa-chevron-left" style="font-size:0.75rem;"></i>
-                    </span>
+                    <a th:href="@{/admin/usuarios(page=${paginaActual - 1}, size=${tamanoPagina}, id=${filtroId}, nombre=${filtroNombre}, email=${filtroEmail}, estado=${filtroEstado})}" th:if="${paginaActual > 1}" title="Página anterior"><i class="fas fa-chevron-left" style="font-size:0.75rem;"></i></a>
+                    <span th:if="${paginaActual == 1}"><i class="fas fa-chevron-left" style="font-size:0.75rem;"></i></span>
                 </li>
-
-                <!-- Primera página -->
                 <li th:classappend="${paginaActual == 1} ? 'active' : ''">
-                    <a th:href="@{/admin/usuarios(page=1, size=${tamanoPagina}, nombre=${filtroNombre}, email=${filtroEmail}, estado=${filtroEstado})}" th:if="${paginaActual != 1}">1</a>
-                    <span th:if="${paginaActual == 1}">1</span>
+                    <a th:href="@{/admin/usuarios(page=1, size=${tamanoPagina}, id=${filtroId}, nombre=${filtroNombre}, email=${filtroEmail}, estado=${filtroEstado})}" th:if="${paginaActual != 1}">1</a><span th:if="${paginaActual == 1}">1</span>
                 </li>
-
-                <!-- Ellipsis izquierdo -->
-                <li class="ellipsis" th:if="${paginaActual > 3}">
-                    <span>···</span>
-                </li>
-
-                <!-- Páginas centrales -->
-                <li th:each="i : ${#numbers.sequence(paginaActual - 1, paginaActual + 1)}"
-                    th:if="${i > 1 and i < totalPaginas}"
-                    th:classappend="${i == paginaActual} ? 'active' : ''">
-                    <a th:href="@{/admin/usuarios(page=${i}, size=${tamanoPagina}, nombre=${filtroNombre}, email=${filtroEmail}, estado=${filtroEstado})}" th:if="${i != paginaActual}" th:text="${i}">2</a>
+                <li class="ellipsis" th:if="${paginaActual > 3}"><span>···</span></li>
+                <li th:each="i : ${#numbers.sequence(paginaActual - 1, paginaActual + 1)}" th:if="${i > 1 and i < totalPaginas}" th:classappend="${i == paginaActual} ? 'active' : ''">
+                    <a th:href="@{/admin/usuarios(page=${i}, size=${tamanoPagina}, id=${filtroId}, nombre=${filtroNombre}, email=${filtroEmail}, estado=${filtroEstado})}" th:if="${i != paginaActual}" th:text="${i}">2</a>
                     <span th:if="${i == paginaActual}" th:text="${i}">2</span>
                 </li>
-
-                <!-- Ellipsis derecho -->
-                <li class="ellipsis" th:if="${paginaActual < totalPaginas - 2}">
-                    <span>···</span>
-                </li>
-
-                <!-- Última página -->
+                <li class="ellipsis" th:if="${paginaActual < totalPaginas - 2}"><span>···</span></li>
                 <li th:if="${totalPaginas > 1}" th:classappend="${paginaActual == totalPaginas} ? 'active' : ''">
-                    <a th:href="@{/admin/usuarios(page=${totalPaginas}, size=${tamanoPagina}, nombre=${filtroNombre}, email=${filtroEmail}, estado=${filtroEstado})}" th:if="${paginaActual != totalPaginas}" th:text="${totalPaginas}">10</a>
+                    <a th:href="@{/admin/usuarios(page=${totalPaginas}, size=${tamanoPagina}, id=${filtroId}, nombre=${filtroNombre}, email=${filtroEmail}, estado=${filtroEstado})}" th:if="${paginaActual != totalPaginas}" th:text="${totalPaginas}">10</a>
                     <span th:if="${paginaActual == totalPaginas}" th:text="${totalPaginas}">10</span>
                 </li>
-
-                <!-- Siguiente -->
                 <li class="pg-nav" th:classappend="${paginaActual == totalPaginas} ? 'disabled' : ''">
-                    <a th:href="@{/admin/usuarios(page=${paginaActual + 1}, size=${tamanoPagina}, nombre=${filtroNombre}, email=${filtroEmail}, estado=${filtroEstado})}"
-                       th:if="${paginaActual < totalPaginas}" title="Página siguiente">
-                        <i class="fas fa-chevron-right" style="font-size:0.75rem;"></i>
-                    </a>
-                    <span th:if="${paginaActual == totalPaginas}">
-                        <i class="fas fa-chevron-right" style="font-size:0.75rem;"></i>
-                    </span>
+                    <a th:href="@{/admin/usuarios(page=${paginaActual + 1}, size=${tamanoPagina}, id=${filtroId}, nombre=${filtroNombre}, email=${filtroEmail}, estado=${filtroEstado})}" th:if="${paginaActual < totalPaginas}" title="Página siguiente"><i class="fas fa-chevron-right" style="font-size:0.75rem;"></i></a>
+                    <span th:if="${paginaActual == totalPaginas}"><i class="fas fa-chevron-right" style="font-size:0.75rem;"></i></span>
                 </li>
             </ul>
-
-            <!-- Info paginación -->
             <p class="pagination-info" th:if="${totalElementos > 0}">
                 Mostrando <strong th:text="${((paginaActual - 1) * tamanoPagina) + 1}">1</strong> –
                 <strong th:text="${paginaActual * tamanoPagina < totalElementos ? paginaActual * tamanoPagina : totalElementos}">10</strong>
@@ -1262,445 +557,169 @@
             </p>
         </div>
 
-        <!-- Volver -->
         <div class="text-center mt-4 mb-2">
-            <a th:href="@{/admin/dashboard}" class="btn-back">
-                <i class="fas fa-arrow-left"></i>Volver al Dashboard
-            </a>
+            <a th:href="@{/admin/dashboard}" class="btn-back"><i class="fas fa-arrow-left"></i>Volver al Dashboard</a>
         </div>
     </main>
 </div>
 
-<!-- ══════════════════════════════════════
-     MODAL — CREAR USUARIO (NUEVO)
-     ══════════════════════════════════════ -->
+<!-- MODALS (sin cambios) -->
 <div class="modal fade" id="modalCrearUsuario" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content animate__animated animate__zoomIn">
             <div class="modal-header-success">
-                <h5 class="modal-title">
-                    <span class="header-icon-sm"><i class="fas fa-user-plus"></i></span>
-                    Crear nuevo usuario
-                </h5>
+                <h5 class="modal-title"><span class="header-icon-sm"><i class="fas fa-user-plus"></i></span>Crear nuevo usuario</h5>
                 <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <form id="formCrearUsuario">
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="createNombre" class="form-label">Nombre completo <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="createNombre" required placeholder="Ingresa el nombre completo">
-                    </div>
-                    <div class="mb-3">
-                        <label for="createEmail" class="form-label">Correo electrónico <span class="text-danger">*</span></label>
-                        <input type="email" class="form-control" id="createEmail" required placeholder="correo@ejemplo.com">
-                    </div>
-                    <div class="mb-3">
-                        <label for="createPassword" class="form-label">Contraseña <span class="text-danger">*</span></label>
-                        <input type="password" class="form-control" id="createPassword" required placeholder="Mínimo 6 caracteres" minlength="6">
-                        <small class="text-muted">La contraseña debe tener al menos 6 caracteres</small>
-                    </div>
+                    <div class="mb-3"><label for="createNombre" class="form-label">Nombre completo <span class="text-danger">*</span></label><input type="text" class="form-control" id="createNombre" required placeholder="Ingresa el nombre completo"></div>
+                    <div class="mb-3"><label for="createEmail" class="form-label">Correo electrónico <span class="text-danger">*</span></label><input type="email" class="form-control" id="createEmail" required placeholder="correo@ejemplo.com"></div>
+                    <div class="mb-3"><label for="createPassword" class="form-label">Contraseña <span class="text-danger">*</span></label><input type="password" class="form-control" id="createPassword" required placeholder="Mínimo 6 caracteres" minlength="6"><small class="text-muted">La contraseña debe tener al menos 6 caracteres</small></div>
                     <div class="row g-3 mb-3">
-                        <div class="col-md-6">
-                            <label for="createRol" class="form-label">Rol <span class="text-danger">*</span></label>
-                            <select class="form-select" id="createRol" required>
-                                <option value="">Seleccionar rol...</option>
-                                <!-- ✅ IDs correctos según tu BD -->
-                                <option value="1">Administrador</option>
-                                <option value="2">Usuario Estándar</option>
-                                <option value="3">Premium</option>
-                                <option value="4">Invitado</option>
-                                <option value="5">Moderador</option>
-                                <option value="6">Soporte Técnico</option>
-                                <option value="7">Coordinador</option>
-                                <option value="8">Supervisor</option>
-                                <option value="9">Auditor</option>
-                                <option value="10">Gerente</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="createEstado" class="form-label">Estado <span class="text-danger">*</span></label>
-                            <select class="form-select" id="createEstado" required>
-                                <option value="ACTIVO">Activo</option>
-                                <option value="INACTIVO">Inactivo</option>
-                            </select>
-                        </div>
+                        <div class="col-md-6"><label for="createRol" class="form-label">Rol <span class="text-danger">*</span></label><select class="form-select" id="createRol" required><option value="">Seleccionar rol...</option><option value="1">Administrador</option><option value="2">Usuario Estándar</option><option value="3">Premium</option><option value="4">Invitado</option><option value="5">Moderador</option><option value="6">Soporte Técnico</option><option value="7">Coordinador</option><option value="8">Supervisor</option><option value="9">Auditor</option><option value="10">Gerente</option></select></div>
+                        <div class="col-md-6"><label for="createEstado" class="form-label">Estado <span class="text-danger">*</span></label><select class="form-select" id="createEstado" required><option value="ACTIVO">Activo</option><option value="INACTIVO">Inactivo</option></select></div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-modal-cancel" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn-modal-create">
-                        <i class="fas fa-user-plus"></i>Crear usuario
-                    </button>
-                </div>
+                <div class="modal-footer"><button type="button" class="btn-modal-cancel" data-bs-dismiss="modal">Cancelar</button><button type="submit" class="btn-modal-create"><i class="fas fa-user-plus"></i>Crear usuario</button></div>
             </form>
         </div>
     </div>
 </div>
 
-<!-- ══════════════════════════════════════
-     MODAL — EDITAR USUARIO
-     ══════════════════════════════════════ -->
 <div class="modal fade" id="modalEditarUsuario" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content animate__animated animate__zoomIn">
             <div class="modal-header-primary">
-                <h5 class="modal-title">
-                    <span class="header-icon-sm"><i class="fas fa-user-edit"></i></span>
-                    Editar usuario
-                </h5>
+                <h5 class="modal-title"><span class="header-icon-sm"><i class="fas fa-user-edit"></i></span>Editar usuario</h5>
                 <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <form id="formEditarUsuario">
                 <div class="modal-body">
                     <input type="hidden" id="editUsuarioId">
-                    <div class="mb-3">
-                        <label for="editNombre" class="form-label">Nombre completo</label>
-                        <input type="text" class="form-control" id="editNombre" required placeholder="Ingresa el nombre">
-                    </div>
-                    <div class="mb-3">
-                        <label for="editEmail" class="form-label">Correo electrónico</label>
-                        <input type="email" class="form-control" id="editEmail" required placeholder="correo@ejemplo.com">
-                    </div>
+                    <div class="mb-3"><label for="editNombre" class="form-label">Nombre completo</label><input type="text" class="form-control" id="editNombre" required placeholder="Ingresa el nombre"></div>
+                    <div class="mb-3"><label for="editEmail" class="form-label">Correo electrónico</label><input type="email" class="form-control" id="editEmail" required placeholder="correo@ejemplo.com"></div>
                     <div class="row g-3 mb-3">
-                        <div class="col-md-6">
-                            <label for="editRol" class="form-label">Rol</label>
-                            <select class="form-select" id="editRol" required>
-                                <option value="">Seleccionar rol...</option>
-                                <!-- ✅ IDs correctos según tu BD -->
-                                <option value="1">Administrador</option>
-                                <option value="2">Usuario Estándar</option>
-                                <option value="3">Premium</option>
-                                <option value="4">Invitado</option>
-                                <option value="5">Moderador</option>
-                                <option value="6">Soporte Técnico</option>
-                                <option value="7">Coordinador</option>
-                                <option value="8">Supervisor</option>
-                                <option value="9">Auditor</option>
-                                <option value="10">Gerente</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="editEstado" class="form-label">Estado</label>
-                            <select class="form-select" id="editEstado" required>
-                                <option value="ACTIVO">Activo</option>
-                                <option value="INACTIVO">Inactivo</option>
-                            </select>
-                        </div>
+                        <div class="col-md-6"><label for="editRol" class="form-label">Rol</label><select class="form-select" id="editRol" required><option value="">Seleccionar rol...</option><option value="1">Administrador</option><option value="2">Usuario Estándar</option><option value="3">Premium</option><option value="4">Invitado</option><option value="5">Moderador</option><option value="6">Soporte Técnico</option><option value="7">Coordinador</option><option value="8">Supervisor</option><option value="9">Auditor</option><option value="10">Gerente</option></select></div>
+                        <div class="col-md-6"><label for="editEstado" class="form-label">Estado</label><select class="form-select" id="editEstado" required><option value="ACTIVO">Activo</option><option value="INACTIVO">Inactivo</option></select></div>
                     </div>
-                    <div class="mb-0">
-                        <label for="editPassword" class="form-label">
-                            Nueva contraseña <span class="text-muted fw-normal" style="text-transform:none;letter-spacing:0;">(dejar en blanco para no cambiar)</span>
-                        </label>
-                        <input type="password" class="form-control" id="editPassword" placeholder="••••••••">
-                    </div>
+                    <div class="mb-0"><label for="editPassword" class="form-label">Nueva contraseña <span class="text-muted fw-normal" style="text-transform:none;letter-spacing:0;">(dejar en blanco para no cambiar)</span></label><input type="password" class="form-control" id="editPassword" placeholder="••••••••"></div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-modal-cancel" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn-modal-save">
-                        <i class="fas fa-save"></i>Guardar cambios
-                    </button>
-                </div>
+                <div class="modal-footer"><button type="button" class="btn-modal-cancel" data-bs-dismiss="modal">Cancelar</button><button type="submit" class="btn-modal-save"><i class="fas fa-save"></i>Guardar cambios</button></div>
             </form>
         </div>
     </div>
 </div>
 
-<!-- ══════════════════════════════════════
-     MODAL — ELIMINAR PERMANENTEMENTE
-     ══════════════════════════════════════ -->
 <div class="modal fade" id="modalEliminarUsuario" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 animate__animated animate__zoomIn">
             <div class="modal-header-danger">
-                <h5 class="modal-title">
-                    <span class="header-icon-sm"><i class="fas fa-exclamation-triangle"></i></span>
-                    Eliminar usuario de forma permanente
-                </h5>
+                <h5 class="modal-title"><span class="header-icon-sm"><i class="fas fa-exclamation-triangle"></i></span>Eliminar usuario de forma permanente</h5>
                 <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
-                <div class="modal-notice notice-danger mb-4">
-                    <i class="fas fa-exclamation-circle"></i>
-                    <span>Esta acción es <strong>irreversible</strong>. El usuario y todos sus datos serán eliminados permanentemente del sistema.</span>
-                </div>
+                <div class="modal-notice notice-danger mb-4"><i class="fas fa-exclamation-circle"></i><span>Esta acción es <strong>irreversible</strong>. El usuario y todos sus datos serán eliminados permanentemente del sistema.</span></div>
                 <p class="mb-3" style="font-size:0.9rem;">¿Estás seguro de que deseas continuar con la eliminación del siguiente usuario?</p>
-                <div class="modal-user-card mb-3">
-                    <div class="user-avatar-lg" id="eliminarUsuarioInicialPerm">N</div>
-                    <div class="user-details">
-                        <div class="user-name" id="eliminarUsuarioNombre">Nombre del usuario</div>
-                        <div class="user-email" id="eliminarUsuarioEmail">correo@ejemplo.com</div>
-                    </div>
-                </div>
-                <div class="modal-notice notice-info">
-                    <i class="fas fa-info-circle"></i>
-                    <span>Esta acción quedará registrada en el historial de auditoría del sistema.</span>
-                </div>
+                <div class="modal-user-card mb-3"><div class="user-avatar-lg" id="eliminarUsuarioInicialPerm">N</div><div class="user-details"><div class="user-name" id="eliminarUsuarioNombre">Nombre del usuario</div><div class="user-email" id="eliminarUsuarioEmail">correo@ejemplo.com</div></div></div>
+                <div class="modal-notice notice-info"><i class="fas fa-info-circle"></i><span>Esta acción quedará registrada en el historial de auditoría del sistema.</span></div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-modal-cancel" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn-modal-delete-perm" id="btnConfirmarEliminar">
-                    <i class="fas fa-trash-alt"></i>Sí, eliminar permanentemente
-                </button>
-            </div>
+            <div class="modal-footer"><button type="button" class="btn-modal-cancel" data-bs-dismiss="modal">Cancelar</button><button type="button" class="btn-modal-delete-perm" id="btnConfirmarEliminar"><i class="fas fa-trash-alt"></i>Sí, eliminar permanentemente</button></div>
         </div>
     </div>
 </div>
 
-<!-- ══════════════════════════════════════
-     MODAL — DESACTIVAR USUARIO (Soft Delete)
-     ══════════════════════════════════════ -->
 <div class="modal fade" id="modalEliminarSistema" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 animate__animated animate__zoomIn">
             <div class="modal-header-warning">
-                <h5 class="modal-title">
-                    <span class="header-icon-sm"><i class="fas fa-user-slash"></i></span>
-                    Desactivar usuario
-                </h5>
+                <h5 class="modal-title"><span class="header-icon-sm"><i class="fas fa-user-slash"></i></span>Desactivar usuario</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
-                <div class="modal-notice notice-warning mb-4">
-                    <i class="fas fa-info-circle"></i>
-                    <span>El usuario dejará de tener acceso al sistema. Sus datos se conservarán en la base de datos y podrá ser reactivado en cualquier momento.</span>
-                </div>
+                <div class="modal-notice notice-warning mb-4"><i class="fas fa-info-circle"></i><span>El usuario dejará de tener acceso al sistema. Sus datos se conservarán en la base de datos y podrá ser reactivado en cualquier momento.</span></div>
                 <p class="mb-3" style="font-size:0.9rem;">¿Estás seguro de que deseas desactivar al siguiente usuario?</p>
-                <div class="modal-user-card">
-                    <div class="user-avatar-lg" id="eliminarSistemaInicial">N</div>
-                    <div class="user-details">
-                        <div class="user-name" id="eliminarSistemaNombre">Nombre del usuario</div>
-                        <div class="user-email" id="eliminarSistemaEmail">correo@ejemplo.com</div>
-                    </div>
-                </div>
+                <div class="modal-user-card"><div class="user-avatar-lg" id="eliminarSistemaInicial">N</div><div class="user-details"><div class="user-name" id="eliminarSistemaNombre">Nombre del usuario</div><div class="user-email" id="eliminarSistemaEmail">correo@ejemplo.com</div></div></div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-modal-cancel" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn-modal-delete-sistema" id="btnConfirmarEliminarSistema">
-                    <i class="fas fa-user-slash"></i>Sí, desactivar usuario
-                </button>
-            </div>
+            <div class="modal-footer"><button type="button" class="btn-modal-cancel" data-bs-dismiss="modal">Cancelar</button><button type="button" class="btn-modal-delete-sistema" id="btnConfirmarEliminarSistema"><i class="fas fa-user-slash"></i>Sí, desactivar usuario</button></div>
         </div>
     </div>
 </div>
 
-<!-- Toast notificaciones -->
 <div class="toast-container position-fixed bottom-0 end-0 p-3">
     <div id="toastNotificacion" class="toast align-items-center text-white border-0 animate__animated animate__fadeInRight" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="d-flex">
-            <div class="toast-body">
-                <i class="fas fa-check-circle me-2"></i>
-                <span id="toastMensaje">Operación realizada correctamente</span>
-            </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Cerrar"></button>
-        </div>
+        <div class="d-flex"><div class="toast-body"><i class="fas fa-check-circle me-2"></i><span id="toastMensaje">Operación realizada correctamente</span></div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Cerrar"></button></div>
     </div>
 </div>
 
-<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Toggle sidebar en móvil
-    function toggleSidebar() {
-        document.getElementById('adminSidebar').classList.toggle('show');
-    }
-
+    function toggleSidebar() { document.getElementById('adminSidebar').classList.toggle('show'); }
     document.addEventListener('click', function(e) {
-        const sidebar = document.getElementById('adminSidebar');
-        const toggleBtn = document.querySelector('.btn-toggle-sidebar');
-        if (window.innerWidth < 992 &&
-            sidebar.classList.contains('show') &&
-            !sidebar.contains(e.target) &&
-            !toggleBtn.contains(e.target)) {
-            sidebar.classList.remove('show');
-        }
+        const sidebar = document.getElementById('adminSidebar'), toggleBtn = document.querySelector('.btn-toggle-sidebar');
+        if (window.innerWidth < 992 && sidebar.classList.contains('show') && !sidebar.contains(e.target) && !toggleBtn.contains(e.target)) { sidebar.classList.remove('show'); }
     });
-
-    // ── Modal Crear Usuario ──
-    function abrirModalCrear() {
-        const modal = new bootstrap.Modal(document.getElementById('modalCrearUsuario'));
-        modal.show();
-    }
-
+    function abrirModalCrear() { const modal = new bootstrap.Modal(document.getElementById('modalCrearUsuario')); modal.show(); }
     document.getElementById('formCrearUsuario')?.addEventListener('submit', async function(e) {
         e.preventDefault();
-
-        // ✅ CORREGIDO: Usar IDs del modal de CREAR
-        const formData = {
-            nombre: document.getElementById('createNombre').value,
-            email: document.getElementById('createEmail').value,
-            password: document.getElementById('createPassword').value,
-            rol: { id: parseInt(document.getElementById('createRol').value) },
-            estado: document.getElementById('createEstado').value
-        };
-
+        const formData = { nombre: document.getElementById('createNombre').value, email: document.getElementById('createEmail').value, password: document.getElementById('createPassword').value, rol: { id: parseInt(document.getElementById('createRol').value) }, estado: document.getElementById('createEstado').value };
         try {
-            const response = await fetch('/admin/api/usuarios/crear', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-            });
-
-            if (response.ok) {
-                bootstrap.Modal.getInstance(document.getElementById('modalCrearUsuario'))?.hide();
-                mostrarToast('El usuario ha sido creado correctamente.');
-                setTimeout(() => location.reload(), 1000);
-            } else {
-                const error = await response.text();
-                mostrarToast(error || 'Ocurrió un error al crear el usuario.', 'error');
-            }
-        } catch (error) {
-            mostrarToast('Error de conexión. Verifica tu red e intenta nuevamente.', 'error');
-        }
+            const response = await fetch('/admin/api/usuarios/crear', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formData) });
+            if (response.ok) { bootstrap.Modal.getInstance(document.getElementById('modalCrearUsuario'))?.hide(); mostrarToast('El usuario ha sido creado correctamente.'); setTimeout(() => location.reload(), 1000); }
+            else { const error = await response.text(); mostrarToast(error || 'Ocurrió un error al crear el usuario.', 'error'); }
+        } catch (error) { mostrarToast('Error de conexión. Verifica tu red e intenta nuevamente.', 'error'); }
     });
-
-    // ── Modal Editar ──
     async function abrirModalEditar(btn) {
         const usuarioId = btn.getAttribute('data-usuario-id');
         try {
-            const modal = new bootstrap.Modal(document.getElementById('modalEditarUsuario'));
-            modal.show();
+            const modal = new bootstrap.Modal(document.getElementById('modalEditarUsuario')); modal.show();
             const response = await fetch(`/admin/api/usuarios/${usuarioId}`);
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Error ${response.status}: ${errorText}`);
-            }
+            if (!response.ok) { const errorText = await response.text(); throw new Error(`Error ${response.status}: ${errorText}`); }
             const usuario = await response.json();
-            document.getElementById('editUsuarioId').value = usuario.id;
-            document.getElementById('editNombre').value = usuario.nombre || '';
-            document.getElementById('editEmail').value = usuario.email || '';
-            document.getElementById('editRol').value = usuario.rolId || '';
-            document.getElementById('editEstado').value = usuario.estado || 'ACTIVO';
-            document.getElementById('editPassword').value = '';
-        } catch (error) {
-            mostrarToast('No se pudieron cargar los datos del usuario. Intenta nuevamente.', 'error');
-            const modalEl = document.getElementById('modalEditarUsuario');
-            const modal = bootstrap.Modal.getInstance(modalEl);
-            if (modal) modal.hide();
-        }
+            document.getElementById('editUsuarioId').value = usuario.id; document.getElementById('editNombre').value = usuario.nombre || '';
+            document.getElementById('editEmail').value = usuario.email || ''; document.getElementById('editRol').value = usuario.rolId || '';
+            document.getElementById('editEstado').value = usuario.estado || 'ACTIVO'; document.getElementById('editPassword').value = '';
+        } catch (error) { mostrarToast('No se pudieron cargar los datos del usuario. Intenta nuevamente.', 'error'); const modalEl = document.getElementById('modalEditarUsuario'); const modal = bootstrap.Modal.getInstance(modalEl); if (modal) modal.hide(); }
     }
-
     document.getElementById('formEditarUsuario')?.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const usuarioId = document.getElementById('editUsuarioId').value;
-
-        // ✅ CORREGIDO: Usar IDs del modal de EDITAR (no los de crear)
-        const formData = {
-            nombre: document.getElementById('editNombre').value,
-            email: document.getElementById('editEmail').value,
-            password: document.getElementById('editPassword').value,
-            rol: { id: parseInt(document.getElementById('editRol').value) },
-            estado: document.getElementById('editEstado').value
-        };
-
+        e.preventDefault(); const usuarioId = document.getElementById('editUsuarioId').value;
+        const formData = { nombre: document.getElementById('editNombre').value, email: document.getElementById('editEmail').value, password: document.getElementById('editPassword').value, rol: { id: parseInt(document.getElementById('editRol').value) }, estado: document.getElementById('editEstado').value };
         try {
-            const response = await fetch(`/admin/api/usuarios/${usuarioId}/actualizar`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-            });
-            if (response.ok) {
-                bootstrap.Modal.getInstance(document.getElementById('modalEditarUsuario'))?.hide();
-                mostrarToast('Los datos del usuario se han actualizado correctamente.');
-                setTimeout(() => location.reload(), 1000);
-            } else {
-                const error = await response.text();
-                mostrarToast(error || 'Ocurrió un error al guardar los cambios.', 'error');
-            }
-        } catch (error) {
-            mostrarToast('Error de conexión. Verifica tu red e intenta nuevamente.', 'error');
-        }
+            const response = await fetch(`/admin/api/usuarios/${usuarioId}/actualizar`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formData) });
+            if (response.ok) { bootstrap.Modal.getInstance(document.getElementById('modalEditarUsuario'))?.hide(); mostrarToast('Los datos del usuario se han actualizado correctamente.'); setTimeout(() => location.reload(), 1000); }
+            else { const error = await response.text(); mostrarToast(error || 'Ocurrió un error al guardar los cambios.', 'error'); }
+        } catch (error) { mostrarToast('Error de conexión. Verifica tu red e intenta nuevamente.', 'error'); }
     });
-
-    // ── Modal Eliminar Permanente ──
     let usuarioIdAEliminar = null;
-
-    function abrirModalEliminar(btn) {
-        usuarioIdAEliminar = btn.getAttribute('data-usuario-id');
-        const nombre = btn.getAttribute('data-usuario-nombre');
-        const email = btn.getAttribute('data-usuario-email') || '';
-        document.getElementById('eliminarUsuarioNombre').textContent = nombre;
-        document.getElementById('eliminarUsuarioEmail').textContent = email;
-        const inicial = document.getElementById('eliminarUsuarioInicialPerm');
-        if (inicial) inicial.textContent = nombre ? nombre.charAt(0).toUpperCase() : 'U';
-        const modal = new bootstrap.Modal(document.getElementById('modalEliminarUsuario'));
-        modal.show();
-    }
-
+    function abrirModalEliminar(btn) { usuarioIdAEliminar = btn.getAttribute('data-usuario-id'); const nombre = btn.getAttribute('data-usuario-nombre'), email = btn.getAttribute('data-usuario-email') || ''; document.getElementById('eliminarUsuarioNombre').textContent = nombre; document.getElementById('eliminarUsuarioEmail').textContent = email; const inicial = document.getElementById('eliminarUsuarioInicialPerm'); if (inicial) inicial.textContent = nombre ? nombre.charAt(0).toUpperCase() : 'U'; const modal = new bootstrap.Modal(document.getElementById('modalEliminarUsuario')); modal.show(); }
     document.getElementById('btnConfirmarEliminar')?.addEventListener('click', async function() {
         if (!usuarioIdAEliminar) return;
         try {
-            const response = await fetch(`/admin/api/usuarios/${usuarioIdAEliminar}/eliminar-permanente`, {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' }
-            });
-            if (response.ok) {
-                bootstrap.Modal.getInstance(document.getElementById('modalEliminarUsuario'))?.hide();
-                mostrarToast('El usuario ha sido eliminado permanentemente del sistema.');
-                setTimeout(() => location.reload(), 1000);
-            } else {
-                const error = await response.text();
-                mostrarToast(error || 'No se pudo eliminar el usuario. Intenta nuevamente.', 'error');
-            }
-        } catch (error) {
-            mostrarToast('Error de conexión. Verifica tu red e intenta nuevamente.', 'error');
-        }
+            const response = await fetch(`/admin/api/usuarios/${usuarioIdAEliminar}/eliminar-permanente`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' } });
+            if (response.ok) { bootstrap.Modal.getInstance(document.getElementById('modalEliminarUsuario'))?.hide(); mostrarToast('El usuario ha sido eliminado permanentemente del sistema.'); setTimeout(() => location.reload(), 1000); }
+            else { const error = await response.text(); mostrarToast(error || 'No se pudo eliminar el usuario. Intenta nuevamente.', 'error'); }
+        } catch (error) { mostrarToast('Error de conexión. Verifica tu red e intenta nuevamente.', 'error'); }
     });
-
-    document.getElementById('modalEliminarUsuario')?.addEventListener('hidden.bs.modal', function() {
-        usuarioIdAEliminar = null;
-    });
-
-    // ── Modal Desactivar (Soft Delete) ──
+    document.getElementById('modalEliminarUsuario')?.addEventListener('hidden.bs.modal', function() { usuarioIdAEliminar = null; });
     let usuarioIdAEliminarSistema = null;
-
-    function abrirModalEliminarSistema(btn) {
-        usuarioIdAEliminarSistema = btn.getAttribute('data-usuario-id');
-        const nombre = btn.getAttribute('data-usuario-nombre');
-        const email = btn.getAttribute('data-usuario-email') || '';
-        document.getElementById('eliminarSistemaNombre').textContent = nombre;
-        document.getElementById('eliminarSistemaEmail').textContent = email;
-        const inicial = document.getElementById('eliminarSistemaInicial');
-        if (inicial) inicial.textContent = nombre ? nombre.charAt(0).toUpperCase() : 'U';
-        const modal = new bootstrap.Modal(document.getElementById('modalEliminarSistema'));
-        modal.show();
-    }
-
+    function abrirModalEliminarSistema(btn) { usuarioIdAEliminarSistema = btn.getAttribute('data-usuario-id'); const nombre = btn.getAttribute('data-usuario-nombre'), email = btn.getAttribute('data-usuario-email') || ''; document.getElementById('eliminarSistemaNombre').textContent = nombre; document.getElementById('eliminarSistemaEmail').textContent = email; const inicial = document.getElementById('eliminarSistemaInicial'); if (inicial) inicial.textContent = nombre ? nombre.charAt(0).toUpperCase() : 'U'; const modal = new bootstrap.Modal(document.getElementById('modalEliminarSistema')); modal.show(); }
     document.getElementById('btnConfirmarEliminarSistema')?.addEventListener('click', async function() {
         if (!usuarioIdAEliminarSistema) return;
         try {
             const url = `/admin/api/usuarios/${usuarioIdAEliminarSistema}/eliminar-sistema`;
-            const response = await fetch(url, {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' }
-            });
-            if (response.ok) {
-                bootstrap.Modal.getInstance(document.getElementById('modalEliminarSistema'))?.hide();
-                mostrarToast('El usuario ha sido desactivado. Puede reactivarse desde el panel de usuarios.');
-                setTimeout(() => location.reload(), 1000);
-            } else {
-                const error = await response.text();
-                mostrarToast(error || 'No se pudo desactivar el usuario. Intenta nuevamente.', 'error');
-            }
-        } catch (error) {
-            mostrarToast('Error de conexión: ' + error.message, 'error');
-        }
+            const response = await fetch(url, { method: 'DELETE', headers: { 'Content-Type': 'application/json' } });
+            if (response.ok) { bootstrap.Modal.getInstance(document.getElementById('modalEliminarSistema'))?.hide(); mostrarToast('El usuario ha sido desactivado. Puede reactivarse desde el panel de usuarios.'); setTimeout(() => location.reload(), 1000); }
+            else { const error = await response.text(); mostrarToast(error || 'No se pudo desactivar el usuario. Intenta nuevamente.', 'error'); }
+        } catch (error) { mostrarToast('Error de conexión: ' + error.message, 'error'); }
     });
-
-    document.getElementById('modalEliminarSistema')?.addEventListener('hidden.bs.modal', function() {
-        usuarioIdAEliminarSistema = null;
-    });
-
-    // ── Toast ──
+    document.getElementById('modalEliminarSistema')?.addEventListener('hidden.bs.modal', function() { usuarioIdAEliminarSistema = null; });
     function mostrarToast(mensaje, tipo = 'success') {
-        const toastEl = document.getElementById('toastNotificacion');
-        const toastBody = toastEl.querySelector('.toast-body');
+        const toastEl = document.getElementById('toastNotificacion'), toastBody = toastEl.querySelector('.toast-body');
         toastEl.className = `toast align-items-center text-white border-0 animate__animated animate__fadeInRight ${tipo === 'success' ? 'bg-success' : 'bg-danger'}`;
         const icono = tipo === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
         toastBody.innerHTML = `<i class="fas ${icono} me-2"></i><span>${mensaje}</span>`;
-        const toast = new bootstrap.Toast(toastEl, { delay: 4000 });
-        toast.show();
+        const toast = new bootstrap.Toast(toastEl, { delay: 4000 }); toast.show();
     }
 </script>
-
 </body>
 </html>

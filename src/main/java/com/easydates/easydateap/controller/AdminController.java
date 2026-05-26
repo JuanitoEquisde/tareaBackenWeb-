@@ -197,10 +197,11 @@ public class AdminController {
     }
 
     // =====================================================
-    // VISTA: Listar usuarios con PAGINACIÓN
+    // ✅ VISTA: Listar usuarios con PAGINACIÓN - CORREGIDO
     // =====================================================
     @GetMapping("/usuarios")
     public String listarUsuarios(
+            @RequestParam(required = false) Integer id,
             @RequestParam(required = false) String nombre,
             @RequestParam(required = false) String email,
             @RequestParam(required = false) String estado,
@@ -212,26 +213,27 @@ public class AdminController {
         nombre = (nombre != null && !nombre.trim().isEmpty()) ? nombre.trim() : null;
         email = (email != null && !email.trim().isEmpty()) ? email.trim() : null;
         estado = (estado != null && !estado.trim().isEmpty()) ? estado.trim() : null;
+        Integer idBusqueda = (id != null && id > 0) ? id : null;
 
+        List<Usuario> todosUsuarios = usuarioService.buscarConFiltros(idBusqueda,nombre, email, estado, null);
+
+
+        // Paginación
         int paginaActual = (page != null && page > 0) ? page : 1;
         int tamanoPagina = (size != null && size > 0) ? size : 10;
-
-        List<Usuario> todosUsuarios = usuarioService.buscarConFiltrosOr(nombre, email, estado, null);
-
         int totalElementos = todosUsuarios.size();
         int totalPaginas = (int) Math.ceil((double) totalElementos / tamanoPagina);
-
         int startIndex = (paginaActual - 1) * tamanoPagina;
         int endIndex = Math.min(startIndex + tamanoPagina, totalElementos);
-
         List<Usuario> usuariosPaginados = todosUsuarios.subList(startIndex, endIndex);
 
+        // ✅ Pasar datos a la vista
+        model.addAttribute("filtroId", idBusqueda);
         model.addAttribute("usuarios", usuariosPaginados);
         model.addAttribute("paginaActual", paginaActual);
         model.addAttribute("tamanoPagina", tamanoPagina);
         model.addAttribute("totalPaginas", totalPaginas);
         model.addAttribute("totalElementos", totalElementos);
-
         model.addAttribute("filtroNombre", nombre);
         model.addAttribute("filtroEmail", email);
         model.addAttribute("filtroEstado", estado);
@@ -239,9 +241,6 @@ public class AdminController {
         return "admin/usuarios";
     }
 
-    // =====================================================
-    // VISTA: Listar tareas con PAGINACIÓN
-    // =====================================================
     @GetMapping("/tareas")
     public String listarTareas(
             @RequestParam(required = false) String titulo,
