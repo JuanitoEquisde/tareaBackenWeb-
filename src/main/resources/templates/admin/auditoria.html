@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tareas - Panel Administrativo</title>
+    <title>Auditoría - Panel Administrativo</title>
 
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -240,20 +240,9 @@
             box-shadow: 0 12px 32px rgba(0,0,0,0.12);
         }
         .stat-card:nth-child(1) { animation-delay: 0.1s; }
-        .stat-card:nth-child(2) { animation-delay: 0.2s; }
-        .stat-card:nth-child(3) { animation-delay: 0.3s; }
-        .stat-card:nth-child(4) { animation-delay: 0.4s; }
 
-        .stat-card.bg-blue {
-            background: linear-gradient(135deg, var(--admin-primary), var(--admin-primary-hover));
-            color: white;
-        }
-        .stat-card.bg-yellow {
-            background: linear-gradient(135deg, var(--admin-warning), #d97706);
-            color: white;
-        }
-        .stat-card.bg-green {
-            background: linear-gradient(135deg, var(--admin-success), #059669);
+        .stat-card.bg-purple {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
             color: white;
         }
 
@@ -267,9 +256,7 @@
             font-size: 1.75rem;
             flex-shrink: 0;
         }
-        .stat-card.bg-blue .stat-icon,
-        .stat-card.bg-yellow .stat-icon,
-        .stat-card.bg-green .stat-icon {
+        .stat-card.bg-purple .stat-icon {
             background: rgba(255,255,255,0.2);
         }
 
@@ -288,75 +275,202 @@
             font-weight: 500;
         }
 
-        /* Table Card */
-        .table-card {
-            background: white;
-            border-radius: var(--admin-radius);
-            box-shadow: var(--admin-card-shadow);
-            overflow: hidden;
+        /* Timeline - MEJORADO */
+        .timeline {
+            position: relative;
+            padding-left: 3rem;
+            margin-bottom: 2rem;
             animation: fadeInUp 0.6s ease 0.2s both;
-            border: none;
         }
-        .table-card .table {
-            margin: 0;
-        }
-        .table-card thead {
-            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-        }
-        .table-card th {
-            font-weight: 700;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--admin-text-muted);
-            padding: 1rem 1.25rem;
-            border: none;
-        }
-        .table-card td {
-            padding: 1rem 1.25rem;
-            vertical-align: middle;
-            font-size: 0.9rem;
-            border-color: var(--admin-border);
-        }
-        .table-card tbody tr {
-            transition: all 0.3s;
-        }
-        .table-card tbody tr:hover {
-            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
-            transform: scale(1.01);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 1.25rem;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, var(--admin-primary), var(--admin-primary-hover));
+            border-radius: 3px;
         }
 
-        /* Badges */
-        .badge-prioridad {
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
-            font-size: 0.75rem;
+        /* Timeline Item - MEJORADO */
+        .timeline-item {
+            position: relative;
+            background: white;
+            border-radius: var(--admin-radius);
+            padding: 1.75rem;
+            margin-bottom: 1.75rem;
+            box-shadow: var(--admin-card-shadow);
+            border: 1px solid var(--admin-border);
+            transition: all 0.3s;
+            animation: fadeInUp 0.5s ease both;
+        }
+        .timeline-item:hover {
+            transform: translateX(8px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+            border-color: var(--admin-primary);
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2.625rem;
+            top: 2rem;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--admin-primary);
+            border: 3px solid white;
+            box-shadow: 0 0 0 3px var(--admin-primary);
+            transition: all 0.3s;
+        }
+        .timeline-item:hover::before {
+            transform: scale(1.3);
+        }
+
+        /* Colores por tipo de acción */
+        .timeline-item.crear::before {
+            background: var(--admin-success);
+            box-shadow: 0 0 0 3px var(--admin-success);
+        }
+        .timeline-item.actualizar::before {
+            background: var(--admin-warning);
+            box-shadow: 0 0 0 3px var(--admin-warning);
+        }
+        .timeline-item.eliminar::before {
+            background: var(--admin-danger);
+            box-shadow: 0 0 0 3px var(--admin-danger);
+        }
+        .timeline-item.eliminar_sistema::before {
+            background: #f59e0b;
+            box-shadow: 0 0 0 3px #f59e0b;
+        }
+        .timeline-item.eliminar_permanente::before {
+            background: #991b1b;
+            box-shadow: 0 0 0 3px #991b1b;
+        }
+        .timeline-item.restaurar::before {
+            background: #10b981;
+            box-shadow: 0 0 0 3px #10b981;
+        }
+
+        /* Timeline Header */
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+        .timeline-accion-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .timeline-accion {
             font-weight: 700;
+            font-size: 1rem;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.03em;
+            padding: 0.35rem 0.85rem;
+            border-radius: 50px;
             display: inline-flex;
             align-items: center;
-            gap: 0.375rem;
+            gap: 0.5rem;
         }
-        .badge-prioridad.alta {
-            background: linear-gradient(135deg, #fee2e2, #fecaca);
-            color: #dc2626;
-            border: 2px solid #fecaca;
+        .timeline-accion.crear {
+            color: var(--admin-success);
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+            border: 2px solid #a7f3d0;
         }
-        .badge-prioridad.media {
+        .timeline-accion.actualizar {
+            color: #92400e;
             background: linear-gradient(135deg, #fef3c7, #fde68a);
-            color: #d97706;
             border: 2px solid #fde68a;
         }
-        .badge-prioridad.baja {
+        .timeline-accion.eliminar {
+            color: var(--admin-danger);
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            border: 2px solid #fecaca;
+        }
+        .timeline-accion.eliminar_sistema {
+            color: #92400e;
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 2px solid #fde68a;
+        }
+        .timeline-accion.eliminar_permanente {
+            color: #991b1b;
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            border: 2px solid #fecaca;
+        }
+        .timeline-accion.restaurar {
+            color: var(--admin-success);
             background: linear-gradient(135deg, #d1fae5, #a7f3d0);
-            color: #059669;
             border: 2px solid #a7f3d0;
         }
 
-        .badge-estado-tarea {
-            padding: 0.5rem 1rem;
+        .timeline-fecha {
+            font-size: 0.85rem;
+            color: var(--admin-text-muted);
+            font-weight: 500;
+            background: var(--admin-bg);
+            padding: 0.4rem 0.85rem;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .timeline-fecha i {
+            font-size: 0.9rem;
+        }
+
+        /* Timeline Content */
+        .timeline-content {
+            margin-top: 1rem;
+        }
+        .timeline-entity {
+            font-size: 0.95rem;
+            color: var(--admin-text);
+            margin-bottom: 0.6rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .timeline-entity i {
+            color: var(--admin-primary);
+            width: 20px;
+        }
+
+        .timeline-admin {
+            font-size: 0.85rem;
+            color: var(--admin-text-muted);
+            margin-bottom: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.85rem;
+            background: var(--admin-bg);
+            border-radius: 8px;
+        }
+        .timeline-admin i {
+            color: var(--admin-warning);
+        }
+
+        .timeline-descripcion {
+            font-size: 0.9rem;
+            color: var(--admin-text-muted);
+            line-height: 1.6;
+            padding: 0.85rem;
+            background: var(--admin-bg);
+            border-radius: 8px;
+            border-left: 3px solid var(--admin-primary);
+        }
+
+        /* Badge */
+        .badge-entidad {
+            padding: 0.35rem 0.85rem;
             border-radius: 50px;
             font-size: 0.75rem;
             font-weight: 700;
@@ -366,20 +480,47 @@
             align-items: center;
             gap: 0.375rem;
         }
-        .badge-estado-tarea.pendiente {
-            background: linear-gradient(135deg, #fef3c7, #fde68a);
-            color: #d97706;
-            border: 2px solid #fde68a;
-        }
-        .badge-estado-tarea.en_progreso {
+        .badge-entidad.usuario {
             background: linear-gradient(135deg, #dbeafe, #bfdbfe);
             color: #1a56db;
             border: 2px solid #bfdbfe;
         }
-        .badge-estado-tarea.terminado {
-            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
-            color: #059669;
-            border: 2px solid #a7f3d0;
+        .badge-entidad.usuario.eliminado {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            color: #92400e;
+            border: 2px solid #fde68a;
+        }
+        .badge-entidad.tarea {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            color: #d97706;
+            border: 2px solid #fde68a;
+        }
+
+        /* Action Buttons in Timeline */
+        .timeline-actions {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--admin-border);
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+        }
+        .btn-restore {
+            background: linear-gradient(135deg, var(--admin-success), #059669);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-restore:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(16,185,129,0.4);
         }
 
         /* Empty State */
@@ -396,7 +537,7 @@
         }
 
         /* ==========================================
-           GOOGLE-STYLE PAGINATION (NUEVO)
+           GOOGLE-STYLE PAGINATION
            ========================================== */
         .pagination-container {
             display: flex;
@@ -492,6 +633,33 @@
             background: rgba(255,255,255,0.3);
         }
 
+        /* Modal Styles */
+        .modal-content {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .modal-header {
+            background: linear-gradient(135deg, var(--admin-success), #059669);
+            color: white;
+            border-radius: 16px 16px 0 0;
+            padding: 1.5rem;
+        }
+        .modal-body {
+            padding: 2rem;
+        }
+        .modal-footer {
+            padding: 1rem 2rem;
+            border-top: 1px solid var(--admin-border);
+        }
+
+        /* Toast */
+        .toast {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
         /* Animations */
         @keyframes fadeInDown {
             from { opacity: 0; transform: translateY(-20px); }
@@ -532,6 +700,22 @@
             }
             .stats-container {
                 grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+            .timeline {
+                padding-left: 2.5rem;
+            }
+            .timeline::before {
+                left: 1rem;
+            }
+            .timeline-item::before {
+                left: -2.125rem;
+            }
+            .timeline-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .timeline-actions {
+                justify-content: flex-start;
             }
             .google-pagination a,
             .google-pagination span {
@@ -584,10 +768,10 @@
             <a th:href="@{/admin/usuarios}" class="nav-link">
                 <i class="fas fa-users"></i> Usuarios
             </a>
-            <a th:href="@{/admin/tareas}" class="nav-link active">
+            <a th:href="@{/admin/tareas}" class="nav-link">
                 <i class="fas fa-tasks"></i> Tareas
             </a>
-            <a th:href="@{/admin/auditoria}" class="nav-link">
+            <a th:href="@{/admin/auditoria}" class="nav-link active">
                 <i class="fas fa-history"></i> Auditoría
             </a>
             <div class="divider"></div>
@@ -603,77 +787,32 @@
         <!-- Page Header -->
         <div class="page-header">
             <h2>
-                <i class="fas fa-tasks"></i>
-                Gestión de Tareas
+                <i class="fas fa-history"></i>
+                Auditoría del Sistema
             </h2>
         </div>
 
-        <!-- Stats Cards -->
+        <!-- Stats Card -->
         <div class="stats-container">
-            <div class="stat-card bg-blue">
+            <div class="stat-card bg-purple">
                 <div class="stat-icon">
-                    <i class="fas fa-tasks"></i>
+                    <i class="fas fa-clipboard-list"></i>
                 </div>
                 <div class="stat-info">
-                    <div class="stat-value" th:text="${totalTareas}">0</div>
-                    <div class="stat-label">Total Tareas</div>
-                </div>
-            </div>
-            <div class="stat-card bg-yellow">
-                <div class="stat-icon">
-                    <i class="fas fa-clock"></i>
-                </div>
-                <div class="stat-info">
-                    <div class="stat-value" th:text="${pendientes}">0</div>
-                    <div class="stat-label">Pendientes</div>
-                </div>
-            </div>
-            <div class="stat-card bg-blue">
-                <div class="stat-icon">
-                    <i class="fas fa-spinner"></i>
-                </div>
-                <div class="stat-info">
-                    <div class="stat-value" th:text="${enProgreso}">0</div>
-                    <div class="stat-label">En Progreso</div>
-                </div>
-            </div>
-            <div class="stat-card bg-green">
-                <div class="stat-icon">
-                    <i class="fas fa-check-circle"></i>
-                </div>
-                <div class="stat-info">
-                    <div class="stat-value" th:text="${terminadas}">0</div>
-                    <div class="stat-label">Completadas</div>
+                    <div class="stat-value" th:text="${totalCambios}">0</div>
+                    <div class="stat-label">Total de Cambios</div>
                 </div>
             </div>
         </div>
 
         <!-- Filters -->
         <div class="filters-card">
-            <form th:action="@{/admin/tareas}" method="get" class="row g-3">
-                <div class="col-md-3">
-                    <label class="form-label">Título</label>
-                    <input type="text" class="form-control" name="titulo"
-                           placeholder="Buscar por título..."
-                           th:value="${filtroTitulo}">
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">Prioridad</label>
-                    <select class="form-select" name="prioridad">
-                        <option value="">Todas</option>
-                        <option value="ALTA" th:selected="${filtroPrioridad == 'ALTA'}">Alta</option>
-                        <option value="MEDIA" th:selected="${filtroPrioridad == 'MEDIA'}">Media</option>
-                        <option value="BAJA" th:selected="${filtroPrioridad == 'BAJA'}">Baja</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">Estado</label>
-                    <select class="form-select" name="estado">
-                        <option value="">Todos</option>
-                        <option value="PENDIENTE" th:selected="${filtroEstado == 'PENDIENTE'}">Pendiente</option>
-                        <option value="EN_PROGRESO" th:selected="${filtroEstado == 'EN_PROGRESO'}">En Progreso</option>
-                        <option value="TERMINADO" th:selected="${filtroEstado == 'TERMINADO'}">Terminado</option>
-                    </select>
+            <form th:action="@{/admin/auditoria}" method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Buscar por Acción</label>
+                    <input type="text" class="form-control" name="filtroAccion"
+                           placeholder="Ej: CREAR, ACTUALIZAR, ELIMINAR..."
+                           th:value="${filtroAccion}">
                 </div>
                 <div class="col-md-2 d-flex align-items-end">
                     <button type="submit" class="btn btn-primary w-100">
@@ -681,77 +820,109 @@
                     </button>
                 </div>
                 <div class="col-md-2 d-flex align-items-end">
-                    <a th:href="@{/admin/tareas}" class="btn btn-outline-secondary w-100">
+                    <a th:href="@{/admin/auditoria}" class="btn btn-outline-secondary w-100">
                         <i class="fas fa-redo me-2"></i>Limpiar
                     </a>
                 </div>
             </form>
         </div>
 
-        <!-- Table -->
-        <div class="table-card">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead>
-                    <tr>
-                        <th class="ps-4">ID</th>
-                        <th>Título</th>
-                        <th>Descripción</th>
-                        <th>Usuario</th>
-                        <th>Categoría</th>
-                        <th>Prioridad</th>
-                        <th>Estado</th>
-                        <th>Fecha Límite</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <!-- ✅ Iteración segura con tareas -->
-                    <tr th:each="tarea : ${tareas != null ? tareas : {}}">
-                        <td class="ps-4 fw-bold" th:text="${tarea.id}">1</td>
-                        <td class="fw-semibold" th:text="${tarea.titulo}">Título</td>
-                        <td th:text="${#strings.abbreviate(tarea.descripcion, 50)}">Descripción</td>
-                        <td th:text="${tarea.usuario?.nombre}">Usuario</td>
-                        <td th:text="${tarea.categoria?.nombre}">Categoría</td>
-                        <td>
-                            <span class="badge badge-prioridad"
-                                  th:classappend="${tarea.prioridad == 'ALTA'} ? 'alta' : (${tarea.prioridad == 'MEDIA'} ? 'media' : 'baja')"
-                                  th:text="${tarea.prioridad}">
-                                PRIORIDAD
-                            </span>
-                        </td>
-                        <td>
-                            <span class="badge badge-estado-tarea"
-                                  th:classappend="${tarea.estadoTarea == 'PENDIENTE'} ? 'pendiente' : (${tarea.estadoTarea == 'EN_PROGRESO'} ? 'en_progreso' : 'terminado')"
-                                  th:text="${tarea.estadoTarea}">
-                                ESTADO
-                            </span>
-                        </td>
-                        <td th:text="${tarea.fechaLimite != null ? #temporals.format(tarea.fechaLimite, 'dd/MM/yyyy') : '-'}">01/01/2026</td>
-                    </tr>
+        <!-- Timeline de Cambios -->
+        <div class="timeline" th:if="${historiales != null and !#lists.isEmpty(historiales)}">
 
-                    <!-- ✅ Mensaje si no hay tareas -->
-                    <tr th:if="${tareas == null or #lists.isEmpty(tareas)}">
-                        <td colspan="8">
-                            <div class="empty-state">
-                                <i class="fas fa-inbox"></i>
-                                <h5 class="mb-2">No se encontraron tareas</h5>
-                                <p class="mb-0 text-muted">Intenta ajustar los filtros de búsqueda</p>
-                            </div>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+            <!-- Lista de cambios con paginación -->
+            <div th:each="historial, iterStat : ${historiales}"
+                 class="timeline-item"
+                 th:classappend="${#strings.toLowerCase(historial.accion)}"
+                 th:style="'animation-delay: ' + ${iterStat.index * 0.05} + 's'">
+
+                <div class="timeline-header">
+                    <div class="timeline-accion-wrapper">
+                        <span class="timeline-accion"
+                              th:classappend="${#strings.toLowerCase(historial.accion)}">
+                            <i th:if="${historial.accion == 'CREAR'}" class="fas fa-plus"></i>
+                            <i th:if="${historial.accion == 'ACTUALIZAR'}" class="fas fa-edit"></i>
+                            <i th:if="${historial.accion == 'ELIMINAR'}" class="fas fa-trash"></i>
+                            <i th:if="${historial.accion == 'ELIMINAR_SISTEMA'}" class="fas fa-user-slash"></i>
+                            <i th:if="${historial.accion == 'ELIMINAR_PERMANENTE'}" class="fas fa-skull-crossbones"></i>
+                            <i th:if="${historial.accion == 'RESTAURAR'}" class="fas fa-undo"></i>
+                            <span th:text="${historial.accion}">ACCIÓN</span>
+                        </span>
+
+                        <!-- Badge de entidad afectada -->
+                        <span th:if="${historial.entidadAfectada != null}"
+                              class="badge badge-entidad"
+                              th:classappend="${historial.entidadAfectada == 'USUARIO' and historial.accion == 'ELIMINAR_SISTEMA'} ? 'usuario eliminado' : (${historial.entidadAfectada == 'USUARIO'} ? 'usuario' : 'tarea')"
+                              th:text="${historial.entidadAfectada}">
+                            ENTIDAD
+                        </span>
+                    </div>
+
+                    <span class="timeline-fecha">
+                        <i class="far fa-clock"></i>
+                        <span th:text="${historial.fechaCambio != null ? #temporals.format(historial.fechaCambio, 'dd/MM/yyyy HH:mm') : '-'}">
+                            01/01/2026 12:00
+                        </span>
+                    </span>
+                </div>
+
+                <div class="timeline-content">
+                    <!-- Información del admin que hizo el cambio -->
+                    <div class="timeline-admin" th:if="${historial.usuarioAdmin != null}">
+                        <i class="fas fa-user-shield"></i>
+                        <strong>Admin:</strong>
+                        <span th:text="${historial.usuarioAdmin}">Nombre Admin</span>
+                    </div>
+
+                    <!-- Información de la tarea (si existe) -->
+                    <div class="timeline-entity" th:if="${historial.tarea != null}">
+                        <i class="fas fa-tasks"></i>
+                        <strong>Tarea:</strong> <span th:text="${historial.tarea.titulo}">Título de la tarea</span>
+                    </div>
+
+                    <!-- Información del usuario (si existe) -->
+                    <div class="timeline-entity" th:if="${historial.usuario != null}">
+                        <i class="fas fa-user"></i>
+                        <strong>Usuario:</strong>
+                        <span th:text="${historial.usuario.nombre}">Nombre usuario</span>
+                        <span class="text-muted" th:text="'(' + ${historial.usuario.email} + ')'">(email)</span>
+                    </div>
+
+                    <div class="timeline-descripcion" th:text="${historial.descripcion}">
+                        Descripción del cambio realizado
+                    </div>
+
+                    <!-- ✅ Botón de Restaurar (solo para ELIMINAR_SISTEMA) -->
+                    <div class="timeline-actions" th:if="${historial.accion == 'ELIMINAR_SISTEMA' and historial.usuario != null}">
+                        <button type="button"
+                                class="btn-restore"
+                                th:data-usuario-id="${historial.usuario.id}"
+                                th:data-usuario-nombre="${historial.usuario.nombre}"
+                                onclick="abrirModalRestaurar(this)">
+                            <i class="fas fa-undo"></i>
+                            Restaurar Usuario
+                        </button>
+                    </div>
+                </div>
             </div>
+
+        </div>
+
+        <!-- Empty State -->
+        <div th:if="${historiales == null or #lists.isEmpty(historiales)}" class="empty-state">
+            <i class="fas fa-clipboard-list"></i>
+            <h5 class="mb-2">No hay registros de auditoría</h5>
+            <p class="mb-0 text-muted">Los cambios realizados aparecerán aquí</p>
         </div>
 
         <!-- ==========================================
-             GOOGLE-STYLE PAGINATION (NUEVO)
+             GOOGLE-STYLE PAGINATION
              ========================================== -->
         <div class="pagination-container" th:if="${totalPaginas > 1}">
             <ul class="google-pagination">
                 <!-- Botón Anterior -->
                 <li th:classappend="${paginaActual == 1} ? 'disabled' : ''">
-                    <a th:href="@{/admin/tareas(page=${paginaActual - 1}, size=${tamanoPagina}, titulo=${filtroTitulo}, prioridad=${filtroPrioridad}, estado=${filtroEstado})}"
+                    <a th:href="@{/admin/auditoria(page=${paginaActual - 1}, size=${tamanoPagina}, filtroAccion=${filtroAccion})}"
                        th:if="${paginaActual > 1}">
                         <i class="fas fa-chevron-left"></i>
                     </a>
@@ -762,7 +933,7 @@
 
                 <!-- Primera página siempre visible -->
                 <li th:classappend="${paginaActual == 1} ? 'active' : ''">
-                    <a th:href="@{/admin/tareas(page=1, size=${tamanoPagina}, titulo=${filtroTitulo}, prioridad=${filtroPrioridad}, estado=${filtroEstado})}" th:if="${paginaActual != 1}">1</a>
+                    <a th:href="@{/admin/auditoria(page=1, size=${tamanoPagina}, filtroAccion=${filtroAccion})}" th:if="${paginaActual != 1}">1</a>
                     <span th:if="${paginaActual == 1}">1</span>
                 </li>
 
@@ -775,7 +946,7 @@
                 <li th:each="i : ${#numbers.sequence(paginaActual - 1, paginaActual + 1)}"
                     th:if="${i > 1 and i < totalPaginas}"
                     th:classappend="${i == paginaActual} ? 'active' : ''">
-                    <a th:href="@{/admin/tareas(page=${i}, size=${tamanoPagina}, titulo=${filtroTitulo}, prioridad=${filtroPrioridad}, estado=${filtroEstado})}" th:if="${i != paginaActual}" th:text="${i}">2</a>
+                    <a th:href="@{/admin/auditoria(page=${i}, size=${tamanoPagina}, filtroAccion=${filtroAccion})}" th:if="${i != paginaActual}" th:text="${i}">2</a>
                     <span th:if="${i == paginaActual}" th:text="${i}">2</span>
                 </li>
 
@@ -786,13 +957,13 @@
 
                 <!-- Última página siempre visible (si no es la primera) -->
                 <li th:if="${totalPaginas > 1}" th:classappend="${paginaActual == totalPaginas} ? 'active' : ''">
-                    <a th:href="@{/admin/tareas(page=${totalPaginas}, size=${tamanoPagina}, titulo=${filtroTitulo}, prioridad=${filtroPrioridad}, estado=${filtroEstado})}" th:if="${paginaActual != totalPaginas}" th:text="${totalPaginas}">10</a>
+                    <a th:href="@{/admin/auditoria(page=${totalPaginas}, size=${tamanoPagina}, filtroAccion=${filtroAccion})}" th:if="${paginaActual != totalPaginas}" th:text="${totalPaginas}">10</a>
                     <span th:if="${paginaActual == totalPaginas}" th:text="${totalPaginas}">10</span>
                 </li>
 
                 <!-- Botón Siguiente -->
                 <li th:classappend="${paginaActual == totalPaginas} ? 'disabled' : ''">
-                    <a th:href="@{/admin/tareas(page=${paginaActual + 1}, size=${tamanoPagina}, titulo=${filtroTitulo}, prioridad=${filtroPrioridad}, estado=${filtroEstado})}"
+                    <a th:href="@{/admin/auditoria(page=${paginaActual + 1}, size=${tamanoPagina}, filtroAccion=${filtroAccion})}"
                        th:if="${paginaActual < totalPaginas}">
                         <i class="fas fa-chevron-right"></i>
                     </a>
@@ -807,11 +978,65 @@
         <div class="pagination-info" th:if="${totalElementos > 0}">
             Mostrando <strong th:text="${((paginaActual - 1) * tamanoPagina) + 1}">1</strong> -
             <strong th:text="${paginaActual * tamanoPagina < totalElementos ? paginaActual * tamanoPagina : totalElementos}">10</strong>
-            de <strong th:text="${totalElementos}">100</strong> tareas
+            de <strong th:text="${totalElementos}">100</strong> registros
             <span th:if="${totalPaginas > 1}"> · Página <strong th:text="${paginaActual}">1</strong> de <strong th:text="${totalPaginas}">10</strong></span>
         </div>
 
     </main>
+</div>
+
+<!-- ==========================================
+     ✅ MODAL RESTAURAR USUARIO
+     ========================================== -->
+<div class="modal fade" id="modalRestaurarUsuario" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 animate__animated animate__zoomIn">
+            <div class="modal-header border-0">
+                <h5 class="modal-title">
+                    <i class="fas fa-undo me-2"></i>Restaurar Usuario
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pt-0">
+                <div class="alert alert-success mb-3">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Información:</strong> El usuario será restaurado y podrá iniciar sesión nuevamente.
+                </div>
+
+                <p class="mb-3">¿Estás seguro de restaurar este usuario?</p>
+
+                <div class="card bg-light border-0 mb-3">
+                    <div class="card-body py-2">
+                        <p class="mb-1"><strong>Usuario:</strong> <span id="restaurarUsuarioNombre">Nombre</span></p>
+                    </div>
+                </div>
+
+                <div class="alert alert-info mb-0">
+                    <i class="fas fa-check-circle me-1"></i>
+                    <strong>Nota:</strong> El estado del usuario cambiará a "ACTIVO" automáticamente.
+                </div>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" id="btnConfirmarRestaurar">
+                    <i class="fas fa-undo me-1"></i>Sí, Restaurar Usuario
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast de notificaciones -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="toastNotificacion" class="toast align-items-center text-white border-0 animate__animated animate__fadeInRight" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="fas fa-check-circle me-2"></i>
+                <span id="toastMensaje">Operación exitosa</span>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
 </div>
 
 <!-- Scripts -->
@@ -834,6 +1059,75 @@
             sidebar.classList.remove('show');
         }
     });
+
+    // ==========================================
+    // ✅ FUNCIONES PARA RESTAURAR USUARIO
+    // ==========================================
+
+    let usuarioIdARestaurar = null;
+
+    function abrirModalRestaurar(btn) {
+        usuarioIdARestaurar = btn.getAttribute('data-usuario-id');
+        const nombre = btn.getAttribute('data-usuario-nombre');
+
+        document.getElementById('restaurarUsuarioNombre').textContent = nombre;
+
+        const modal = new bootstrap.Modal(document.getElementById('modalRestaurarUsuario'));
+        modal.show();
+    }
+
+    document.getElementById('btnConfirmarRestaurar')?.addEventListener('click', async function() {
+        if (!usuarioIdARestaurar) {
+            console.error('❌ No hay usuario seleccionado para restaurar');
+            return;
+        }
+
+        try {
+            const url = `/admin/api/usuarios/${usuarioIdARestaurar}/restaurar`;
+            console.log('♻️ Restaurando usuario:', url);
+
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            console.log('📥 Response status:', response.status);
+
+            if (response.ok) {
+                bootstrap.Modal.getInstance(document.getElementById('modalRestaurarUsuario'))?.hide();
+                mostrarToast('Usuario restaurado exitosamente', 'success');
+                setTimeout(() => location.reload(), 1000);
+            } else {
+                const error = await response.text();
+                console.error('❌ Error al restaurar:', error);
+                mostrarToast(error || 'Error al restaurar usuario', 'error');
+            }
+        } catch (error) {
+            console.error('💥 Error de conexión:', error);
+            mostrarToast('Error de conexión: ' + error.message, 'error');
+        }
+    });
+
+    document.getElementById('modalRestaurarUsuario')?.addEventListener('hidden.bs.modal', function() {
+        usuarioIdARestaurar = null;
+    });
+
+    // ==========================================
+    // UTILIDADES
+    // ==========================================
+
+    function mostrarToast(mensaje, tipo = 'success') {
+        const toastEl = document.getElementById('toastNotificacion');
+        const toastBody = toastEl.querySelector('.toast-body');
+
+        toastEl.className = `toast align-items-center text-white border-0 animate__animated animate__fadeInRight ${tipo === 'success' ? 'bg-success' : 'bg-danger'}`;
+
+        const icono = tipo === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+        toastBody.innerHTML = `<i class="fas ${icono} me-2"></i><span>${mensaje}</span>`;
+
+        const toast = new bootstrap.Toast(toastEl);
+        toast.show();
+    }
 </script>
 
 </body>

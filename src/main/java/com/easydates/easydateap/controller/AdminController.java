@@ -3,6 +3,7 @@ package com.easydates.easydateap.controller;
 import com.easydates.easydateap.entity.HistorialCambios;
 import com.easydates.easydateap.entity.Tarea;
 import com.easydates.easydateap.entity.Usuario;
+import com.easydates.easydateap.service.IHistorialCambiosService;
 import com.easydates.easydateap.service.ITareaService;
 import com.easydates.easydateap.service.IUsuarioService;
 import jakarta.servlet.http.HttpSession;
@@ -20,17 +21,24 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/admin")  // ← AGREGAR: Base path para todas las rutas
+@RequestMapping("/admin")
 @PreAuthorize("hasRole('ADMINISTRADOR')")
 public class AdminController {
 
     @Autowired
     private IUsuarioService usuarioService;
+
     @Autowired
     private ITareaService tareaService;
 
-    // ✅ Obtener usuario por ID
-    @GetMapping("/api/usuarios/{id}")  // → /admin/api/usuarios/{id}
+    // ✅ AGREGADO: Service de auditoría para guardar registros
+    @Autowired
+    private IHistorialCambiosService historialService;
+
+    // =====================================================
+    // API: Obtener usuario por ID
+    // =====================================================
+    @GetMapping("/api/usuarios/{id}")
     @ResponseBody
     public ResponseEntity<?> obtenerUsuario(@PathVariable Integer id) {
         System.out.println("🔍 API: Obteniendo usuario con ID: " + id);
@@ -60,14 +68,16 @@ public class AdminController {
         }
     }
 
-    @PutMapping("/api/usuarios/{id}/actualizar")  // → /admin/api/usuarios/{id}/actualizar
+    // =====================================================
+    // API: Actualizar usuario
+    // =====================================================
+    @PutMapping("/api/usuarios/{id}/actualizar")
     @ResponseBody
     public ResponseEntity<?> actualizarUsuario(
             @PathVariable Integer id,
             @RequestBody Usuario usuarioActualizado) {
 
         System.out.println("🔧 API: Actualizando usuario ID: " + id);
-        System.out.println("📥 Datos recibidos: " + usuarioActualizado);
 
         try {
             Usuario resultado = usuarioService.actualizar(id, usuarioActualizado);
@@ -75,12 +85,15 @@ public class AdminController {
             return ResponseEntity.ok("Usuario actualizado correctamente");
         } catch (Exception e) {
             System.err.println("❌ Error al actualizar: " + e.getMessage());
-            e.printStackTrace();  // ← AGREGAR: Para ver el error completo
+            e.printStackTrace();
             return ResponseEntity.badRequest().body("Error al actualizar: " + e.getMessage());
         }
     }
 
-    @PostMapping("/api/usuarios/{id}/cambiar-estado")  // → /admin/api/usuarios/{id}/cambiar-estado
+    // =====================================================
+    // API: Cambiar estado de usuario
+    // =====================================================
+    @PostMapping("/api/usuarios/{id}/cambiar-estado")
     @ResponseBody
     public Map<String, Object> cambiarEstado(
             @PathVariable Integer id,
@@ -97,20 +110,17 @@ public class AdminController {
         return response;
     }
 
-
+    // =====================================================
+    // VISTA: Dashboard
+    // =====================================================
     @GetMapping("/dashboard")
     public String dashboard(Model model, HttpSession session) {
         System.out.println("📊 Accediendo a vista: /admin/dashboard");
 
         Usuario admin = (Usuario) session.getAttribute("usuario");
-        System.out.println("👤 Usuario en sesión: " + (admin != null ? admin.getNombre() : "NULL"));
-
         if (admin == null || !admin.isAdmin()) {
-            System.err.println("❌ Usuario no es admin o no está en sesión");
             return "redirect:/cliente/home";
         }
-
-        System.out.println("✅ Usuario es admin, cargando dashboard...");
 
         Map<String, Object> stats = usuarioService.obtenerEstadisticas();
         model.addAttribute("stats", stats);
@@ -124,6 +134,9 @@ public class AdminController {
         return "admin/dashboard";
     }
 
+    // =====================================================
+    // VISTA: Listar usuarios con PAGINACIÓN
+    // =====================================================
     @GetMapping("/usuarios")
     public String listarUsuarios(
             @RequestParam(required = false) String nombre,
@@ -142,7 +155,6 @@ public class AdminController {
         int totalElementos = todosUsuarios.size();
         int totalPaginas = (int) Math.ceil((double) totalElementos / tamanoPagina);
 
-        // Calcular índices para paginación
         int startIndex = (paginaActual - 1) * tamanoPagina;
         int endIndex = Math.min(startIndex + tamanoPagina, totalElementos);
 
@@ -154,14 +166,16 @@ public class AdminController {
         model.addAttribute("totalPaginas", totalPaginas);
         model.addAttribute("totalElementos", totalElementos);
 
-        // Filtros
         model.addAttribute("filtroNombre", nombre);
         model.addAttribute("filtroEmail", email);
         model.addAttribute("filtroEstado", estado);
 
         return "admin/usuarios";
     }
-    // Listar tareas con PAGINACIÓN estilo Google
+
+    // =====================================================
+    // VISTA: Listar tareas con PAGINACIÓN
+    // =====================================================
     @GetMapping("/tareas")
     public String listarTareas(
             @RequestParam(required = false) String titulo,
@@ -173,41 +187,31 @@ public class AdminController {
             Model model,
             HttpSession session) {
 
-        System.out.println("📋 Accediendo a vista: /admin/tareas");
-
-        // Verificar admin
         Usuario admin = (Usuario) session.getAttribute("usuario");
         if (admin == null || !admin.isAdmin()) {
             return "redirect:/cliente/home";
         }
 
-        // Configurar paginación
         int paginaActual = (page != null && page > 0) ? page : 1;
         int tamanoPagina = (size != null && size > 0) ? size : 10;
 
-        // Buscar tareas con filtros
         List<Tarea> todasLasTareas = tareaService.buscarTareasAdmin(titulo, prioridad, estado, usuario);
 
-        // Calcular totales para paginación
         int totalElementos = todasLasTareas.size();
         int totalPaginas = (int) Math.ceil((double) totalElementos / tamanoPagina);
 
-        // Calcular índices para paginación manual
         int startIndex = (paginaActual - 1) * tamanoPagina;
         int endIndex = Math.min(startIndex + tamanoPagina, totalElementos);
 
-        // Obtener solo la página actual
         List<Tarea> tareasPaginadas = (startIndex < totalElementos)
                 ? todasLasTareas.subList(startIndex, endIndex)
                 : Collections.emptyList();
 
-        // Calcular estadísticas para las cards (sobre TODAS las tareas, no solo la página)
         long total = todasLasTareas.size();
         long pendientes = todasLasTareas.stream().filter(t -> "PENDIENTE".equals(t.getEstadoTarea())).count();
         long enProgreso = todasLasTareas.stream().filter(t -> "EN_PROGRESO".equals(t.getEstadoTarea())).count();
         long terminadas = todasLasTareas.stream().filter(t -> "TERMINADO".equals(t.getEstadoTarea())).count();
 
-        // Agregar al modelo
         model.addAttribute("tareas", tareasPaginadas);
         model.addAttribute("paginaActual", paginaActual);
         model.addAttribute("tamanoPagina", tamanoPagina);
@@ -226,27 +230,27 @@ public class AdminController {
 
         return "admin/tareas";
     }
-    // ✅ NUEVO: Eliminar usuario (soft delete) con auditoría
+
+    // =====================================================
+    // ✅ API: Eliminar usuario - LÓGICA TRADICIONAL (INACTIVO)
+    // =====================================================
     @DeleteMapping("/api/usuarios/{id}/eliminar")
     @ResponseBody
     public ResponseEntity<?> eliminarUsuario(
             @PathVariable Integer id,
             HttpSession session) {
 
-        System.out.println("🗑️ API: Eliminando usuario ID: " + id);
+        System.out.println("🗑️ API: Eliminación lógica (INACTIVO) ID: " + id);
 
         try {
-            // 1. Obtener usuario para auditoría
             Usuario usuario = usuarioService.findById(id)
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-            // 2. No permitir eliminar al admin actual
             Integer adminId = (Integer) session.getAttribute("usuarioId");
             if (adminId != null && adminId.equals(id)) {
                 return ResponseEntity.badRequest().body("No puedes eliminarte a ti mismo");
             }
 
-            // 3. Capturar datos antes de eliminar
             String datosUsuario = String.format(
                     "ID: %d, Nombre: %s, Email: %s, Rol: %s",
                     usuario.getId(),
@@ -255,78 +259,219 @@ public class AdminController {
                     usuario.getRol() != null ? usuario.getRol().getNombre() : "N/A"
             );
 
-            // 4. Ejecutar eliminación (soft delete)
             boolean exito = usuarioService.eliminarLogico(id);
 
             if (exito) {
-                // 5. ✅ Registrar en auditoría
                 String nombreAdmin = (String) session.getAttribute("usuarioLogueado");
 
+                // ✅ Guardar en auditoría
                 HistorialCambios historial = new HistorialCambios();
                 historial.setAccion("ELIMINAR");
-                historial.setDescripcion("Admin eliminó usuario (soft delete). Datos: " + datosUsuario);
+                historial.setDescripcion("Admin cambió estado a INACTIVO. Datos: " + datosUsuario);
                 historial.setEntidadAfectada("USUARIO");
                 historial.setUsuarioAdmin(nombreAdmin != null ? nombreAdmin : "Admin");
                 historial.setUsuario(usuario);
                 historial.setFechaCambio(LocalDateTime.now());
 
-                return ResponseEntity.ok("Usuario eliminado correctamente");
+                historialService.save(historial);
+                System.out.println("📝 Auditoría registrada: ELIMINAR (INACTIVO)");
+
+                return ResponseEntity.ok("Usuario marcado como inactivo");
             } else {
-                return ResponseEntity.badRequest().body("Error al eliminar usuario");
+                return ResponseEntity.badRequest().body("Error al cambiar estado del usuario");
             }
 
         } catch (Exception e) {
-            System.err.println("❌ Error al eliminar: " + e.getMessage());
+            System.err.println("❌ Error: " + e.getMessage());
             e.printStackTrace();
             return ResponseEntity.internalServerError().body("Error: " + e.getMessage());
         }
     }
-    // ✅ ELIMINACIÓN PERMANENTE (Hard Delete)
+
+    // =====================================================
+    // ✅ API: Eliminar usuario PERMANENTEMENTE (Hard Delete)
+    // ⚠️ COMENTADO POR DEFECTO - Usar solo si es estrictamente necesario
+    // =====================================================
+    /*
     @DeleteMapping("/api/usuarios/{id}/eliminar-permanente")
     @ResponseBody
     public ResponseEntity<?> eliminarUsuarioPermanente(
             @PathVariable Integer id,
             HttpSession session) {
 
-        System.out.println("💀 API: Eliminación PERMANENTE de usuario ID: " + id);
+        System.out.println("💀 API: Eliminación PERMANENTE ID: " + id);
 
         try {
-            // 1. Obtener usuario para auditoría ANTES de eliminar
             Usuario usuario = usuarioService.findById(id)
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-            // 2. No permitir eliminar al admin actual
             Integer adminId = (Integer) session.getAttribute("usuarioId");
             if (adminId != null && adminId.equals(id)) {
                 return ResponseEntity.badRequest().body("No puedes eliminarte a ti mismo");
             }
 
+            String datosUsuario = String.format(
+                    "ID: %d, Nombre: %s, Email: %s, Rol: %s",
+                    usuario.getId(),
+                    usuario.getNombre(),
+                    usuario.getEmail(),
+                    usuario.getRol() != null ? usuario.getRol().getNombre() : "N/A"
+            );
 
-            // 4. ✅ ELIMINAR PERMANENTEMENTE DE LA BD
-            boolean exito = usuarioService.eliminarLogico(id);
+            // ⚠️ Esto fallará si hay tareas asociadas (foreign key)
+            boolean exito = usuarioService.eliminarPermanente(id);
 
             if (exito) {
-                // 5. Registrar en auditoría (esto queda aunque el usuario ya no exista)
                 String nombreAdmin = (String) session.getAttribute("usuarioLogueado");
 
                 HistorialCambios historial = new HistorialCambios();
                 historial.setAccion("ELIMINAR_PERMANENTE");
+                historial.setDescripcion("⚠️ ELIMINACIÓN FÍSICA: " + datosUsuario);
                 historial.setEntidadAfectada("USUARIO");
                 historial.setUsuarioAdmin(nombreAdmin != null ? nombreAdmin : "Admin");
-                historial.setUsuario(usuario);  // Se guarda la referencia antes de eliminar
+                historial.setUsuario(usuario);
                 historial.setFechaCambio(LocalDateTime.now());
 
+                historialService.save(historial);
 
                 return ResponseEntity.ok("Usuario eliminado permanentemente");
             } else {
-                return ResponseEntity.badRequest().body("Error al eliminar usuario permanentemente");
+                return ResponseEntity.badRequest().body("Error: Puede haber tareas asociadas");
             }
 
         } catch (Exception e) {
             System.err.println("❌ Error en eliminación permanente: " + e.getMessage());
+            return ResponseEntity.internalServerError().body("Error: " + e.getMessage());
+        }
+    }
+    */
+
+    // =====================================================
+    // ✅✅ API: Eliminar usuario DEL SISTEMA (Soft Delete Avanzado)
+    // ✅ RECOMENDADO: Oculta pero conserva en BD + Auditoría funcional
+    // =====================================================
+    @DeleteMapping("/api/usuarios/{id}/eliminar-sistema")
+    @ResponseBody
+    public ResponseEntity<?> eliminarUsuarioDelSistema(
+            @PathVariable Integer id,
+            HttpSession session) {
+
+        System.out.println("🗑️ API: Eliminando usuario DEL SISTEMA ID: " + id);
+
+        try {
+            // 1. Obtener usuario
+            Usuario usuario = usuarioService.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
+
+            // 2. No permitir eliminar al admin actual
+            Integer adminId = (Integer) session.getAttribute("usuarioId");
+            if (adminId != null && adminId.equals(id)) {
+                System.out.println("❌ Error: Admin intentando eliminarse a sí mismo");
+                return ResponseEntity.badRequest().body("No puedes eliminarte a ti mismo");
+            }
+
+            // 3. Capturar datos para auditoría
+            String datosUsuario = String.format(
+                    "ID: %d, Nombre: %s, Email: %s, Rol: %s",
+                    usuario.getId(),
+                    usuario.getNombre(),
+                    usuario.getEmail(),
+                    usuario.getRol() != null ? usuario.getRol().getNombre() : "N/A"
+            );
+
+            // 4. Obtener nombre del admin
+            String nombreAdmin = (String) session.getAttribute("usuarioLogueado");
+            System.out.println("👤 Admin que elimina: " + nombreAdmin);
+
+            // 5. Ejecutar eliminación del sistema
+            boolean exito = usuarioService.eliminarDelSistema(id, nombreAdmin);
+
+            if (exito) {
+                System.out.println("✅ Usuario eliminado del sistema exitosamente");
+
+                // 6. ✅ Registrar en auditoría (CON historialService inyectado)
+                try {
+                    HistorialCambios historial = new HistorialCambios();
+                    historial.setAccion("ELIMINAR_SISTEMA");
+                    historial.setDescripcion("Admin eliminó usuario del sistema (soft delete). Datos: " + datosUsuario);
+                    historial.setEntidadAfectada("USUARIO");
+                    historial.setUsuarioAdmin(nombreAdmin != null ? nombreAdmin : "Admin");
+                    historial.setUsuario(usuario);
+                    historial.setFechaCambio(LocalDateTime.now());
+
+                    // ✅ GUARDAR EN AUDITORÍA
+                    historialService.save(historial);
+                    System.out.println("📝 Auditoría guardada: ELIMINAR_SISTEMA - " + usuario.getNombre());
+
+                } catch (Exception e) {
+                    System.err.println("⚠️ Advertencia: No se pudo registrar en auditoría");
+                    System.err.println("   Error: " + e.getMessage());
+                    e.printStackTrace();
+                    // No retornar error - la eliminación fue exitosa
+                }
+
+                return ResponseEntity.ok("Usuario eliminado del sistema correctamente");
+            } else {
+                System.err.println("❌ Error al eliminar usuario del sistema");
+                return ResponseEntity.badRequest().body("Error al eliminar usuario del sistema");
+            }
+
+        } catch (Exception e) {
+            System.err.println("❌ Error al eliminar del sistema: " + e.getMessage());
             e.printStackTrace();
             return ResponseEntity.internalServerError().body("Error: " + e.getMessage());
         }
     }
 
+    // =====================================================
+    // ✅✅ API: Restaurar usuario eliminado del sistema
+    // =====================================================
+    @PutMapping("/api/usuarios/{id}/restaurar")
+    @ResponseBody
+    public ResponseEntity<?> restaurarUsuario(
+            @PathVariable Integer id,
+            HttpSession session) {
+
+        System.out.println("♻️ API: Restaurando usuario ID: " + id);
+
+        try {
+            Usuario usuario = usuarioService.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+            String nombreAdmin = (String) session.getAttribute("usuarioLogueado");
+            boolean exito = usuarioService.restaurarUsuario(id);
+
+            if (exito) {
+                System.out.println("✅ Usuario restaurado exitosamente");
+
+                // ✅ Registrar en auditoría
+                try {
+                    HistorialCambios historial = new HistorialCambios();
+                    historial.setAccion("RESTAURAR");
+                    historial.setDescripcion("Admin restauró usuario eliminado: " + usuario.getNombre() + " (" + usuario.getEmail() + ")");
+                    historial.setEntidadAfectada("USUARIO");
+                    historial.setUsuarioAdmin(nombreAdmin != null ? nombreAdmin : "Admin");
+                    historial.setUsuario(usuario);
+                    historial.setFechaCambio(LocalDateTime.now());
+
+                    // ✅ GUARDAR EN AUDITORÍA
+                    historialService.save(historial);
+                    System.out.println("📝 Auditoría guardada: RESTAURAR - " + usuario.getNombre());
+
+                } catch (Exception e) {
+                    System.err.println("⚠️ Advertencia: No se pudo registrar restauración en auditoría");
+                    System.err.println("   Error: " + e.getMessage());
+                }
+
+                return ResponseEntity.ok("Usuario restaurado correctamente");
+            } else {
+                return ResponseEntity.badRequest().body("El usuario no estaba eliminado o no se pudo restaurar");
+            }
+
+        } catch (Exception e) {
+            System.err.println("❌ Error al restaurar: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body("Error: " + e.getMessage());
+        }
+    }
 }

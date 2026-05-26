@@ -3,12 +3,14 @@ package com.easydates.easydateap.service.impl;
 import com.easydates.easydateap.dto.TareaDTO;
 import com.easydates.easydateap.entity.*;
 import com.easydates.easydateap.repository.*;
+import com.easydates.easydateap.service.IHistorialCambiosService;
 import com.easydates.easydateap.service.ITareaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +23,9 @@ public class TareaServiceImpl implements ITareaService {
 
     @Autowired
     private TareaRepository tareaRepository;
+
+    @Autowired
+    private IHistorialCambiosService historialService;
 
     @Autowired
     private CategoriaRepository categoriaRepository;
@@ -39,7 +44,9 @@ public class TareaServiceImpl implements ITareaService {
     public Tarea crearTarea(TareaDTO dto, Integer usuarioId) {
         Tarea tarea = new Tarea();
         mapearDTOaEntidad(dto, tarea, usuarioId);
-        return tareaRepository.save(tarea);
+        tareaRepository.save(tarea);
+        registrarHistorial(tarea, "CREAR", "Se creó la tarea: " + tarea.getTitulo());
+        return tarea;
     }
 
     @Override
@@ -67,8 +74,21 @@ public class TareaServiceImpl implements ITareaService {
         Tarea tarea = obtenerTarea(id)
                 .orElseThrow(() -> new RuntimeException("Tarea no encontrada"));
 
+        // ✅ CAPTURAR EL ESTADO ANTES DE ACTUALIZAR
+        String descripcionAntes = "Estado: " + tarea.getEstadoTarea() +
+                ", Prioridad: " + tarea.getPrioridad() +
+                ", Título: " + tarea.getTitulo();
+
+        // Ahora sí, mapear y guardar
         mapearDTOaEntidad(dto, tarea, tarea.getUsuario().getId());
-        return tareaRepository.save(tarea);
+        tareaRepository.save(tarea);
+
+        // Registrar en el historial
+        registrarHistorial(tarea, "ACTUALIZAR",
+                "Se actualizó la tarea. Antes: " + descripcionAntes +
+                        ". Después: Estado: " + tarea.getEstadoTarea());
+
+        return tarea;
     }
 
     @Override
@@ -330,4 +350,15 @@ public class TareaServiceImpl implements ITareaService {
             tarea.setEtiquetas(etiquetas);
         }
     }
+    // Método para registrar cambios
+    private void registrarHistorial(Tarea tarea, String accion, String descripcion) {
+        HistorialCambios historial = new HistorialCambios();
+        historial.setAccion(accion);
+        historial.setDescripcion(descripcion);
+        historial.setTarea(tarea);
+        historial.setFechaCambio(LocalDateTime.now());
+        historialService.save(historial);
+    }
+
+
 }

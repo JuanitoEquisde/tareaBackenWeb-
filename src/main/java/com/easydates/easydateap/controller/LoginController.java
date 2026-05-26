@@ -54,7 +54,7 @@ public class LoginController {
 
             // ✅ IMPORTANTE: Verificar que el rol no sea null
             if (usuario.getRol() == null) {
-                System.err.println("❌ ERROR: Usuario " + email + " no tiene rol asignado!");
+                System.err.println("ERROR: Usuario " + email + " no tiene rol asignado!");
                 model.addAttribute("error", "Usuario sin rol asignado. Contacta al admin.");
                 return "login";
             }

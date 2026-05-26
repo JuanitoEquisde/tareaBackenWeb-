@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -28,7 +29,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
     private PasswordEncoder passwordEncoder;
 
     // =====================================================
-    // LOGIN - ✅ CORREGIDO CON FETCH EXPLÍCITO
+    // LOGIN - ✅ CORREGIDO: Rechaza usuarios ELIMINADOS
     // =====================================================
     @Override
     @Transactional(readOnly = true)
@@ -36,7 +37,6 @@ public class UsuarioServiceImpl implements IUsuarioService {
         System.out.println("🔍 Email: " + email);
         System.out.println("🔍 Password ingresada: '" + password + "'");
 
-        // ✅ Usar JOIN FETCH para cargar el rol en la misma consulta
         Optional<Usuario> usuarioOpt = usuarioRepository.findByEmailWithRol(email);
 
         if (usuarioOpt.isPresent()) {
@@ -46,9 +46,13 @@ public class UsuarioServiceImpl implements IUsuarioService {
             System.out.println("🔍 Password en BD: '" + passwordEnBD + "'");
             System.out.println("🔍 ¿Coincide? " + passwordEncoder.matches(password, passwordEnBD));
 
-            // Verificar password y estado
+            // ✅ RECHAZAR login si el usuario está eliminado del sistema
+            if ("ELIMINADO".equals(usuario.getEstado())) {
+                System.out.println("❌ Login rechazado: usuario eliminado del sistema");
+                return Optional.empty();
+            }
+
             if (passwordEncoder.matches(password, passwordEnBD) && "ACTIVO".equals(usuario.getEstado())) {
-                // Debug: Verificar que el rol se cargó
                 System.out.println("🔍 [DEBUG] Rol del usuario: " +
                         (usuario.getRol() != null ? usuario.getRol().getNombre() : "NULL"));
                 return Optional.of(usuario);
@@ -69,10 +73,11 @@ public class UsuarioServiceImpl implements IUsuarioService {
 
     @Override
     public Usuario guardar(Usuario usuario) {
-        // Encriptar password solo si es nuevo usuario o si cambió
+        // Encriptar password solo si es nuevo o no está encriptado
         if (usuario.getPassword() != null && !usuario.getPassword().startsWith("$2a$")) {
             usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
         }
+        // Estado por defecto
         if (usuario.getEstado() == null) {
             usuario.setEstado("ACTIVO");
         }
@@ -80,7 +85,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
     }
 
     // =====================================================
-    // NUEVOS MÉTODOS PARA ADMINISTRADOR
+    // MÉTODOS PARA ADMINISTRADOR
     // =====================================================
     @Override
     @Transactional(readOnly = true)
@@ -122,6 +127,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
         }).orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
     }
 
+    // ✅ Eliminación lógica tradicional (INACTIVO)
     @Override
     public boolean eliminarLogico(Integer id) {
         return usuarioRepository.findById(id).map(usuario -> {
@@ -129,6 +135,58 @@ public class UsuarioServiceImpl implements IUsuarioService {
             usuarioRepository.save(usuario);
             return true;
         }).orElse(false);
+    }
+
+    // ✅ Eliminación permanente (Hard Delete) - BORRADO FÍSICO DE LA BD
+    @Override
+    public boolean eliminarPermanente(Integer id) {
+        try {
+            if (usuarioRepository.existsById(id)) {
+                usuarioRepository.deleteById(id);
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            System.err.println("❌ Error al eliminar permanentemente: " + e.getMessage());
+            return false;
+        }
+    }
+
+    // ✅ NUEVO: Eliminación del sistema (Soft Delete Avanzado)
+    // El usuario queda con estado "ELIMINADO": no aparece en listados, no puede login, pero sigue en BD
+    @Override
+    @Transactional
+    public boolean eliminarDelSistema(Integer id, String nombreAdmin) {
+        return usuarioRepository.findById(id).map(usuario -> {
+
+            // Cambiar estado a "ELIMINADO"
+            usuario.setEstado("ELIMINADO");
+            usuarioRepository.save(usuario);
+            return true;
+        }).orElse(false);
+    }
+
+    // ✅ NUEVO: Restaurar usuario eliminado del sistema
+    @Override
+    @Transactional
+    public boolean restaurarUsuario(Integer id) {
+        return usuarioRepository.findById(id).map(usuario -> {
+            if ("ELIMINADO".equals(usuario.getEstado())) {
+                usuario.setEstado("ACTIVO");
+                usuarioRepository.save(usuario);
+                return true;
+            }
+            return false;
+        }).orElse(false);
+    }
+
+    // ✅ NUEVO: Listar usuarios eliminados del sistema (solo para admin)
+    @Override
+    @Transactional(readOnly = true)
+    public List<Usuario> listarEliminados() {
+        return usuarioRepository.findAll().stream()
+                .filter(u -> "ELIMINADO".equals(u.getEstado()))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -149,37 +207,117 @@ public class UsuarioServiceImpl implements IUsuarioService {
         }).orElse(false);
     }
 
-    @Override
+    // =====================================================
+    // BÚSQUEDAS CON FILTROS
+    // =====================================================
+
+    // ✅ Búsqueda con lógica AND (todos los filtros deben coincidir)
+
     @Transactional(readOnly = true)
     public List<Usuario> buscarConFiltros(String nombre, String email, String estado, String rol) {
         if (nombre == null && email == null && estado == null && rol == null) {
-            return usuarioRepository.findAll();
+            return usuarioRepository.findAll().stream()
+                    .filter(u -> !"ELIMINADO".equals(u.getEstado()))
+                    .collect(Collectors.toList());
         }
         return usuarioRepository.findAll().stream()
+                .filter(u -> !"ELIMINADO".equals(u.getEstado())) // ✅ Excluir eliminados
                 .filter(u -> nombre == null || u.getNombre().toLowerCase().contains(nombre.toLowerCase()))
                 .filter(u -> email == null || u.getEmail().toLowerCase().contains(email.toLowerCase()))
                 .filter(u -> estado == null || u.getEstado().equalsIgnoreCase(estado))
                 .filter(u -> rol == null || (u.getRol() != null && u.getRol().getNombre().equalsIgnoreCase(rol)))
-                .toList();
+                .collect(Collectors.toList());
     }
 
+    // ✅ Búsqueda con lógica OR (cualquier filtro que coincida) - EXCLUYE ELIMINADOS
+    @Override
+    @Transactional(readOnly = true)
+    public List<Usuario> buscarConFiltrosOr(String nombre, String email, String estado, String rol) {
+        // Si no hay filtros, retornar todos excepto eliminados
+        if (nombre == null && email == null && estado == null && rol == null) {
+            return usuarioRepository.findAll().stream()
+                    .filter(u -> !"ELIMINADO".equals(u.getEstado()))
+                    .collect(Collectors.toList());
+        }
+
+        // Filtrar con lógica OR: devuelve usuarios que coincidan con AL MENOS UN filtro
+        return usuarioRepository.findAll().stream()
+                .filter(u -> !"ELIMINADO".equals(u.getEstado())) // ✅ Excluir eliminados del sistema
+                .filter(u -> {
+                    boolean coincideNombre = (nombre == null || nombre.isEmpty()) ||
+                            u.getNombre().toLowerCase().contains(nombre.toLowerCase());
+                    boolean coincideEmail = (email == null || email.isEmpty()) ||
+                            u.getEmail().toLowerCase().contains(email.toLowerCase());
+                    boolean coincideEstado = (estado == null || estado.isEmpty()) ||
+                            u.getEstado().equalsIgnoreCase(estado);
+                    boolean coincideRol = (rol == null || rol.isEmpty()) ||
+                            (u.getRol() != null && u.getRol().getNombre().equalsIgnoreCase(rol));
+
+                    // ✅ LÓGICA OR: Retorna true si AL MENOS UN filtro coincide
+                    return coincideNombre || coincideEmail || coincideEstado || coincideRol;
+                })
+                .collect(Collectors.toList());
+    }
+
+    // ✅ MÉTODO ADICIONAL: Búsqueda con lógica OR pura (más flexible)
+    @Transactional(readOnly = true)
+    public List<Usuario> buscarConFiltrosOrPuro(String nombre, String email, String estado, String rol) {
+        List<Usuario> todos = usuarioRepository.findAll().stream()
+                .filter(u -> !"ELIMINADO".equals(u.getEstado()))
+                .collect(Collectors.toList());
+
+        // Si no hay filtros, retornar todos excepto eliminados
+        if (nombre == null && email == null && estado == null && rol == null) {
+            return todos;
+        }
+
+        return todos.stream()
+                .filter(u -> {
+                    boolean coincideNombre = (nombre == null || nombre.isEmpty()) ||
+                            u.getNombre().toLowerCase().contains(nombre.toLowerCase());
+                    boolean coincideEmail = (email == null || email.isEmpty()) ||
+                            u.getEmail().toLowerCase().contains(email.toLowerCase());
+                    boolean coincideEstado = (estado == null || estado.isEmpty()) ||
+                            u.getEstado().equalsIgnoreCase(estado);
+                    boolean coincideRol = (rol == null || rol.isEmpty()) ||
+                            (u.getRol() != null && u.getRol().getNombre().equalsIgnoreCase(rol));
+
+                    // ✅ LÓGICA OR: Retorna true si AL MENOS UN filtro coincide
+                    return coincideNombre || coincideEmail || coincideEstado || coincideRol;
+                })
+                .collect(Collectors.toList());
+    }
+
+    // =====================================================
+    // ESTADÍSTICAS Y UTILIDADES
+    // =====================================================
     @Override
     @Transactional(readOnly = true)
     public Map<String, Object> obtenerEstadisticas() {
         Map<String, Object> stats = new HashMap<>();
-        List<Usuario> todos = usuarioRepository.findAll();
+        // ✅ Excluir usuarios eliminados de las estadísticas
+        List<Usuario> todos = usuarioRepository.findAll().stream()
+                .filter(u -> !"ELIMINADO".equals(u.getEstado()))
+                .collect(Collectors.toList());
+
         stats.put("totalUsuarios", todos.size());
         stats.put("usuariosActivos", todos.stream().filter(u -> "ACTIVO".equalsIgnoreCase(u.getEstado())).count());
         stats.put("usuariosInactivos", todos.stream().filter(u -> "INACTIVO".equalsIgnoreCase(u.getEstado())).count());
-        stats.put("totalAdmins", todos.stream().filter(u -> u.isAdmin()).count());
-        stats.put("usuariosEstandar", todos.stream().filter(u -> u.isUsuarioEstandar()).count());
+        stats.put("totalAdmins", todos.stream().filter(Usuario::isAdmin).count());
+        stats.put("usuariosEstandar", todos.stream().filter(Usuario::isUsuarioEstandar).count());
+        // ✅ Nuevo: Contar eliminados del sistema
+        stats.put("usuariosEliminados", usuarioRepository.findAll().stream()
+                .filter(u -> "ELIMINADO".equals(u.getEstado()))
+                .count());
+
         return stats;
     }
 
     @Override
     public void actualizarUltimoAcceso(Integer usuarioId) {
         usuarioRepository.findById(usuarioId).ifPresent(usuario -> {
-            // usuario.setUltimoAcceso(LocalDateTime.now()); // Si tienes este campo
+            // Si tienes el campo ultimoAcceso en tu entidad, descomenta:
+            // usuario.setUltimoAcceso(LocalDateTime.now());
             usuarioRepository.save(usuario);
         });
     }
@@ -188,7 +326,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
     @Transactional(readOnly = true)
     public boolean existeEmail(String email, Integer excluirId) {
         return usuarioRepository.findByEmail(email)
-                .map(u -> !u.getId().equals(excluirId))
+                .map(u -> !u.getId().equals(excluirId) && !"ELIMINADO".equals(u.getEstado()))
                 .orElse(false);
     }
 }
