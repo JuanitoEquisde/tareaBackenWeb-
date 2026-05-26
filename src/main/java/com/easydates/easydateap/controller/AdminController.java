@@ -31,7 +31,6 @@ public class AdminController {
     @Autowired
     private ITareaService tareaService;
 
-    // ✅ AGREGADO: Service de auditoría para guardar registros
     @Autowired
     private IHistorialCambiosService historialService;
 
@@ -69,20 +68,83 @@ public class AdminController {
     }
 
     // =====================================================
-    // API: Actualizar usuario
+    // ✅ API: Actualizar usuario - CORREGIDO PARA ROLES
     // =====================================================
     @PutMapping("/api/usuarios/{id}/actualizar")
     @ResponseBody
     public ResponseEntity<?> actualizarUsuario(
             @PathVariable Integer id,
-            @RequestBody Usuario usuarioActualizado) {
+            @RequestBody Map<String, Object> usuarioActualizadoMap) {
 
         System.out.println("🔧 API: Actualizando usuario ID: " + id);
+        System.out.println("📥 Datos recibidos: " + usuarioActualizadoMap);
 
         try {
-            Usuario resultado = usuarioService.actualizar(id, usuarioActualizado);
+            Usuario usuario = usuarioService.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
+
+            // Actualizar campos simples
+            if (usuarioActualizadoMap.get("nombre") != null) {
+                String nombre = (String) usuarioActualizadoMap.get("nombre");
+                if (!nombre.trim().isEmpty()) {
+                    usuario.setNombre(nombre.trim());
+                }
+            }
+
+            if (usuarioActualizadoMap.get("email") != null) {
+                String email = (String) usuarioActualizadoMap.get("email");
+                if (!email.trim().isEmpty()) {
+                    usuario.setEmail(email.trim());
+                }
+            }
+
+            if (usuarioActualizadoMap.get("estado") != null) {
+                String estado = (String) usuarioActualizadoMap.get("estado");
+                if (!estado.trim().isEmpty()) {
+                    usuario.setEstado(estado.trim());
+                }
+            }
+
+            // Contraseña (solo si se proporciona y no está vacía)
+            if (usuarioActualizadoMap.get("password") != null) {
+                String newPassword = (String) usuarioActualizadoMap.get("password");
+                if (newPassword != null && !newPassword.trim().isEmpty()) {
+                    // El service se encarga de encriptar
+                    usuario.setPassword(newPassword);
+                }
+            }
+
+            // ✅ Manejo FLEXIBLE de rol: acepta "rolId": 2 o "rol": {"id": 2}
+            Object rolData = usuarioActualizadoMap.get("rol");
+            Integer rolId = null;
+
+            if (rolData instanceof Map) {
+                // Formato: { "rol": { "id": 2 } }
+                @SuppressWarnings("unchecked")
+                Map<String, Object> rolMap = (Map<String, Object>) rolData;
+                rolId = (Integer) rolMap.get("id");
+                System.out.println("🎯 Rol desde objeto: ID=" + rolId);
+            } else {
+                // Formato: { "rolId": 2 } o { "rol": 2 }
+                rolId = (Integer) usuarioActualizadoMap.get("rolId");
+                if (rolId == null) {
+                    rolId = (Integer) usuarioActualizadoMap.get("rol");
+                }
+                System.out.println("🎯 Rol desde número: ID=" + rolId);
+            }
+
+            // Asignar rol si es válido
+            if (rolId != null && rolId > 0) {
+                usuarioService.asignarRol(id, rolId);
+                System.out.println("✅ Rol asignado: " + rolId);
+            }
+
+            // Guardar cambios
+            usuarioService.actualizar(id, usuario);
             System.out.println("✅ Usuario actualizado correctamente");
+
             return ResponseEntity.ok("Usuario actualizado correctamente");
+
         } catch (Exception e) {
             System.err.println("❌ Error al actualizar: " + e.getMessage());
             e.printStackTrace();
@@ -146,6 +208,10 @@ public class AdminController {
             @RequestParam(defaultValue = "10") Integer size,
             Model model,
             HttpSession session) {
+
+        nombre = (nombre != null && !nombre.trim().isEmpty()) ? nombre.trim() : null;
+        email = (email != null && !email.trim().isEmpty()) ? email.trim() : null;
+        estado = (estado != null && !estado.trim().isEmpty()) ? estado.trim() : null;
 
         int paginaActual = (page != null && page > 0) ? page : 1;
         int tamanoPagina = (size != null && size > 0) ? size : 10;
@@ -264,7 +330,6 @@ public class AdminController {
             if (exito) {
                 String nombreAdmin = (String) session.getAttribute("usuarioLogueado");
 
-                // ✅ Guardar en auditoría
                 HistorialCambios historial = new HistorialCambios();
                 historial.setAccion("ELIMINAR");
                 historial.setDescripcion("Admin cambió estado a INACTIVO. Datos: " + datosUsuario);
@@ -290,65 +355,18 @@ public class AdminController {
 
     // =====================================================
     // ✅ API: Eliminar usuario PERMANENTEMENTE (Hard Delete)
-    // ⚠️ COMENTADO POR DEFECTO - Usar solo si es estrictamente necesario
+    // ⚠️ COMENTADO POR DEFECTO
     // =====================================================
     /*
     @DeleteMapping("/api/usuarios/{id}/eliminar-permanente")
     @ResponseBody
-    public ResponseEntity<?> eliminarUsuarioPermanente(
-            @PathVariable Integer id,
-            HttpSession session) {
-
-        System.out.println("💀 API: Eliminación PERMANENTE ID: " + id);
-
-        try {
-            Usuario usuario = usuarioService.findById(id)
-                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
-            Integer adminId = (Integer) session.getAttribute("usuarioId");
-            if (adminId != null && adminId.equals(id)) {
-                return ResponseEntity.badRequest().body("No puedes eliminarte a ti mismo");
-            }
-
-            String datosUsuario = String.format(
-                    "ID: %d, Nombre: %s, Email: %s, Rol: %s",
-                    usuario.getId(),
-                    usuario.getNombre(),
-                    usuario.getEmail(),
-                    usuario.getRol() != null ? usuario.getRol().getNombre() : "N/A"
-            );
-
-            // ⚠️ Esto fallará si hay tareas asociadas (foreign key)
-            boolean exito = usuarioService.eliminarPermanente(id);
-
-            if (exito) {
-                String nombreAdmin = (String) session.getAttribute("usuarioLogueado");
-
-                HistorialCambios historial = new HistorialCambios();
-                historial.setAccion("ELIMINAR_PERMANENTE");
-                historial.setDescripcion("⚠️ ELIMINACIÓN FÍSICA: " + datosUsuario);
-                historial.setEntidadAfectada("USUARIO");
-                historial.setUsuarioAdmin(nombreAdmin != null ? nombreAdmin : "Admin");
-                historial.setUsuario(usuario);
-                historial.setFechaCambio(LocalDateTime.now());
-
-                historialService.save(historial);
-
-                return ResponseEntity.ok("Usuario eliminado permanentemente");
-            } else {
-                return ResponseEntity.badRequest().body("Error: Puede haber tareas asociadas");
-            }
-
-        } catch (Exception e) {
-            System.err.println("❌ Error en eliminación permanente: " + e.getMessage());
-            return ResponseEntity.internalServerError().body("Error: " + e.getMessage());
-        }
+    public ResponseEntity<?> eliminarUsuarioPermanente(...) {
+        // ... código comentado
     }
     */
 
     // =====================================================
-    // ✅✅ API: Eliminar usuario DEL SISTEMA (Soft Delete Avanzado)
-    // ✅ RECOMENDADO: Oculta pero conserva en BD + Auditoría funcional
+    // ✅✅ API: Eliminar usuario DEL SISTEMA (Soft Delete)
     // =====================================================
     @DeleteMapping("/api/usuarios/{id}/eliminar-sistema")
     @ResponseBody
@@ -359,18 +377,15 @@ public class AdminController {
         System.out.println("🗑️ API: Eliminando usuario DEL SISTEMA ID: " + id);
 
         try {
-            // 1. Obtener usuario
             Usuario usuario = usuarioService.findById(id)
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
 
-            // 2. No permitir eliminar al admin actual
             Integer adminId = (Integer) session.getAttribute("usuarioId");
             if (adminId != null && adminId.equals(id)) {
                 System.out.println("❌ Error: Admin intentando eliminarse a sí mismo");
                 return ResponseEntity.badRequest().body("No puedes eliminarte a ti mismo");
             }
 
-            // 3. Capturar datos para auditoría
             String datosUsuario = String.format(
                     "ID: %d, Nombre: %s, Email: %s, Rol: %s",
                     usuario.getId(),
@@ -379,17 +394,14 @@ public class AdminController {
                     usuario.getRol() != null ? usuario.getRol().getNombre() : "N/A"
             );
 
-            // 4. Obtener nombre del admin
             String nombreAdmin = (String) session.getAttribute("usuarioLogueado");
             System.out.println("👤 Admin que elimina: " + nombreAdmin);
 
-            // 5. Ejecutar eliminación del sistema
             boolean exito = usuarioService.eliminarDelSistema(id, nombreAdmin);
 
             if (exito) {
                 System.out.println("✅ Usuario eliminado del sistema exitosamente");
 
-                // 6. ✅ Registrar en auditoría (CON historialService inyectado)
                 try {
                     HistorialCambios historial = new HistorialCambios();
                     historial.setAccion("ELIMINAR_SISTEMA");
@@ -399,15 +411,12 @@ public class AdminController {
                     historial.setUsuario(usuario);
                     historial.setFechaCambio(LocalDateTime.now());
 
-                    // ✅ GUARDAR EN AUDITORÍA
                     historialService.save(historial);
                     System.out.println("📝 Auditoría guardada: ELIMINAR_SISTEMA - " + usuario.getNombre());
 
                 } catch (Exception e) {
                     System.err.println("⚠️ Advertencia: No se pudo registrar en auditoría");
                     System.err.println("   Error: " + e.getMessage());
-                    e.printStackTrace();
-                    // No retornar error - la eliminación fue exitosa
                 }
 
                 return ResponseEntity.ok("Usuario eliminado del sistema correctamente");
@@ -444,7 +453,6 @@ public class AdminController {
             if (exito) {
                 System.out.println("✅ Usuario restaurado exitosamente");
 
-                // ✅ Registrar en auditoría
                 try {
                     HistorialCambios historial = new HistorialCambios();
                     historial.setAccion("RESTAURAR");
@@ -454,13 +462,11 @@ public class AdminController {
                     historial.setUsuario(usuario);
                     historial.setFechaCambio(LocalDateTime.now());
 
-                    // ✅ GUARDAR EN AUDITORÍA
                     historialService.save(historial);
                     System.out.println("📝 Auditoría guardada: RESTAURAR - " + usuario.getNombre());
 
                 } catch (Exception e) {
                     System.err.println("⚠️ Advertencia: No se pudo registrar restauración en auditoría");
-                    System.err.println("   Error: " + e.getMessage());
                 }
 
                 return ResponseEntity.ok("Usuario restaurado correctamente");
@@ -470,6 +476,88 @@ public class AdminController {
 
         } catch (Exception e) {
             System.err.println("❌ Error al restaurar: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body("Error: " + e.getMessage());
+        }
+    }
+
+    // =====================================================
+    // ✅✅ API: Crear usuario - CORREGIDO PARA ROLES
+    // =====================================================
+    @PostMapping("/api/usuarios/crear")
+    @ResponseBody
+    public ResponseEntity<?> crearUsuario(
+            @RequestBody Map<String, Object> nuevoUsuarioMap,
+            HttpSession session) {
+
+        System.out.println("➕ API: Creando nuevo usuario");
+        System.out.println("📥 Datos recibidos: " + nuevoUsuarioMap);
+
+        try {
+            // Extraer datos del map
+            String nombre = (String) nuevoUsuarioMap.get("nombre");
+            String email = (String) nuevoUsuarioMap.get("email");
+            String password = (String) nuevoUsuarioMap.get("password");
+            String estado = (String) nuevoUsuarioMap.get("estado");
+
+            // Validar email
+            if (usuarioService.findByEmail(email).isPresent()) {
+                return ResponseEntity.badRequest().body("El correo electrónico ya está registrado");
+            }
+
+            // Validar contraseña
+            if (password == null || password.length() < 6) {
+                return ResponseEntity.badRequest().body("La contraseña debe tener al menos 6 caracteres");
+            }
+
+            // ✅ Manejo FLEXIBLE de rol
+            Object rolData = nuevoUsuarioMap.get("rol");
+            Integer rolId = null;
+
+            if (rolData instanceof Map) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> rolMap = (Map<String, Object>) rolData;
+                rolId = (Integer) rolMap.get("id");
+            } else {
+                rolId = (Integer) nuevoUsuarioMap.get("rolId");
+                if (rolId == null) {
+                    rolId = (Integer) nuevoUsuarioMap.get("rol");
+                }
+            }
+
+            if (rolId == null || rolId <= 0) {
+                return ResponseEntity.badRequest().body("Debe seleccionar un rol válido");
+            }
+
+            // Crear usuario
+            Usuario nuevoUsuario = new Usuario();
+            nuevoUsuario.setNombre(nombre);
+            nuevoUsuario.setEmail(email);
+            nuevoUsuario.setPassword(password);  // El service encripta
+            nuevoUsuario.setEstado(estado != null ? estado : "ACTIVO");
+
+            // Asignar rol
+            usuarioService.asignarRolPorId(nuevoUsuario, rolId);
+
+            Usuario usuarioCreado = usuarioService.guardar(nuevoUsuario);
+
+            // Registrar en auditoría
+            String nombreAdmin = (String) session.getAttribute("usuarioLogueado");
+            HistorialCambios historial = new HistorialCambios();
+            historial.setAccion("CREAR");
+            historial.setDescripcion("Admin creó nuevo usuario: " + usuarioCreado.getNombre() + " (" + usuarioCreado.getEmail() + ")");
+            historial.setEntidadAfectada("USUARIO");
+            historial.setUsuarioAdmin(nombreAdmin != null ? nombreAdmin : "Admin");
+            historial.setUsuario(usuarioCreado);
+            historial.setFechaCambio(LocalDateTime.now());
+
+            historialService.save(historial);
+            System.out.println("📝 Auditoría guardada: CREAR - " + usuarioCreado.getNombre());
+
+            return ResponseEntity.ok("Usuario creado correctamente");
+
+        } catch (Exception e) {
+            System.err.println("❌ Error al crear usuario: " + e.getMessage());
             e.printStackTrace();
             return ResponseEntity.internalServerError().body("Error: " + e.getMessage());
         }

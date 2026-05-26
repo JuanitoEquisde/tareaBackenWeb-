@@ -109,7 +109,7 @@
             min-height: calc(100vh - 70px);
         }
 
-        /* ── Sidebar ── */
+        /* ── Sidebar ─ */
         .admin-sidebar {
             width: 248px;
             background: white;
@@ -202,6 +202,28 @@
             justify-content: center;
             color: var(--admin-primary);
             font-size: 1rem;
+        }
+
+        /* ── Button Create ── */
+        .btn-create {
+            background: linear-gradient(135deg, var(--admin-success), #059669);
+            color: white;
+            border: none;
+            padding: 0.625rem 1.375rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.875rem;
+            font-family: inherit;
+            transition: all 0.25s;
+            box-shadow: 0 4px 12px rgba(16,185,129,0.28);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+        .btn-create:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(16,185,129,0.38);
         }
 
         /* ── Filters Card ── */
@@ -360,6 +382,16 @@
             background: #dbeafe;
             color: #1d4ed8;
             border: 1.5px solid #bfdbfe;
+        }
+        .badge-rol.premium {
+            background: #e9d5ff;
+            color: #7c3aed;
+            border: 1.5px solid #ddd6fe;
+        }
+        .badge-rol.default {
+            background: #f3f4f6;
+            color: #4b5563;
+            border: 1.5px solid #e5e7eb;
         }
         .badge-estado {
             padding: 0.35rem 0.875rem;
@@ -620,6 +652,31 @@
             overflow: hidden;
         }
 
+        /* Create modal header */
+        .modal-header-success {
+            background: linear-gradient(135deg, var(--admin-success), #059669);
+            color: white;
+            padding: 1.375rem 1.75rem;
+            border: none;
+        }
+        .modal-header-success .modal-title {
+            font-weight: 700;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .modal-header-success .header-icon-sm {
+            width: 32px;
+            height: 32px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+
         /* Edit modal header */
         .modal-header-primary {
             background: linear-gradient(135deg, #1e3a8a, #1d4ed8);
@@ -832,6 +889,26 @@
             transform: translateY(-1px);
             box-shadow: 0 6px 16px rgba(59,130,246,0.35);
         }
+        .btn-modal-create {
+            background: linear-gradient(135deg, var(--admin-success), #059669);
+            border: none;
+            color: white;
+            padding: 0.55rem 1.375rem;
+            border-radius: 9px;
+            font-weight: 700;
+            font-size: 0.875rem;
+            font-family: inherit;
+            transition: all 0.22s;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            box-shadow: 0 4px 12px rgba(16,185,129,0.28);
+        }
+        .btn-modal-create:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(16,185,129,0.38);
+        }
         .btn-modal-delete-sistema {
             background: linear-gradient(135deg, #f59e0b, #d97706);
             border: none;
@@ -975,6 +1052,11 @@
                 <span class="header-icon"><i class="fas fa-users"></i></span>
                 Gestión de Usuarios
             </h2>
+            <!-- ✅ BOTÓN CREAR USUARIO -->
+            <button type="button" class="btn-create" onclick="abrirModalCrear()">
+                <i class="fas fa-user-plus"></i>
+                <span class="d-none d-sm-inline">Crear Usuario</span>
+            </button>
         </div>
 
         <!-- Filters -->
@@ -1040,10 +1122,11 @@
                         </td>
                         <td class="text-muted" th:text="${usuario.email}">email@test.com</td>
                         <td>
+                            <!-- ✅ CORREGIDO: Badge de rol según nombre real -->
                             <span class="badge badge-rol"
-                                  th:classappend="${usuario.rol?.nombre == 'ADMINISTRADOR'} ? 'admin' : 'user'"
-                                  th:text="${usuario.rol?.nombre == 'ADMINISTRADOR'} ? 'ADMIN' : 'USER'">
-                                USER
+                                  th:classappend="${usuario.rol?.nombre == 'ADMINISTRADOR'} ? 'admin' : (${usuario.rol?.nombre == 'USUARIO ESTANDAR' || usuario.rol?.nombre == 'Usuario Estandar'} ? 'user' : (${usuario.rol?.nombre == 'PREMIUM' || usuario.rol?.nombre == 'Premium'} ? 'premium' : 'default'))"
+                                  th:text="${usuario.rol?.nombre != null ? usuario.rol.nombre : 'SIN ROL'}">
+                                ROL
                             </span>
                         </td>
                         <td>
@@ -1189,6 +1272,72 @@
 </div>
 
 <!-- ══════════════════════════════════════
+     MODAL — CREAR USUARIO (NUEVO)
+     ══════════════════════════════════════ -->
+<div class="modal fade" id="modalCrearUsuario" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content animate__animated animate__zoomIn">
+            <div class="modal-header-success">
+                <h5 class="modal-title">
+                    <span class="header-icon-sm"><i class="fas fa-user-plus"></i></span>
+                    Crear nuevo usuario
+                </h5>
+                <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <form id="formCrearUsuario">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="createNombre" class="form-label">Nombre completo <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="createNombre" required placeholder="Ingresa el nombre completo">
+                    </div>
+                    <div class="mb-3">
+                        <label for="createEmail" class="form-label">Correo electrónico <span class="text-danger">*</span></label>
+                        <input type="email" class="form-control" id="createEmail" required placeholder="correo@ejemplo.com">
+                    </div>
+                    <div class="mb-3">
+                        <label for="createPassword" class="form-label">Contraseña <span class="text-danger">*</span></label>
+                        <input type="password" class="form-control" id="createPassword" required placeholder="Mínimo 6 caracteres" minlength="6">
+                        <small class="text-muted">La contraseña debe tener al menos 6 caracteres</small>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="createRol" class="form-label">Rol <span class="text-danger">*</span></label>
+                            <select class="form-select" id="createRol" required>
+                                <option value="">Seleccionar rol...</option>
+                                <!-- ✅ IDs correctos según tu BD -->
+                                <option value="1">Administrador</option>
+                                <option value="2">Usuario Estándar</option>
+                                <option value="3">Premium</option>
+                                <option value="4">Invitado</option>
+                                <option value="5">Moderador</option>
+                                <option value="6">Soporte Técnico</option>
+                                <option value="7">Coordinador</option>
+                                <option value="8">Supervisor</option>
+                                <option value="9">Auditor</option>
+                                <option value="10">Gerente</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="createEstado" class="form-label">Estado <span class="text-danger">*</span></label>
+                            <select class="form-select" id="createEstado" required>
+                                <option value="ACTIVO">Activo</option>
+                                <option value="INACTIVO">Inactivo</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-modal-cancel" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn-modal-create">
+                        <i class="fas fa-user-plus"></i>Crear usuario
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════
      MODAL — EDITAR USUARIO
      ══════════════════════════════════════ -->
 <div class="modal fade" id="modalEditarUsuario" tabindex="-1" aria-hidden="true">
@@ -1217,9 +1366,17 @@
                             <label for="editRol" class="form-label">Rol</label>
                             <select class="form-select" id="editRol" required>
                                 <option value="">Seleccionar rol...</option>
+                                <!-- ✅ IDs correctos según tu BD -->
                                 <option value="1">Administrador</option>
                                 <option value="2">Usuario Estándar</option>
                                 <option value="3">Premium</option>
+                                <option value="4">Invitado</option>
+                                <option value="5">Moderador</option>
+                                <option value="6">Soporte Técnico</option>
+                                <option value="7">Coordinador</option>
+                                <option value="8">Supervisor</option>
+                                <option value="9">Auditor</option>
+                                <option value="10">Gerente</option>
                             </select>
                         </div>
                         <div class="col-md-6">
@@ -1358,6 +1515,44 @@
         }
     });
 
+    // ── Modal Crear Usuario ──
+    function abrirModalCrear() {
+        const modal = new bootstrap.Modal(document.getElementById('modalCrearUsuario'));
+        modal.show();
+    }
+
+    document.getElementById('formCrearUsuario')?.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        // ✅ CORREGIDO: Usar IDs del modal de CREAR
+        const formData = {
+            nombre: document.getElementById('createNombre').value,
+            email: document.getElementById('createEmail').value,
+            password: document.getElementById('createPassword').value,
+            rol: { id: parseInt(document.getElementById('createRol').value) },
+            estado: document.getElementById('createEstado').value
+        };
+
+        try {
+            const response = await fetch('/admin/api/usuarios/crear', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+
+            if (response.ok) {
+                bootstrap.Modal.getInstance(document.getElementById('modalCrearUsuario'))?.hide();
+                mostrarToast('El usuario ha sido creado correctamente.');
+                setTimeout(() => location.reload(), 1000);
+            } else {
+                const error = await response.text();
+                mostrarToast(error || 'Ocurrió un error al crear el usuario.', 'error');
+            }
+        } catch (error) {
+            mostrarToast('Error de conexión. Verifica tu red e intenta nuevamente.', 'error');
+        }
+    });
+
     // ── Modal Editar ──
     async function abrirModalEditar(btn) {
         const usuarioId = btn.getAttribute('data-usuario-id');
@@ -1387,13 +1582,16 @@
     document.getElementById('formEditarUsuario')?.addEventListener('submit', async function(e) {
         e.preventDefault();
         const usuarioId = document.getElementById('editUsuarioId').value;
+
+        // ✅ CORREGIDO: Usar IDs del modal de EDITAR (no los de crear)
         const formData = {
             nombre: document.getElementById('editNombre').value,
             email: document.getElementById('editEmail').value,
-            rolId: parseInt(document.getElementById('editRol').value),
-            estado: document.getElementById('editEstado').value,
-            password: document.getElementById('editPassword').value
+            password: document.getElementById('editPassword').value,
+            rol: { id: parseInt(document.getElementById('editRol').value) },
+            estado: document.getElementById('editEstado').value
         };
+
         try {
             const response = await fetch(`/admin/api/usuarios/${usuarioId}/actualizar`, {
                 method: 'PUT',

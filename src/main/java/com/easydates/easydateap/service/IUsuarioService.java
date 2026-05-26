@@ -36,4 +36,7 @@ public interface IUsuarioService {
     Map<String, Object> obtenerEstadisticas();
     void actualizarUltimoAcceso(Integer usuarioId);
     boolean existeEmail(String email, Integer excluirId);
+
+    Usuario crearUsuario(Usuario usuario);
+    void asignarRolPorId(Usuario usuario, Integer rolId);
 }

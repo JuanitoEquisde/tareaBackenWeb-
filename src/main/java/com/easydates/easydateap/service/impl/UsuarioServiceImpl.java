@@ -211,55 +211,52 @@ public class UsuarioServiceImpl implements IUsuarioService {
     // BÚSQUEDAS CON FILTROS
     // =====================================================
 
-    // ✅ Búsqueda con lógica AND (todos los filtros deben coincidir)
+    //Búsqueda con lógica AND (todos los filtros deben coincidir)
 
+    @Override
     @Transactional(readOnly = true)
     public List<Usuario> buscarConFiltros(String nombre, String email, String estado, String rol) {
-        if (nombre == null && email == null && estado == null && rol == null) {
-            return usuarioRepository.findAll().stream()
-                    .filter(u -> !"ELIMINADO".equals(u.getEstado()))
-                    .collect(Collectors.toList());
-        }
         return usuarioRepository.findAll().stream()
-                .filter(u -> !"ELIMINADO".equals(u.getEstado())) // ✅ Excluir eliminados
-                .filter(u -> nombre == null || u.getNombre().toLowerCase().contains(nombre.toLowerCase()))
-                .filter(u -> email == null || u.getEmail().toLowerCase().contains(email.toLowerCase()))
-                .filter(u -> estado == null || u.getEstado().equalsIgnoreCase(estado))
-                .filter(u -> rol == null || (u.getRol() != null && u.getRol().getNombre().equalsIgnoreCase(rol)))
+                .filter(u -> u != null && !"ELIMINADO".equals(u.getEstado()))
+                .filter(u -> nombre == null || nombre.trim().isEmpty() ||
+                        (u.getNombre() != null && u.getNombre().toLowerCase().contains(nombre.toLowerCase().trim())))
+                .filter(u -> email == null || email.trim().isEmpty() ||
+                        (u.getEmail() != null && u.getEmail().toLowerCase().contains(email.toLowerCase().trim())))
+                .filter(u -> estado == null || estado.trim().isEmpty() ||
+                        (u.getEstado() != null && u.getEstado().equalsIgnoreCase(estado.trim())))
+                .filter(u -> rol == null || rol.trim().isEmpty() ||
+                        (u.getRol() != null && u.getRol().getNombre() != null &&
+                                u.getRol().getNombre().equalsIgnoreCase(rol.trim())))
                 .collect(Collectors.toList());
     }
 
-    // ✅ Búsqueda con lógica OR (cualquier filtro que coincida) - EXCLUYE ELIMINADOS
+    // Búsqueda con lógica OR (cualquier filtro que coincida) - EXCLUYE ELIMINADOS
     @Override
     @Transactional(readOnly = true)
     public List<Usuario> buscarConFiltrosOr(String nombre, String email, String estado, String rol) {
-        // Si no hay filtros, retornar todos excepto eliminados
-        if (nombre == null && email == null && estado == null && rol == null) {
-            return usuarioRepository.findAll().stream()
-                    .filter(u -> !"ELIMINADO".equals(u.getEstado()))
-                    .collect(Collectors.toList());
-        }
 
-        // Filtrar con lógica OR: devuelve usuarios que coincidan con AL MENOS UN filtro
+        // Obtener todos los usuarios y filtrar en memoria
         return usuarioRepository.findAll().stream()
-                .filter(u -> !"ELIMINADO".equals(u.getEstado())) // ✅ Excluir eliminados del sistema
+                // ✅ Siempre excluir usuarios eliminados del sistema
+                .filter(u -> u != null && !"ELIMINADO".equals(u.getEstado()))
                 .filter(u -> {
-                    boolean coincideNombre = (nombre == null || nombre.isEmpty()) ||
-                            u.getNombre().toLowerCase().contains(nombre.toLowerCase());
-                    boolean coincideEmail = (email == null || email.isEmpty()) ||
-                            u.getEmail().toLowerCase().contains(email.toLowerCase());
-                    boolean coincideEstado = (estado == null || estado.isEmpty()) ||
-                            u.getEstado().equalsIgnoreCase(estado);
-                    boolean coincideRol = (rol == null || rol.isEmpty()) ||
-                            (u.getRol() != null && u.getRol().getNombre().equalsIgnoreCase(rol));
+                    boolean coincideNombre = (nombre == null || nombre.trim().isEmpty()) ||
+                            (u.getNombre() != null && u.getNombre().toLowerCase().contains(nombre.toLowerCase().trim()));
 
-                    // ✅ LÓGICA OR: Retorna true si AL MENOS UN filtro coincide
+                    boolean coincideEmail = (email == null || email.trim().isEmpty()) ||
+                            (u.getEmail() != null && u.getEmail().toLowerCase().contains(email.toLowerCase().trim()));
+
+                    boolean coincideEstado = (estado == null || estado.trim().isEmpty()) ||
+                            (u.getEstado() != null && u.getEstado().equalsIgnoreCase(estado.trim()));
+
+                    boolean coincideRol = (rol == null || rol.trim().isEmpty()) ||
+                            (u.getRol() != null && u.getRol().getNombre() != null &&
+                                    u.getRol().getNombre().equalsIgnoreCase(rol.trim()));
                     return coincideNombre || coincideEmail || coincideEstado || coincideRol;
                 })
                 .collect(Collectors.toList());
     }
 
-    // ✅ MÉTODO ADICIONAL: Búsqueda con lógica OR pura (más flexible)
     @Transactional(readOnly = true)
     public List<Usuario> buscarConFiltrosOrPuro(String nombre, String email, String estado, String rol) {
         List<Usuario> todos = usuarioRepository.findAll().stream()
@@ -282,7 +279,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
                     boolean coincideRol = (rol == null || rol.isEmpty()) ||
                             (u.getRol() != null && u.getRol().getNombre().equalsIgnoreCase(rol));
 
-                    // ✅ LÓGICA OR: Retorna true si AL MENOS UN filtro coincide
+                    //  LÓGICA OR: Retorna true si AL MENOS UN filtro coincide
                     return coincideNombre || coincideEmail || coincideEstado || coincideRol;
                 })
                 .collect(Collectors.toList());
@@ -295,7 +292,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
     @Transactional(readOnly = true)
     public Map<String, Object> obtenerEstadisticas() {
         Map<String, Object> stats = new HashMap<>();
-        // ✅ Excluir usuarios eliminados de las estadísticas
+        //  Excluir usuarios eliminados de las estadísticas
         List<Usuario> todos = usuarioRepository.findAll().stream()
                 .filter(u -> !"ELIMINADO".equals(u.getEstado()))
                 .collect(Collectors.toList());
@@ -305,7 +302,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
         stats.put("usuariosInactivos", todos.stream().filter(u -> "INACTIVO".equalsIgnoreCase(u.getEstado())).count());
         stats.put("totalAdmins", todos.stream().filter(Usuario::isAdmin).count());
         stats.put("usuariosEstandar", todos.stream().filter(Usuario::isUsuarioEstandar).count());
-        // ✅ Nuevo: Contar eliminados del sistema
+        //  Nuevo: Contar eliminados del sistema
         stats.put("usuariosEliminados", usuarioRepository.findAll().stream()
                 .filter(u -> "ELIMINADO".equals(u.getEstado()))
                 .count());
@@ -328,5 +325,29 @@ public class UsuarioServiceImpl implements IUsuarioService {
         return usuarioRepository.findByEmail(email)
                 .map(u -> !u.getId().equals(excluirId) && !"ELIMINADO".equals(u.getEstado()))
                 .orElse(false);
+    }
+    @Override
+    public Usuario crearUsuario(Usuario usuario) {
+        // Encriptar contraseña
+        if (usuario.getPassword() != null && !usuario.getPassword().startsWith("$2a$")) {
+            usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+        }
+
+        // Estado por defecto
+        if (usuario.getEstado() == null) {
+            usuario.setEstado("ACTIVO");
+        }
+
+        // Asignar rol
+        if (usuario.getRol() != null && usuario.getRol().getId() != null) {
+            rolRepository.findById(usuario.getRol().getId())
+                    .ifPresent(usuario::setRol);
+        }
+
+        return usuarioRepository.save(usuario);
+    }
+    @Override
+    public void asignarRolPorId(Usuario usuario, Integer rolId) {
+        rolRepository.findById(rolId).ifPresent(usuario::setRol);
     }
 }

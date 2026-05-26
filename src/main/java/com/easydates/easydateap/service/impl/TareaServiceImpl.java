@@ -161,7 +161,7 @@ public class TareaServiceImpl implements ITareaService {
         return tareaRepository.contarUrgentesPorUsuario(usuarioId);
     }
 
-    // ✅ Métodos para el calendario
+    // Métodos para el calendario
     @Override
     @Transactional(readOnly = true)
     public List<Tarea> listarPorFecha(Integer usuarioId, LocalDate fecha) {
@@ -185,34 +185,27 @@ public class TareaServiceImpl implements ITareaService {
     @Transactional(readOnly = true)
     public List<Tarea> listarConFiltros(Integer usuarioId, String estado, String prioridad, Integer categoriaId, String busqueda, String sortBy, String sortDir) {
 
-        System.out.println("🔍 [SERVICE] listarConFiltros - usuarioId: " + usuarioId);
-
         List<Tarea> tareas = tareaRepository.findByUsuarioIdAndEstado(usuarioId, "ACTIVO");
-        System.out.println("🔍 [SERVICE] Tareas base encontradas: " + tareas.size());
 
         if (estado != null && !estado.isEmpty() && !estado.equals("TODOS")) {
-            System.out.println("🔍 [SERVICE] Filtrando por estado: " + estado);
             tareas = tareas.stream()
                     .filter(t -> t.getEstadoTarea() != null && t.getEstadoTarea().equalsIgnoreCase(estado))
                     .collect(Collectors.toList());
         }
 
         if (prioridad != null && !prioridad.isEmpty() && !prioridad.equals("TODOS")) {
-            System.out.println("🔍 [SERVICE] Filtrando por prioridad: " + prioridad);
             tareas = tareas.stream()
                     .filter(t -> t.getPrioridad() != null && t.getPrioridad().equalsIgnoreCase(prioridad))
                     .collect(Collectors.toList());
         }
 
         if (categoriaId != null) {
-            System.out.println("🔍 [SERVICE] Filtrando por categoría ID: " + categoriaId);
             tareas = tareas.stream()
                     .filter(t -> t.getCategoria() != null && t.getCategoria().getId().equals(categoriaId))
                     .collect(Collectors.toList());
         }
 
         if (busqueda != null && !busqueda.isEmpty()) {
-            System.out.println("🔍 [SERVICE] Filtrando por búsqueda: " + busqueda);
             String busquedaLower = busqueda.toLowerCase();
             tareas = tareas.stream()
                     .filter(t ->
@@ -222,7 +215,6 @@ public class TareaServiceImpl implements ITareaService {
                     .collect(Collectors.toList());
         }
 
-        System.out.println("🔍 [SERVICE] Tareas después de filtros: " + tareas.size());
 
         Comparator<Tarea> comparator = Comparator.comparing(t -> t.getFechaLimite(), Comparator.nullsLast(Comparator.naturalOrder()));
 
@@ -237,7 +229,6 @@ public class TareaServiceImpl implements ITareaService {
         }
 
         List<Tarea> resultado = tareas.stream().sorted(comparator).collect(Collectors.toList());
-        System.out.println("✅ [SERVICE] Tareas finales a retornar: " + resultado.size());
 
         return resultado;
     }
@@ -268,8 +259,6 @@ public class TareaServiceImpl implements ITareaService {
                 estado != null && !estado.trim().isEmpty() ? estado.toUpperCase() : null,
                 nombreUsuario != null && !nombreUsuario.trim().isEmpty() ? nombreUsuario : null
         );
-
-        System.out.println("✅ [ADMIN] Tareas encontradas: " + tareas.size());
         return tareas;
     }
 
@@ -323,7 +312,7 @@ public class TareaServiceImpl implements ITareaService {
     }
 
     // =====================================================
-    // 🔹 MÉTODO HELPER (NO MODIFICAR)
+    // MÉTODO HELPER (NO MODIFICAR)
     // =====================================================
 
     private void mapearDTOaEntidad(TareaDTO dto, Tarea tarea, Integer usuarioId) {
