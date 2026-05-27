@@ -16,7 +16,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/admin/auditoria")
 public class AdminAuditoriaController {
-
+//helloooooo7
     @Autowired
     private IHistorialCambiosService historialService;
 
