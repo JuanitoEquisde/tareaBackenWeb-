@@ -1,65 +1,63 @@
 package com.easydates.easydateap.controller;
-//HOLAAAAAAA
+
 import com.easydates.easydateap.entity.HistorialCambios;
 import com.easydates.easydateap.service.IHistorialCambiosService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.querydsl.QPageRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Collections;
-import java.util.List;
-
 @Controller
 @RequestMapping("/admin/auditoria")
 public class AdminAuditoriaController {
-//helloooooo7
+
     @Autowired
     private IHistorialCambiosService historialService;
 
     @GetMapping
     public String mostrarAuditoria(
             @RequestParam(required = false) String filtroAccion,
-            @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "10") Integer size,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "fechaCambio") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir,
             Model model) {
 
-        int paginaActual =(page != null && page > 0) ? page : 1;
-        int tamanoPagina =(size != null && size > 0) ? size : 10;
+        // Normalizar filtro
+        String accionBusqueda = (filtroAccion != null && !filtroAccion.trim().isEmpty())
+                ? filtroAccion.trim().toUpperCase()
+                : null;
 
-        List<HistorialCambios> todosLosHistoriales;
+        // Crear Pageable con ordenamiento
+        Sort sort = sortDir.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
 
-        if (filtroAccion != null && !filtroAccion.isEmpty()) {
-            todosLosHistoriales = historialService.searchByAccion(filtroAccion);
-            model.addAttribute("filtroAccion", filtroAccion);
-        } else {
-            todosLosHistoriales = historialService.findAll();
-            model.addAttribute("filtroAccion", "");
-        }
+        // ✅ Crear Pageable - Esta es la forma correcta para Spring Boot 2.x y 3.x
+        Pageable pageable = PageRequest.of(page, size, sort);
 
-        // Calcular totales para paginación
-        int totalElementos = todosLosHistoriales.size();
-        int totalPaginas = (int) Math.ceil((double) totalElementos / tamanoPagina);
+        // Obtener página del servicio
+        Page<HistorialCambios> paginaHistorial = historialService.buscarHistorialPaginado(
+                accionBusqueda, pageable
+        );
 
-        // Calcular índices para paginación manual
-        int startIndex = (paginaActual - 1) * tamanoPagina;
-        int endIndex = Math.min(startIndex + tamanoPagina, totalElementos);
-
-        // Obtener solo la página actual
-        List<HistorialCambios> historialesPaginados = (startIndex < totalElementos)
-                ? todosLosHistoriales.subList(startIndex, endIndex)
-                : Collections.emptyList();
-
-        // Agregar al modelo
-        model.addAttribute("historiales", historialesPaginados);
-        model.addAttribute("paginaActual", paginaActual);
-        model.addAttribute("tamanoPagina", tamanoPagina);
-        model.addAttribute("totalPaginas", totalPaginas);
-        model.addAttribute("totalElementos", totalElementos);
-        model.addAttribute("totalCambios", historialService.count());
+        // Pasar datos a la vista
+        model.addAttribute("historiales", paginaHistorial.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", paginaHistorial.getTotalPages());
+        model.addAttribute("totalElements", paginaHistorial.getTotalElements());
+        model.addAttribute("pageSize", size);
+        model.addAttribute("totalCambios", paginaHistorial.getTotalElements());
+        model.addAttribute("filtroAccion", filtroAccion);
+        model.addAttribute("sortBy", sortBy);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("activePage", "auditoria");
 
         return "admin/auditoria";
     }

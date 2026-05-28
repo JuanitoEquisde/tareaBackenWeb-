@@ -2,6 +2,8 @@ package com.easydates.easydateap.service;
 
 import com.easydates.easydateap.dto.TareaDTO;
 import com.easydates.easydateap.entity.Tarea;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -58,14 +60,22 @@ public interface ITareaService {
     // ✅ Buscar tareas con filtros globales (para panel admin)
     List<Tarea> buscarTareasAdmin(String titulo, String prioridad, String estado, String nombreUsuario);
 
-    // ✅ Estadísticas globales para dashboard admin
+    // Estadísticas globales para dashboard admin
     long contarTareasTotales();
     long contarTareasPorEstado(String estado);
     long contarTareasPorPrioridad(String prioridad);
 
-    // ✅ Obtener tarea con relaciones cargadas (para edición admin)
+    // Obtener tarea con relaciones cargadas (para edición admin)
     Optional<Tarea> obtenerTareaConDetalles(Integer id);
 
-    // ✅ Eliminar tarea permanentemente (solo admin)
+    // Eliminar tarea permanentemente (solo admin)
     boolean eliminarPermanente(Integer id);
+
+    Page<Tarea> buscarTareasPaginadas(
+            String titulo,
+            String prioridad,
+            String estado,
+            String usuario,
+            Pageable pageable
+    );
 }

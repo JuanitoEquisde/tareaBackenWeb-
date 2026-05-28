@@ -1,6 +1,8 @@
 package com.easydates.easydateap.repository;
 
 import com.easydates.easydateap.entity.Tarea;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -76,4 +78,19 @@ public interface TareaRepository extends JpaRepository<Tarea, Integer> {
             @Param("estadoTarea") String estadoTarea,
             @Param("nombreUsuario") String nombreUsuario
     );
+
+    @Query("SELECT t FROM Tarea t LEFT JOIN t.usuario u LEFT JOIN t.categoria c WHERE " +
+            "(:titulo IS NULL OR LOWER(t.titulo) LIKE LOWER(CONCAT('%', :titulo, '%'))) AND " +
+            "(:prioridad IS NULL OR t.prioridad = :prioridad) AND " +
+            "(:estado IS NULL OR t.estadoTarea = :estado) AND " +
+            "(:usuario IS NULL OR u.nombre LIKE CONCAT('%', :usuario, '%')) AND " +
+            "t.estado = 'ACTIVO'")
+    Page<Tarea> buscarTareasPaginadas(
+            @Param("titulo") String titulo,
+            @Param("prioridad") String prioridad,
+            @Param("estado") String estado,
+            @Param("usuario") String usuario,
+            Pageable pageable
+    );
+
 }

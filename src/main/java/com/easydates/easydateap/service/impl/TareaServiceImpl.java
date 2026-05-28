@@ -6,6 +6,8 @@ import com.easydates.easydateap.repository.*;
 import com.easydates.easydateap.service.IHistorialCambiosService;
 import com.easydates.easydateap.service.ITareaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -312,6 +314,34 @@ public class TareaServiceImpl implements ITareaService {
     }
 
     // =====================================================
+    // ✅ NUEVO: BÚSQUEDA PAGINADA CON FILTROS (PARA ADMIN)
+    // =====================================================
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Tarea> buscarTareasPaginadas(
+            String titulo,
+            String prioridad,
+            String estado,
+            String usuario,
+            Pageable pageable) {
+
+        // Normalizar parámetros
+        String tituloBusqueda = (titulo != null && !titulo.trim().isEmpty()) ? titulo.trim() : null;
+        String prioridadBusqueda = (prioridad != null && !prioridad.trim().isEmpty()) ? prioridad.trim().toUpperCase() : null;
+        String estadoBusqueda = (estado != null && !estado.trim().isEmpty()) ? estado.trim().toUpperCase() : null;
+        String usuarioBusqueda = (usuario != null && !usuario.trim().isEmpty()) ? usuario.trim() : null;
+
+        // Llamar al repository con paginación del servidor
+        return tareaRepository.buscarTareasPaginadas(
+                tituloBusqueda,
+                prioridadBusqueda,
+                estadoBusqueda,
+                usuarioBusqueda,
+                pageable
+        );
+    }
+
+    // =====================================================
     // MÉTODO HELPER (NO MODIFICAR)
     // =====================================================
 
@@ -339,6 +369,7 @@ public class TareaServiceImpl implements ITareaService {
             tarea.setEtiquetas(etiquetas);
         }
     }
+
     // Método para registrar cambios
     private void registrarHistorial(Tarea tarea, String accion, String descripcion) {
         HistorialCambios historial = new HistorialCambios();
@@ -348,6 +379,4 @@ public class TareaServiceImpl implements ITareaService {
         historial.setFechaCambio(LocalDateTime.now());
         historialService.save(historial);
     }
-
-
 }

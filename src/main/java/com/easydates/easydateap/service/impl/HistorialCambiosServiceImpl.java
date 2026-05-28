@@ -4,6 +4,8 @@ import com.easydates.easydateap.entity.HistorialCambios;
 import com.easydates.easydateap.repository.HistorialCambiosRepository;
 import com.easydates.easydateap.service.IHistorialCambiosService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,5 +56,14 @@ public class HistorialCambiosServiceImpl implements IHistorialCambiosService {
     @Transactional(readOnly = true)
     public List<HistorialCambios> searchByAccion(String accion) {
         return historialRepository.findByAccionContainingOrderByFechaCambioDesc(accion);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<HistorialCambios> buscarHistorialPaginado(String accion, Pageable pageable) {
+        String accionBusqueda = (accion != null && !accion.trim().isEmpty())
+                ? accion.trim().toUpperCase()
+                : null;
+        return historialRepository.buscarPorAccionPaginado(accionBusqueda, pageable);
     }
 }
