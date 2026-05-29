@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suscripciones - Panel Administrativo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root{
+            --admin-bg:#f0f2f5;--admin-sidebar:#1e3a8a;--admin-sidebar-hover:#1e40af;
+            --admin-primary:#3b82f6;--admin-primary-hover:#2563eb;--admin-success:#10b981;
+            --admin-warning:#f59e0b;--admin-danger:#ef4444;--admin-text:#1f2937;
+            --admin-text-muted:#6b7280;--admin-border:#e5e7eb;
+            --admin-card-shadow:0 4px 6px -1px rgba(0,0,0,0.07),0 2px 4px -1px rgba(0,0,0,0.04);
+            --admin-radius:14px;
+        }
+        *{box-sizing:border-box}
+        html,body{height:100%;overflow:hidden}
+        body{font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+            background:linear-gradient(135deg,#eef2ff 0%,#e0e7ff 50%,#f0f9ff 100%);color:var(--admin-text)}
+        .admin-navbar{background:linear-gradient(135deg,var(--admin-sidebar) 0%,#1d4ed8 100%);color:white;
+            padding:.875rem 2rem;box-shadow:0 4px 20px rgba(30,58,138,.25);position:sticky;top:0;z-index:1000}
+        .admin-navbar .navbar-brand{font-weight:800;font-size:1.3rem;color:white;display:flex;align-items:center;
+            gap:.75rem;transition:transform .3s;text-decoration:none;letter-spacing:-.02em}
+        .admin-navbar .navbar-brand:hover{transform:scale(1.04)}
+        .admin-navbar .brand-icon{width:36px;height:36px;background:rgba(255,255,255,.15);border-radius:10px;
+            display:flex;align-items:center;justify-content:center;font-size:1rem}
+        .admin-navbar .user-info{display:flex;align-items:center;gap:1.25rem}
+        .admin-navbar .user-chip{display:flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.12);
+            border-radius:50px;padding:.375rem .875rem;font-size:.85rem;font-weight:500}
+        .admin-navbar .btn-logout{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.25);
+            color:white;padding:.45rem 1.1rem;border-radius:50px;font-size:.82rem;font-weight:600;
+            transition:all .25s;cursor:pointer}
+        .admin-navbar .btn-logout:hover{background:rgba(255,255,255,.25);transform:translateY(-1px)}
+        .btn-toggle-sidebar{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.25);
+            color:white;font-size:1.1rem;padding:.45rem .7rem;cursor:pointer;border-radius:8px;
+            display:none;transition:all .25s}
+        .admin-wrapper{display:flex;height:calc(100vh - 70px);overflow:hidden}
+        .admin-sidebar{width:248px;background:white;padding:1.5rem .875rem;display:flex;
+            flex-direction:column;gap:.25rem;flex-shrink:0;box-shadow:2px 0 12px rgba(0,0,0,.04);
+            transition:transform .3s ease;overflow-y:auto;max-height:100%}
+        .admin-sidebar .nav-link{color:var(--admin-text-muted);padding:.75rem 1rem;border-radius:10px;
+            text-decoration:none;display:flex;align-items:center;gap:.75rem;font-weight:500;
+            font-size:.9rem;transition:all .25s}
+        .admin-sidebar .nav-link:hover,.admin-sidebar .nav-link.active{
+            background:linear-gradient(135deg,var(--admin-primary),var(--admin-primary-hover));
+            color:white;transform:translateX(4px);box-shadow:0 4px 14px rgba(59,130,246,.28)}
+        .admin-sidebar .nav-link i{width:20px;text-align:center;font-size:1rem;opacity:.85}
+        .admin-sidebar .divider{height:1px;background:var(--admin-border);margin:1rem .5rem;opacity:.6}
+        .admin-main{flex:1;padding:2rem;overflow-y:auto;overflow-x:hidden}
+        .page-header{background:white;border-radius:var(--admin-radius);padding:1.25rem 1.75rem;
+            margin-bottom:1.5rem;box-shadow:var(--admin-card-shadow);display:flex;
+            justify-content:space-between;align-items:center;
+            animation:fadeInDown .4s ease;border:1px solid rgba(0,0,0,.04)}
+        .page-header h2{font-weight:800;color:var(--admin-text);margin:0;font-size:1.35rem;
+            display:flex;align-items:center;gap:.75rem;letter-spacing:-.02em}
+        .page-header h2 .header-icon{width:40px;height:40px;
+            background:linear-gradient(135deg,#fef3c7,#fde68a);
+            border-radius:10px;display:flex;align-items:center;justify-content:center;
+            color:#d97706;font-size:1rem}
+        .badge-admin{background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:white;
+            padding:.4rem 1rem;border-radius:50px;font-weight:700;font-size:.75rem;
+            display:flex;align-items:center;gap:.4rem;letter-spacing:.04em;text-transform:uppercase}
+        .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;margin-bottom:1.5rem}
+        .stat-card{border-radius:var(--admin-radius);padding:1.25rem 1.25rem;
+            box-shadow:var(--admin-card-shadow);position:relative;overflow:hidden;
+            border:1px solid rgba(0,0,0,.04);animation:fadeInUp .4s ease both;
+            cursor:default;transition:transform .25s,box-shadow .25s;
+            display:flex;flex-direction:column;justify-content:space-between}
+        .stat-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.12)}
+        .stat-card:nth-child(1){animation-delay:.04s}.stat-card:nth-child(2){animation-delay:.08s}
+        .stat-card:nth-child(3){animation-delay:.12s}.stat-card:nth-child(4){animation-delay:.16s}
+        .stat-card.c-blue{background:linear-gradient(135deg,#1e3a8a 0%,#1d4ed8 100%);color:white}
+        .stat-card.c-green{background:linear-gradient(135deg,#065f46 0%,#059669 100%);color:white}
+        .stat-card.c-amber{background:linear-gradient(135deg,#92400e 0%,#d97706 100%);color:white}
+        .stat-card.c-purple{background:linear-gradient(135deg,#4c1d95 0%,#7c3aed 100%);color:white}
+        .stat-card .sc-glow{position:absolute;right:-20px;top:-20px;width:100px;height:100px;
+            border-radius:50%;background:rgba(255,255,255,.08);pointer-events:none}
+        .stat-card .sc-glow2{position:absolute;right:20px;bottom:-30px;width:70px;height:70px;
+            border-radius:50%;background:rgba(255,255,255,.05);pointer-events:none}
+        .stat-card .sc-icon{width:44px;height:44px;border-radius:10px;background:rgba(255,255,255,.18);
+            display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:.6rem}
+        .stat-card .sc-value{font-size:2rem;font-weight:800;line-height:1;
+            margin-bottom:.2rem;letter-spacing:-.03em}
+        .stat-card .sc-label{font-size:.73rem;font-weight:600;opacity:.85;
+            text-transform:uppercase;letter-spacing:.05em;line-height:1.3}
+        .stat-card .sc-trend{margin-top:.5rem;font-size:.7rem;font-weight:600;
+            background:rgba(255,255,255,.15);border-radius:50px;
+            display:inline-flex;align-items:center;gap:.3rem;padding:.18rem .6rem}
+        .filters-card{background:white;border-radius:var(--admin-radius);padding:1.25rem 1.5rem;
+            margin-bottom:1.5rem;box-shadow:var(--admin-card-shadow);
+            animation:fadeInUp .4s ease .1s both;border:1px solid rgba(0,0,0,.04)}
+        .filters-card .filter-title{font-size:.75rem;font-weight:700;color:var(--admin-text-muted);
+            text-transform:uppercase;letter-spacing:.07em;margin-bottom:1rem;
+            display:flex;align-items:center;gap:.5rem}
+        .filters-card .form-label{font-size:.68rem;font-weight:700;color:var(--admin-text-muted);
+            text-transform:uppercase;letter-spacing:.06em;margin-bottom:.35rem}
+        .filters-card .form-control,.filters-card .form-select{border:1.5px solid var(--admin-border);
+            border-radius:9px;padding:.5rem .8rem;font-size:.85rem;font-family:inherit;
+            transition:all .22s;background:#fafbfc}
+        .filters-card .form-control:focus,.filters-card .form-select:focus{
+            border-color:var(--admin-primary);box-shadow:0 0 0 3px rgba(59,130,246,.1);background:white}
+        .btn-filter-search{background:linear-gradient(135deg,var(--admin-primary),var(--admin-primary-hover));
+            border:none;color:white;padding:.5rem 1.25rem;border-radius:9px;font-weight:700;
+            font-size:.82rem;font-family:inherit;transition:all .22s;
+            box-shadow:0 4px 12px rgba(59,130,246,.25);display:inline-flex;align-items:center;gap:.4rem}
+        .btn-filter-search:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(59,130,246,.35)}
+        .btn-filter-reset{background:white;border:1.5px solid var(--admin-border);
+            color:var(--admin-text-muted);padding:.5rem 1.25rem;border-radius:9px;font-weight:600;
+            font-size:.82rem;font-family:inherit;transition:all .22s;
+            display:inline-flex;align-items:center;gap:.4rem;text-decoration:none}
+        .btn-filter-reset:hover{background:#fef2f2;border-color:#fca5a5;color:#dc2626}
+        .table-card{background:white;border-radius:var(--admin-radius);box-shadow:var(--admin-card-shadow);
+            overflow:hidden;animation:fadeInUp .4s ease .15s both;border:1px solid rgba(0,0,0,.04);
+            margin-bottom:1.5rem}
+        .table-card-header{padding:1rem 1.25rem .25rem;display:flex;align-items:center;justify-content:space-between}
+        .table-card-title{font-weight:700;font-size:.9rem;color:var(--admin-text);
+            display:flex;align-items:center;gap:.5rem}
+        .table-card .table{margin:0;border-collapse:separate;border-spacing:0}
+        .table-card thead tr{background:linear-gradient(135deg,#f8fafc,#f1f5f9)}
+        .table-card th{font-weight:700;font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;
+            color:var(--admin-text-muted);padding:.75rem 1.25rem;
+            border-bottom:1.5px solid var(--admin-border);border-top:none;white-space:nowrap}
+        .table-card td{padding:.75rem 1.25rem;vertical-align:middle;font-size:.875rem;border-color:#f3f4f6}
+        .table-card tbody tr{transition:all .2s}
+        .table-card tbody tr:hover{background:linear-gradient(135deg,#f0f9ff,#eff6ff)}
+        .table-card tbody tr:last-child td{border-bottom:none}
+        .user-avatar{width:32px;height:32px;border-radius:8px;
+            background:linear-gradient(135deg,#dbeafe,#bfdbfe);display:inline-flex;
+            align-items:center;justify-content:center;font-weight:700;font-size:.72rem;
+            color:#1d4ed8;margin-right:.5rem;flex-shrink:0}
+        .user-cell{display:flex;align-items:center}
+        .user-name{font-weight:600;font-size:.85rem;color:var(--admin-text)}
+        .user-email{font-size:.72rem;color:var(--admin-text-muted)}
+        .badge-estado{padding:.3rem .75rem;border-radius:50px;font-size:.65rem;
+            font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+            display:inline-flex;align-items:center;gap:.3rem}
+        .badge-estado.activa{background:#d1fae5;color:#065f46;border:1.5px solid #a7f3d0}
+        .badge-estado.cancelada{background:#fee2e2;color:#b91c1c;border:1.5px solid #fecaca}
+        .badge-estado.expirada{background:#fef3c7;color:#92400e;border:1.5px solid #fde68a}
+        .badge-estado.eliminada{background:#f3f4f6;color:#6b7280;border:1.5px solid #e5e7eb}
+        .badge-plan{padding:.3rem .75rem;border-radius:50px;font-size:.65rem;font-weight:700;
+            text-transform:uppercase;letter-spacing:.06em;
+            background:linear-gradient(135deg,#f5f3ff,#ede9fe);
+            color:#7c3aed;border:1.5px solid #ddd6fe}
+        .status-dot{width:6px;height:6px;border-radius:50%;display:inline-block}
+        .status-dot.activa{background:#059669}
+        .status-dot.cancelada{background:#dc2626}
+        .status-dot.expirada{background:#d97706}
+        .status-dot.eliminada{background:#9ca3af}
+        .btn-action{padding:.32rem .6rem;border-radius:8px;border:1.5px solid;font-size:.75rem;
+            font-weight:600;transition:all .22s;display:inline-flex;align-items:center;gap:.3rem;
+            cursor:pointer;background:white;font-family:inherit}
+        .btn-action.ver{border-color:#bfdbfe;color:var(--admin-primary)}
+        .btn-action.ver:hover{background:var(--admin-primary);border-color:var(--admin-primary);color:white;transform:translateY(-1px)}
+        .btn-action.cancelar{border-color:#fde68a;color:#d97706}
+        .btn-action.cancelar:hover{background:#f59e0b;border-color:#f59e0b;color:white;transform:translateY(-1px)}
+        .btn-action.restaurar{border-color:#a7f3d0;color:#059669}
+        .btn-action.restaurar:hover{background:#10b981;border-color:#10b981;color:white;transform:translateY(-1px)}
+        .btn-action.eliminar{border-color:#fecaca;color:#dc2626}
+        .btn-action.eliminar:hover{background:#ef4444;border-color:#ef4444;color:white;transform:translateY(-1px)}
+        .empty-state{text-align:center;padding:3.5rem 2rem;color:var(--admin-text-muted)}
+        .empty-state i{font-size:3rem;opacity:.2;margin-bottom:1rem;display:block}
+        .empty-state h5{font-weight:700;color:#374151;margin-bottom:.25rem}
+        .pagination-wrapper{display:flex;flex-direction:column;align-items:center;gap:.75rem;
+            animation:fadeInUp .4s ease .2s both;margin-bottom:1rem}
+        .google-pagination{display:flex;align-items:center;gap:.25rem;list-style:none;
+            padding:.5rem .75rem;margin:0;background:white;border-radius:50px;
+            box-shadow:0 2px 12px rgba(0,0,0,.08);border:1px solid rgba(0,0,0,.05)}
+        .google-pagination li{display:inline-flex}
+        .google-pagination a,.google-pagination span{display:flex;align-items:center;justify-content:center;
+            min-width:36px;height:36px;padding:0 .5rem;border-radius:50px;font-size:.85rem;
+            font-weight:600;font-family:inherit;color:var(--admin-text-muted);
+            text-decoration:none;transition:all .2s}
+        .google-pagination a:hover{background:#eff6ff;color:var(--admin-primary)}
+        .google-pagination .active span,.google-pagination .active a{
+            background:linear-gradient(135deg,var(--admin-primary),var(--admin-primary-hover));
+            color:white;font-weight:700;box-shadow:0 3px 10px rgba(59,130,246,.35)}
+        .google-pagination .disabled a,.google-pagination .disabled span{color:#d1d5db;cursor:not-allowed;pointer-events:none}
+        .google-pagination .pg-nav a,.google-pagination .pg-nav span{
+            background:#f8fafc;border:1.5px solid var(--admin-border);color:var(--admin-text-muted)}
+        .google-pagination .pg-nav:not(.disabled) a:hover{
+            background:var(--admin-primary);border-color:var(--admin-primary);color:white}
+        .pagination-info{font-size:.8rem;color:var(--admin-text-muted);font-weight:500}
+        .pagination-info strong{color:var(--admin-text)}
+        .btn-back{background:white;border:1.5px solid var(--admin-border);padding:.55rem 1.5rem;
+            border-radius:50px;font-weight:600;font-size:.82rem;font-family:inherit;
+            transition:all .25s;box-shadow:var(--admin-card-shadow);
+            color:var(--admin-text-muted);text-decoration:none;
+            display:inline-flex;align-items:center;gap:.5rem}
+        .btn-back:hover{background:var(--admin-text);border-color:var(--admin-text);
+            color:white;transform:translateY(-2px)}
+        .modal-content{border:none;border-radius:18px;box-shadow:0 24px 64px rgba(0,0,0,.18);overflow:hidden}
+        .modal-header-custom{display:flex;align-items:center;justify-content:space-between;
+            padding:1.25rem 1.5rem;border:none;color:white}
+        .modal-header-custom.blue{background:linear-gradient(135deg,#1e3a8a,#1d4ed8)}
+        .modal-header-custom.warning{background:linear-gradient(135deg,#92400e,#d97706)}
+        .modal-header-custom.danger{background:linear-gradient(135deg,#991b1b,#dc2626)}
+        .modal-header-custom.success{background:linear-gradient(135deg,#065f46,#059669)}
+        .modal-header-custom .modal-title{font-weight:700;font-size:1rem;
+            display:flex;align-items:center;gap:.6rem;margin:0}
+        .modal-header-custom .header-icon-sm{width:32px;height:32px;border-radius:8px;
+            background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center}
+        .btn-close-white{filter:invert(1) grayscale(100%) brightness(200%);opacity:.9;transition:opacity .2s}
+        .btn-close-white:hover{opacity:1}
+        .modal-body{padding:1.5rem;background:#fafbfc}
+        .modal-footer{padding:1rem 1.5rem;background:white;border-top:1.5px solid #f3f4f6;gap:.5rem}
+        .modal-alert-icon{width:48px;height:48px;border-radius:50%;display:flex;
+            align-items:center;justify-content:center;font-size:1.25rem;margin:0 auto .75rem}
+        .modal-alert-icon.danger{background:rgba(239,68,68,.1);color:#ef4444}
+        .modal-alert-icon.warning{background:rgba(245,158,11,.1);color:#f59e0b}
+        .modal-alert-icon.success{background:rgba(16,185,129,.1);color:#10b981}
+        .modal-info-box{border-left:4px solid;padding:.75rem 1rem;border-radius:0 8px 8px 0;
+            margin:1rem 0;font-size:.85rem}
+        .modal-info-box.danger{border-color:#ef4444;background:#fef2f2}
+        .modal-info-box.warning{border-color:#f59e0b;background:#fffbeb}
+        .modal-info-box.success{border-color:#10b981;background:#f0fdf4}
+        .user-summary{background:white;border-radius:10px;padding:1rem;
+            border:1.5px solid var(--admin-border)}
+        .user-summary .label{font-size:.68rem;font-weight:700;color:var(--admin-text-muted);
+            text-transform:uppercase;letter-spacing:.05em}
+        .user-summary .value{font-weight:600;color:var(--admin-text);font-size:.9rem;margin-top:.1rem}
+        .modal-body .form-check-label{font-size:.82rem;color:var(--admin-text-muted)}
+        .modal-body .form-check-input:checked{background-color:var(--admin-primary);border-color:var(--admin-primary)}
+        .btn-modal-action{padding:.55rem 1.375rem;border-radius:9px;font-weight:700;
+            font-size:.875rem;font-family:inherit;transition:all .22s;cursor:pointer;
+            display:inline-flex;align-items:center;gap:.4rem;border:none}
+        .btn-modal-action.warning{background:linear-gradient(135deg,#f59e0b,#d97706);color:white;
+            box-shadow:0 4px 12px rgba(245,158,11,.3)}
+        .btn-modal-action.danger{background:linear-gradient(135deg,#ef4444,#dc2626);color:white;
+            box-shadow:0 4px 12px rgba(239,68,68,.3)}
+        .btn-modal-action.success{background:linear-gradient(135deg,#10b981,#059669);color:white;
+            box-shadow:0 4px 12px rgba(16,185,129,.3)}
+        .btn-modal-action:hover{transform:translateY(-1px);filter:brightness(1.05)}
+        .btn-modal-action:disabled{opacity:.5;cursor:not-allowed;transform:none}
+        .btn-modal-cancel{border:1.5px solid var(--admin-border);background:white;
+            color:var(--admin-text-muted);padding:.55rem 1.25rem;border-radius:9px;
+            font-weight:600;font-size:.875rem;font-family:inherit;transition:all .22s;cursor:pointer}
+        .btn-modal-cancel:hover{background:#f3f4f6;color:var(--admin-text)}
+        .toast-container{z-index:9999}
+        #toastNotificacion{min-width:300px;border-radius:12px!important;
+            box-shadow:0 8px 32px rgba(0,0,0,.2)!important}
+        #toastNotificacion .toast-body{padding:.875rem 1.25rem;font-size:.9rem;font-weight:500;
+            display:flex;align-items:center;gap:.5rem}
+        @keyframes fadeInDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes fadeInUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+        @media(max-width:1200px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
+        @media(max-width:991.98px){
+            .admin-sidebar{position:fixed;left:-260px;top:70px;height:calc(100vh - 70px);z-index:999;
+                box-shadow:4px 0 16px rgba(0,0,0,.1)}
+            .admin-sidebar.show{transform:translateX(260px)}
+            .admin-main{padding:1rem}.btn-toggle-sidebar{display:block}
+            .page-header{flex-direction:column;gap:1rem;text-align:center}
+        }
+        @media(max-width:576px){.stats-grid{grid-template-columns:1fr}}
+        @media(min-width:992px){.btn-toggle-sidebar{display:none!important}}
+
+        .btn-action.editar{border-color:#bfdbfe;color:var(--admin-primary)}
+        .btn-action.editar:hover{background:var(--admin-primary);border-color:var(--admin-primary);color:white;transform:translateY(-1px)}
+    </style>
+</head>
+<body>
+
+<nav class="admin-navbar">
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-3">
+            <button class="btn-toggle-sidebar d-lg-none" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+            <a class="navbar-brand" th:href="@{/admin/dashboard}">
+                <span class="brand-icon"><i class="fas fa-shield-alt"></i></span><span>Admin NotyGo</span>
+            </a>
+        </div>
+        <div class="user-info">
+            <span class="user-chip d-none d-sm-flex"><i class="fas fa-user-circle"></i>
+                <span th:text="${session.usuarioLogueado}">Admin</span></span>
+            <form th:action="@{/logout}" method="post" style="display:inline;">
+                <button type="submit" class="btn-logout"><i class="fas fa-sign-out-alt me-1"></i>Salir</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div class="admin-wrapper">
+    <aside class="admin-sidebar" id="adminSidebar">
+        <nav class="nav flex-column">
+            <a th:href="@{/admin/dashboard}" class="nav-link" th:classappend="${activePage=='dashboard'}?'active':''">
+                <i class="fas fa-home"></i><span>Dashboard</span></a>
+            <a th:href="@{/admin/usuarios}" class="nav-link" th:classappend="${activePage=='usuarios'}?'active':''">
+                <i class="fas fa-users"></i><span>Usuarios</span></a>
+            <a th:href="@{/admin/tareas}" class="nav-link" th:classappend="${activePage=='tareas'}?'active':''">
+                <i class="fas fa-tasks"></i><span>Tareas</span></a>
+            <a th:href="@{/admin/suscripciones}" class="nav-link" th:classappend="${activePage=='suscripciones'}?'active':''">
+                <i class="fas fa-crown"></i><span>Suscripciones</span></a>
+            <a th:href="@{/admin/auditoria}" class="nav-link" th:classappend="${activePage=='auditoria'}?'active':''">
+                <i class="fas fa-history"></i><span>Auditoría</span></a>
+            <div class="divider"></div>
+            <a th:href="@{/cliente/home}" class="nav-link">
+                <i class="fas fa-arrow-left"></i><span>Volver al Cliente</span></a>
+        </nav>
+    </aside>
+
+    <main class="admin-main">
+        <div class="page-header">
+            <h2>
+                <span class="header-icon"><i class="fas fa-crown"></i></span>
+                Gestión de Suscripciones
+            </h2>
+            <span class="badge-admin"><i class="fas fa-crown"></i>Premium</span>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card c-blue">
+                <div class="sc-glow"></div><div class="sc-glow2"></div>
+                <div class="sc-icon"><i class="fas fa-users"></i></div>
+                <div class="sc-value" th:text="${stats?.total ?: 0}">0</div>
+                <div class="sc-label">Total Suscripciones</div>
+                <div class="sc-trend"><i class="fas fa-layer-group"></i> Registradas</div>
+            </div>
+            <div class="stat-card c-green">
+                <div class="sc-glow"></div><div class="sc-glow2"></div>
+                <div class="sc-icon"><i class="fas fa-check-circle"></i></div>
+                <div class="sc-value" th:text="${stats?.activas ?: 0}">0</div>
+                <div class="sc-label">Activas</div>
+                <div class="sc-trend"><i class="fas fa-circle" style="font-size:.5rem"></i> En curso</div>
+            </div>
+            <div class="stat-card c-amber">
+                <div class="sc-glow"></div><div class="sc-glow2"></div>
+                <div class="sc-icon"><i class="fas fa-clock"></i></div>
+                <div class="sc-value" th:text="${stats?.expiradas ?: 0}">0</div>
+                <div class="sc-label">Expiradas</div>
+                <div class="sc-trend"><i class="fas fa-hourglass-end"></i> Vencidas</div>
+            </div>
+            <div class="stat-card c-purple">
+                <div class="sc-glow"></div><div class="sc-glow2"></div>
+                <div class="sc-icon"><i class="fas fa-dollar-sign"></i></div>
+                <div class="sc-value">$<span th:text="${stats?.ingresosTotales ?: 0}">0</span></div>
+                <div class="sc-label">Ingresos Totales</div>
+                <div class="sc-trend"><i class="fas fa-arrow-up"></i> Recaudado</div>
+            </div>
+        </div>
+
+        <div class="filters-card">
+            <div class="filter-title">
+                <i class="fas fa-filter" style="color:var(--admin-primary)"></i> Filtros de búsqueda
+            </div>
+            <form th:action="@{/admin/suscripciones}" method="get">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-2">
+                        <label class="form-label">Estado</label>
+                        <select class="form-select" name="estado">
+                            <option value="">Todos</option>
+                            <option value="ACTIVA" th:selected="${filtroEstado=='ACTIVA'}">Activa</option>
+                            <option value="CANCELADA" th:selected="${filtroEstado=='CANCELADA'}">Cancelada</option>
+                            <option value="EXPIRADA" th:selected="${filtroEstado=='EXPIRADA'}">Expirada</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Plan</label>
+                        <input type="text" class="form-control" name="plan" placeholder="Ej. Premium" th:value="${filtroPlan}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Usuario</label>
+                        <input type="text" class="form-control" name="usuario" placeholder="Nombre o email..." th:value="${filtroUsuario}">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Desde</label>
+                        <input type="date" class="form-control" name="fechaInicio" th:value="${filtroFechaInicio}">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Hasta</label>
+                        <input type="date" class="form-control" name="fechaFin" th:value="${filtroFechaFin}">
+                    </div>
+                    <div class="col-md-1 d-flex gap-2">
+                        <button type="submit" class="btn-filter-search w-100">
+                            <i class="fas fa-search"></i>
+                        </button>
+                        <a th:href="@{/admin/suscripciones}" class="btn-filter-reset">
+                            <i class="fas fa-redo"></i>
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="table-card">
+            <div class="table-card-header mb-2">
+                <span class="table-card-title">
+                    <i class="fas fa-crown" style="color:#7c3aed"></i> Lista de Suscripciones
+                </span>
+                <span class="badge" style="background:#f5f3ff;color:#7c3aed;border:1.5px solid #ddd6fe;
+                    font-size:.7rem;font-weight:700;padding:.35rem .8rem;border-radius:50px"
+                      th:text="${totalElements != null ? totalElements + ' registros' : '0 registros'}">0 registros</span>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                    <tr>
+                        <th class="ps-4">ID</th>
+                        <th>Usuario</th>
+                        <th>Plan</th>
+                        <th>Precio</th>
+                        <th>Inicio</th>
+                        <th>Fin</th>
+                        <th>Estado</th>
+                        <th class="text-end pe-4">Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="sus : ${suscripciones != null ? suscripciones : {}}">
+                        <td class="ps-4">
+                            <span style="font-size:.78rem;font-weight:700;color:var(--admin-text-muted)">
+                                #<span th:text="${sus.id}">1</span>
+                            </span>
+                        </td>
+                        <td>
+                            <div class="user-cell">
+                                <div class="user-avatar"
+                                     th:text="${sus.usuario?.nombre != null ? #strings.substring(sus.usuario.nombre,0,1) : '?'}">U</div>
+                                <div>
+                                    <div class="user-name" th:text="${sus.usuario?.nombre}">Usuario</div>
+                                    <div class="user-email" th:text="${sus.usuario?.email}">email@ejemplo.com</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge-plan" th:text="${sus.plan?.nombre}">Premium</span>
+                        </td>
+                        <td>
+                            <span class="fw-700" style="font-size:.85rem" th:text="'$' + ${sus.precioPagado}">$9.99</span>
+                        </td>
+                        <td style="font-size:.82rem;color:var(--admin-text-muted)"
+                            th:text="${sus.fechaInicio != null ? #temporals.format(sus.fechaInicio,'dd/MM/yyyy') : '-'}">01/01/2026</td>
+                        <td style="font-size:.82rem;color:var(--admin-text-muted)"
+                            th:text="${sus.fechaFin != null ? #temporals.format(sus.fechaFin,'dd/MM/yyyy') : '-'}">31/01/2026</td>
+                        <td>
+                            <span class="badge-estado"
+                                  th:classappend="${sus.estado=='ACTIVA'}?'activa':(${sus.estado=='CANCELADA'}?'cancelada':(${sus.estado=='EXPIRADA'}?'expirada':'eliminada'))">
+                                <span class="status-dot"
+                                      th:classappend="${sus.estado=='ACTIVA'}?'activa':(${sus.estado=='CANCELADA'}?'cancelada':(${sus.estado=='EXPIRADA'}?'expirada':'eliminada'))"></span>
+                                <span th:text="${sus.estado}">ACTIVA</span>
+                            </span>
+                        </td>
+                        <td class="text-end pe-4">
+                            <div class="d-flex justify-content-end gap-1">
+                                <!-- ✅ Ver detalle - CORREGIDO con th:data-* -->
+                                <button class="btn-action ver"
+                                        title="Ver detalles"
+                                        th:data-id="${sus.id}"
+                                        onclick="abrirModalVer(this)">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <!-- ✅ EDITAR - NUEVO BOTÓN -->
+                                <button class="btn-action editar"
+                                        title="Editar suscripción"
+                                        th:data-id="${sus.id}"
+                                        th:data-usuario="${sus.usuario?.id}"
+                                        th:data-plan="${sus.plan?.id}"
+                                        th:data-precio="${sus.precioPagado}"
+                                        th:data-fecha-inicio="${sus.fechaInicio}"
+                                        th:data-fecha-fin="${sus.fechaFin}"
+                                        th:data-estado="${sus.estado}"
+                                        onclick="abrirModalEditar(this)">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+
+
+                                <!-- ✅ Cancelar - CORREGIDO con th:data-* -->
+                                <button class="btn-action cancelar"
+                                        title="Cancelar/Desactivar suscripción"
+                                        th:data-id="${sus.id}"
+                                        th:data-usuario="${sus.usuario?.nombre}"
+                                        th:data-plan="${sus.plan?.nombre}"
+                                        onclick="abrirModalCancelar(this)">
+                                    <i class="fas fa-ban"></i>
+                                </button>
+
+                                <!-- ✅ Restaurar - CORREGIDO con th:data-* -->
+                                <button th:if="${sus.estado == 'CANCELADA' or sus.estado == 'EXPIRADA'}"
+                                        class="btn-action restaurar"
+                                        title="Restaurar suscripción"
+                                        th:data-id="${sus.id}"
+                                        th:data-usuario="${sus.usuario?.nombre}"
+                                        th:data-plan="${sus.plan?.nombre}"
+                                        onclick="abrirModalRestaurar(this)">
+                                    <i class="fas fa-undo"></i>
+                                </button>
+
+                                <!-- ✅ Eliminar - CORREGIDO con th:data-* -->
+                                <button th:if="${sus.estado != 'ELIMINADA'}"
+                                        class="btn-action eliminar"
+                                        title="Eliminar registro"
+                                        th:data-id="${sus.id}"
+                                        th:data-usuario="${sus.usuario?.nombre}"
+                                        th:data-plan="${sus.plan?.nombre}"
+                                        onclick="abrirModalEliminar(this)">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${suscripciones == null or suscripciones.isEmpty()}">
+                        <td colspan="8">
+                            <div class="empty-state">
+                                <i class="fas fa-crown"></i>
+                                <h5>No se encontraron suscripciones</h5>
+                                <p class="mb-0 text-muted small">Intenta ajustar los filtros de búsqueda</p>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="pagination-wrapper">
+            <ul class="google-pagination">
+                <li class="pg-nav" th:classappend="${currentPage==0}?'disabled':''">
+                    <a th:if="${currentPage>0}"
+                       th:href="@{/admin/suscripciones(page=${currentPage-1},size=${pageSize},estado=${filtroEstado},plan=${filtroPlan},usuario=${filtroUsuario},fechaInicio=${filtroFechaInicio},fechaFin=${filtroFechaFin},sortBy=${sortBy},sortDir=${sortDir})}">
+                        <i class="fas fa-chevron-left" style="font-size:.75rem"></i></a>
+                    <span th:if="${currentPage==0 or currentPage==null}"><i class="fas fa-chevron-left" style="font-size:.75rem"></i></span>
+                </li>
+                <li th:classappend="${currentPage==0 or currentPage==null}?'active':''">
+                    <a th:if="${currentPage!=0 and currentPage!=null}"
+                       th:href="@{/admin/suscripciones(page=0,size=${pageSize},estado=${filtroEstado},plan=${filtroPlan},usuario=${filtroUsuario},fechaInicio=${filtroFechaInicio},fechaFin=${filtroFechaFin},sortBy=${sortBy},sortDir=${sortDir})}">1</a>
+                    <span th:if="${currentPage==0 or currentPage==null}">1</span>
+                </li>
+                <li th:each="i:${#numbers.sequence((currentPage!=null?currentPage:0)-1,(currentPage!=null?currentPage:0)+1)}"
+                    th:if="${i>0 and (totalPages==null or i<totalPages-1)}"
+                    th:classappend="${i==currentPage}?'active':''">
+                    <a th:if="${i!=currentPage}"
+                       th:href="@{/admin/suscripciones(page=${i},size=${pageSize},estado=${filtroEstado},plan=${filtroPlan},usuario=${filtroUsuario},fechaInicio=${filtroFechaInicio},fechaFin=${filtroFechaFin},sortBy=${sortBy},sortDir=${sortDir})}"
+                       th:text="${i+1}">2</a>
+                    <span th:if="${i==currentPage}" th:text="${i+1}">2</span>
+                </li>
+                <li th:if="${totalPages!=null and totalPages>1}" th:classappend="${currentPage==totalPages-1}?'active':''">
+                    <a th:if="${currentPage!=totalPages-1}"
+                       th:href="@{/admin/suscripciones(page=${totalPages-1},size=${pageSize},estado=${filtroEstado},plan=${filtroPlan},usuario=${filtroUsuario},fechaInicio=${filtroFechaInicio},fechaFin=${filtroFechaFin},sortBy=${sortBy},sortDir=${sortDir})}"
+                       th:text="${totalPages}">10</a>
+                    <span th:if="${currentPage==totalPages-1}" th:text="${totalPages}">10</span>
+                </li>
+                <li class="pg-nav" th:classappend="${totalPages==null or currentPage==totalPages-1}?'disabled':''">
+                    <a th:if="${totalPages!=null and currentPage<totalPages-1}"
+                       th:href="@{/admin/suscripciones(page=${currentPage+1},size=${pageSize},estado=${filtroEstado},plan=${filtroPlan},usuario=${filtroUsuario},fechaInicio=${filtroFechaInicio},fechaFin=${filtroFechaFin},sortBy=${sortBy},sortDir=${sortDir})}">
+                        <i class="fas fa-chevron-right" style="font-size:.75rem"></i></a>
+                    <span th:if="${totalPages==null or currentPage==totalPages-1}"><i class="fas fa-chevron-right" style="font-size:.75rem"></i></span>
+                </li>
+            </ul>
+            <p class="pagination-info">
+                <span th:if="${totalElements!=null and totalElements>0}">
+                    Mostrando <strong th:text="${(currentPage!=null?currentPage:0)*(pageSize!=null?pageSize:10)+1}">1</strong> –
+                    <strong th:text="${totalElements<((currentPage!=null?currentPage:0)+1)*(pageSize!=null?pageSize:10)?totalElements:((currentPage!=null?currentPage:0)+1)*(pageSize!=null?pageSize:10)}">10</strong>
+                    de <strong th:text="${totalElements}">100</strong> suscripciones
+                </span>
+                <span th:if="${totalElements==null or totalElements==0}">Sin resultados</span>
+            </p>
+        </div>
+
+        <div class="text-center mb-3">
+            <a th:href="@{/admin/dashboard}" class="btn-back"><i class="fas fa-arrow-left"></i>Volver al Dashboard</a>
+        </div>
+    </main>
+</div>
+
+<!-- Modales (sin cambios) -->
+<div class="modal fade" id="modalVerDetalle" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content animate__animated animate__zoomIn">
+            <div class="modal-header-custom blue">
+                <h5 class="modal-title">
+                    <span class="header-icon-sm"><i class="fas fa-info-circle"></i></span>
+                    Detalle de Suscripción
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="user-summary">
+                    <div class="row g-3">
+                        <div class="col-6"><div class="label">ID</div><div class="value" id="detalleId">#-</div></div>
+                        <div class="col-6"><div class="label">Estado</div><div class="value"><span id="detalleEstado" class="badge-estado">-</span></div></div>
+                        <div class="col-6"><div class="label">Usuario</div><div class="value" id="detalleUsuario">-</div></div>
+                        <div class="col-6"><div class="label">Email</div><div class="value" id="detalleEmail">-</div></div>
+                        <div class="col-6"><div class="label">Plan</div><div class="value" id="detallePlan">-</div></div>
+                        <div class="col-6"><div class="label">Precio Pagado</div><div class="value" id="detallePrecio">$-</div></div>
+                        <div class="col-6"><div class="label">Inicio</div><div class="value" id="detalleInicio">-</div></div>
+                        <div class="col-6"><div class="label">Fin</div><div class="value" id="detalleFin">-</div></div>
+                        <div class="col-6"><div class="label">Método de Pago</div><div class="value" id="detalleMetodo">-</div></div>
+                        <div class="col-6"><div class="label">Transacción</div><div class="value" id="detalleTransaccion">-</div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-modal-cancel" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalCancelar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content animate__animated animate__zoomIn">
+            <div class="modal-header-custom warning">
+                <h5 class="modal-title">
+                    <span class="header-icon-sm"><i class="fas fa-ban"></i></span>Cancelar Suscripción
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="modal-alert-icon warning"><i class="fas fa-exclamation-triangle"></i></div>
+                <h6 class="fw-bold mb-1">¿Confirmar cancelación?</h6>
+                <p class="text-muted small mb-3">Estás a punto de cancelar la suscripción de:</p>
+                <div class="user-summary text-start mb-3">
+                    <div class="row g-2">
+                        <div class="col-12"><div class="label">Usuario</div><div class="value" id="cancelarUsuario">-</div></div>
+                        <div class="col-12"><div class="label">Plan</div><div class="value" id="cancelarPlan">-</div></div>
+                    </div>
+                </div>
+                <div class="modal-info-box warning text-start">
+                    <i class="fas fa-info-circle me-1"></i>
+                    El usuario perderá inmediatamente sus beneficios premium.
+                </div>
+                <div class="form-check text-start mt-3">
+                    <input class="form-check-input" type="checkbox" id="confirmarCancelacionCheck">
+                    <label class="form-check-label small" for="confirmarCancelacionCheck">
+                        Entiendo que esta acción no se puede deshacer
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn-modal-cancel" data-bs-dismiss="modal">No, mantener</button>
+                <button type="button" class="btn-modal-action warning" id="btnConfirmarCancelar" disabled>
+                    <i class="fas fa-ban"></i> Sí, cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalEliminar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content animate__animated animate__zoomIn">
+            <div class="modal-header-custom danger">
+                <h5 class="modal-title">
+                    <span class="header-icon-sm"><i class="fas fa-trash-alt"></i></span>Eliminar Registro
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="modal-alert-icon danger"><i class="fas fa-exclamation-triangle"></i></div>
+                <h6 class="fw-bold mb-1">¿Eliminar permanentemente?</h6>
+                <p class="text-muted small mb-3">Este registro de suscripción será eliminado:</p>
+                <div class="user-summary text-start mb-3">
+                    <div class="row g-2">
+                        <div class="col-12"><div class="label">Usuario</div><div class="value" id="eliminarUsuario">-</div></div>
+                        <div class="col-12"><div class="label">Plan</div><div class="value" id="eliminarPlan">-</div></div>
+                        <div class="col-12"><div class="label">ID</div><div class="value" id="eliminarId">#-</div></div>
+                    </div>
+                </div>
+                <div class="modal-info-box danger text-start">
+                    <i class="fas fa-exclamation-circle me-1"></i>
+                    Esta acción es irreversible. El historial se perderá.
+                </div>
+                <div class="form-check text-start mt-3">
+                    <input class="form-check-input" type="checkbox" id="confirmarEliminacionCheck">
+                    <label class="form-check-label small" for="confirmarEliminacionCheck">
+                        Confirmo que deseo eliminar este registro permanentemente
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn-modal-cancel" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn-modal-action danger" id="btnConfirmarEliminar" disabled>
+                    <i class="fas fa-trash"></i> Sí, eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalRestaurar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content animate__animated animate__zoomIn">
+            <div class="modal-header-custom success">
+                <h5 class="modal-title">
+                    <span class="header-icon-sm"><i class="fas fa-undo"></i></span>Restaurar Suscripción
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="modal-alert-icon success"><i class="fas fa-check-circle"></i></div>
+                <h6 class="fw-bold mb-1">¿Restaurar esta suscripción?</h6>
+                <p class="text-muted small mb-3">La suscripción volverá al estado <strong>ACTIVA</strong>:</p>
+                <div class="user-summary text-start mb-3">
+                    <div class="row g-2">
+                        <div class="col-12"><div class="label">Usuario</div><div class="value" id="restaurarUsuario">-</div></div>
+                        <div class="col-12"><div class="label">Plan</div><div class="value" id="restaurarPlan">-</div></div>
+                        <div class="col-12"><div class="label">Estado actual</div><div class="value"><span id="restaurarEstadoActual" class="badge-estado cancelada">-</span></div></div>
+                    </div>
+                </div>
+                <div class="modal-info-box success text-start">
+                    <i class="fas fa-lightbulb me-1"></i>
+                    El usuario recuperará inmediatamente sus beneficios premium.
+                </div>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn-modal-cancel" data-bs-dismiss="modal">No restaurar</button>
+                <button type="button" class="btn-modal-action success" id="btnConfirmarRestaurar">
+                    <i class="fas fa-undo"></i> Sí, restaurar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="toastNotificacion" class="toast align-items-center text-white border-0 animate__animated animate__fadeInRight"
+         role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body"><i class="fas fa-check-circle me-2"></i><span id="toastMensaje">Operación exitosa</span></div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+</div>
+<!-- Modal: Editar Suscripción -->
+<div class="modal fade" id="modalEditar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content animate__animated animate__zoomIn">
+            <div class="modal-header-custom blue">
+                <h5 class="modal-title">
+                    <span class="header-icon-sm"><i class="fas fa-edit"></i></span>
+                    Editar Suscripción
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formEditarSuscripcion">
+                    <input type="hidden" id="editarId">
+
+                    <div class="mb-3">
+                        <label class="form-label">Estado</label>
+                        <select class="form-select" id="editarEstado" required>
+                            <option value="ACTIVA">Activa</option>
+                            <option value="CANCELADA">Cancelada</option>
+                            <option value="EXPIRADA">Expirada</option>
+                            <option value="VENCIDA">Vencida</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Fecha de Inicio</label>
+                        <input type="date" class="form-control" id="editarFechaInicio" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Fecha de Fin</label>
+                        <input type="date" class="form-control" id="editarFechaFin" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Precio Pagado</label>
+                        <input type="number" step="0.01" class="form-control" id="editarPrecio" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn-modal-cancel" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn-modal-action success" id="btnConfirmarEditar">
+                    <i class="fas fa-save"></i> Guardar Cambios
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    let idSuscripcionActual = null;
+
+    function toggleSidebar(){document.getElementById('adminSidebar').classList.toggle('show')}
+    document.addEventListener('click',function(e){
+        const sb=document.getElementById('adminSidebar'),tb=document.querySelector('.btn-toggle-sidebar');
+        if(window.innerWidth<992&&sb.classList.contains('show')&&!sb.contains(e.target)&&!tb.contains(e.target))
+            sb.classList.remove('show');
+    });
+
+    function mostrarToast(msg,tipo='success'){
+        const el=document.getElementById('toastNotificacion');
+        const body=el.querySelector('.toast-body');
+        const iconos={success:'fa-check-circle',danger:'fa-exclamation-circle',warning:'fa-info-circle'};
+        const bgs={success:'bg-success',danger:'bg-danger',warning:'bg-warning text-dark'};
+        el.className=`toast align-items-center border-0 animate__animated animate__fadeInRight ${bgs[tipo]||'bg-success'} text-white`;
+        body.innerHTML=`<i class="fas ${iconos[tipo]||'fa-check-circle'} me-2"></i><span>${msg}</span>`;
+        new bootstrap.Toast(el,{delay:3000}).show();
+    }
+
+    function getBadgeClass(estado){
+        return{ACTIVA:'activa',CANCELADA:'cancelada',EXPIRADA:'expirada',ELIMINADA:'eliminada'}[estado]||'eliminada';
+    }
+
+    // ✅ Abrir modal: Ver detalle (recibe el botón como parámetro)
+    function abrirModalVer(btn){
+        const id = btn.dataset.id;
+        fetch('/admin/suscripciones/'+id)
+            .then(r=>r.json())
+            .then(d=>{
+                document.getElementById('detalleId').textContent='#'+d.id;
+                document.getElementById('detalleUsuario').textContent=d.usuario;
+                document.getElementById('detalleEmail').textContent=d.email;
+                document.getElementById('detallePlan').textContent=d.plan;
+                document.getElementById('detallePrecio').textContent='$'+d.precio;
+                document.getElementById('detalleInicio').textContent=d.fechaInicio;
+                document.getElementById('detalleFin').textContent=d.fechaFin;
+                document.getElementById('detalleMetodo').textContent=d.metodoPago;
+                document.getElementById('detalleTransaccion').textContent=d.transaccion;
+                const el=document.getElementById('detalleEstado');
+                el.textContent=d.estado;
+                el.className='badge-estado '+getBadgeClass(d.estado);
+                new bootstrap.Modal(document.getElementById('modalVerDetalle')).show();
+            }).catch(()=>mostrarToast('Error al cargar detalles','danger'));
+    }
+
+    // ✅ Abrir modal: Cancelar (recibe el botón como parámetro)
+    function abrirModalCancelar(btn){
+        idSuscripcionActual = btn.dataset.id;
+        document.getElementById('cancelarUsuario').textContent = btn.dataset.usuario;
+        document.getElementById('cancelarPlan').textContent = btn.dataset.plan;
+        document.getElementById('confirmarCancelacionCheck').checked = false;
+        document.getElementById('btnConfirmarCancelar').disabled = true;
+        new bootstrap.Modal(document.getElementById('modalCancelar')).show();
+    }
+
+    // ✅ Abrir modal: Eliminar (recibe el botón como parámetro)
+    function abrirModalEliminar(btn) {
+    // Leer datos desde los atributos data-*
+    const id = btn.dataset.id;
+    const usuario = btn.dataset.usuario;
+    const plan = btn.dataset.plan;
+
+    idSuscripcionActual = id;
+
+    // Actualizar el contenido del modal
+    document.getElementById('eliminarUsuario').textContent = usuario;
+    document.getElementById('eliminarPlan').textContent = plan;
+    document.getElementById('eliminarId').textContent = '#' + id;
+
+    // Resetear checkbox
+    document.getElementById('confirmarEliminacionCheck').checked = false;
+    document.getElementById('btnConfirmarEliminar').disabled = true;
+
+    // Mostrar modal
+    new bootstrap.Modal(document.getElementById('modalEliminar')).show();
+}
+
+    // ✅ Abrir modal: Restaurar (recibe el botón como parámetro)
+    function abrirModalRestaurar(btn){
+        idSuscripcionActual = btn.dataset.id;
+        document.getElementById('restaurarUsuario').textContent = btn.dataset.usuario;
+        document.getElementById('restaurarPlan').textContent = btn.dataset.plan;
+        const el=document.getElementById('restaurarEstadoActual');
+        el.textContent='Cancelada / Expirada';
+        el.className='badge-estado cancelada';
+        new bootstrap.Modal(document.getElementById('modalRestaurar')).show();
+    }
+
+    // ✅ Checkboxes de confirmación
+    document.getElementById('confirmarCancelacionCheck')?.addEventListener('change',function(e){
+        document.getElementById('btnConfirmarCancelar').disabled=!e.target.checked;
+    });
+    document.getElementById('confirmarEliminacionCheck')?.addEventListener('change',function(e){
+        document.getElementById('btnConfirmarEliminar').disabled=!e.target.checked;
+    });
+
+    // ✅ Función genérica para llamadas API
+    function callApi(url,modalId,msgOk){
+        fetch(url,{method:'POST'})
+            .then(r=>r.json())
+            .then(data=>{
+                bootstrap.Modal.getInstance(document.getElementById(modalId))?.hide();
+                if(data.success){
+                    mostrarToast(msgOk,'success');
+                    setTimeout(()=>location.reload(),1400);
+                }else{
+                    mostrarToast(data.message||'Error en la operación','danger');
+                }
+            })
+            .catch(err=>{
+                console.error('Error:',err);
+                mostrarToast('Error de conexión','danger');
+            });
+    }
+
+    // ✅ Event listeners para botones de acción
+    document.getElementById('btnConfirmarCancelar')?.addEventListener('click',function(){
+        if(idSuscripcionActual){
+            callApi('/admin/suscripciones/'+idSuscripcionActual+'/cambiar-estado?nuevoEstado=CANCELADA',
+                    'modalCancelar','Suscripción cancelada correctamente');
+        }
+    });
+
+    document.getElementById('btnConfirmarEliminar')?.addEventListener('click',function(){
+        if(idSuscripcionActual){
+            callApi('/admin/suscripciones/'+idSuscripcionActual+'/eliminar',
+                    'modalEliminar','Registro eliminado correctamente');
+        }
+    });
+
+    document.getElementById('btnConfirmarRestaurar')?.addEventListener('click',function(){
+        if(idSuscripcionActual){
+            callApi('/admin/suscripciones/'+idSuscripcionActual+'/cambiar-estado?nuevoEstado=ACTIVA',
+                    'modalRestaurar','Suscripción restaurada correctamente');
+        }
+    });
+
+    // ✅ Mostrar toast si viene de redirect con mensaje
+    document.addEventListener('DOMContentLoaded',function(){
+        const msg=/*[[${toastMessage}]]*/null;
+        const tipo=/*[[${toastType}]]*/null;
+        if(msg)mostrarToast(msg,tipo||'success');
+    });
+    // ✅ Abrir modal: Editar
+function abrirModalEditar(btn) {
+    idSuscripcionActual = btn.dataset.id;
+
+    // Cargar datos en el formulario
+    document.getElementById('editarId').value = btn.dataset.id;
+    document.getElementById('editarEstado').value = btn.dataset.estado;
+    document.getElementById('editarFechaInicio').value = btn.dataset.fechaInicio;
+    document.getElementById('editarFechaFin').value = btn.dataset.fechaFin;
+    document.getElementById('editarPrecio').value = btn.dataset.precio;
+
+    new bootstrap.Modal(document.getElementById('modalEditar')).show();
+}
+
+// ✅ Guardar edición
+document.getElementById('btnConfirmarEditar')?.addEventListener('click', function() {
+    if (!idSuscripcionActual) return;
+
+    const data = {
+        estado: document.getElementById('editarEstado').value,
+        fechaInicio: document.getElementById('editarFechaInicio').value,
+        fechaFin: document.getElementById('editarFechaFin').value,
+        precioPagado: parseFloat(document.getElementById('editarPrecio').value)
+    };
+
+    fetch('/admin/suscripciones/' + idSuscripcionActual + '/editar', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(r => r.json())
+    .then(result => {
+        bootstrap.Modal.getInstance(document.getElementById('modalEditar'))?.hide();
+        if (result.success) {
+            mostrarToast('Suscripción actualizada correctamente', 'success');
+            setTimeout(() => location.reload(), 1400);
+        } else {
+            mostrarToast(result.message || 'Error al actualizar', 'danger');
+        }
+    })
+    .catch(err => {
+        console.error('Error:', err);
+        mostrarToast('Error de conexión', 'danger');
+    });
+});
+</script>
+</body>
+</html>

@@ -1,6 +1,7 @@
 package com.easydates.easydateap.controller;
 
 import com.easydates.easydateap.entity.Tarea;
+import com.easydates.easydateap.entity.Usuario;
 import com.easydates.easydateap.service.ICategoriaService;
 import com.easydates.easydateap.service.IEtiquetaService;
 import com.easydates.easydateap.service.ITareaService;
@@ -42,16 +43,20 @@ public class ClienteController {
             return "redirect:/login";
         }
 
-
         System.out.println("✅ Acceso permitido a: " + nombre + " (ID: " + usuarioId + ")");
 
-        // Datos del usuario
-        Map<String, String> usuarioMap = new HashMap<>();
-        usuarioMap.put("nombre", nombre);
-        usuarioMap.put("rol", rol != null ? rol : "USUARIO");
-        model.addAttribute("usuario", usuarioMap);
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
 
-        //Estadísticas desde BD
+        if (usuario != null) {
+            model.addAttribute("usuario", usuario);
+        } else {
+            Map<String, String> usuarioMap = new HashMap<>();
+            usuarioMap.put("nombre", nombre);
+            usuarioMap.put("rol", rol != null ? rol : "USUARIO");
+            model.addAttribute("usuario", usuarioMap);
+        }
+
+        // Estadísticas desde BD
         model.addAttribute("totalTareas", tareaService.contarTotal(usuarioId));
         model.addAttribute("tareasPendientesCount", tareaService.contarPendientes(usuarioId));
         model.addAttribute("tareasCompletadas", tareaService.contarCompletadas(usuarioId));

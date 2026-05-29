@@ -7,11 +7,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-//HOLLAAAA
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -22,7 +21,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // Rutas públicas
+                        // ✅ Rutas públicas
                         .requestMatchers(
                                 "/login",
                                 "/registro",
@@ -33,16 +32,19 @@ public class SecurityConfig {
                                 "/admin/migrate-passwords"
                         ).permitAll()
 
-                        // Rutas de cliente (cualquier usuario autenticado)
+                        // ✅ Rutas de cliente (cualquier usuario autenticado)
                         .requestMatchers("/cliente/**").authenticated()
 
-                        // ✅ Rutas de admin: hasRole() agrega "ROLE_" automáticamente
+                        // ✅ NUEVO: Rutas de suscripciones (usuarios autenticados)
+                        .requestMatchers("/suscripciones/**").authenticated()
+
+                        // ✅ Rutas de admin: solo ADMINISTRADOR
                         .requestMatchers("/admin/**").hasRole("ADMINISTRADOR")
 
                         // Cualquier otra ruta requiere autenticación
                         .anyRequest().authenticated()
                 )
-                .formLogin(form -> form.disable()) // Login manual en LoginController
+                .formLogin(form -> form.disable())
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout=true")
@@ -53,4 +55,5 @@ public class SecurityConfig {
 
         return http.build();
     }
+
 }

@@ -387,6 +387,12 @@
             <a th:href="@{/admin/tareas}" class="nav-link"
                th:classappend="${activePage == 'tareas'} ? 'active' : ''">
                 <i class="fas fa-tasks"></i> <span>Tareas</span>
+
+            </a>
+
+            <a th:href="@{/admin/suscripciones}" class="nav-link"
+               th:classappend="${activePage == 'suscripciones'} ? 'active' : ''">
+                <i class="fas fa-crown"></i> <span>Suscripciones</span>
             </a>
             <a th:href="@{/admin/auditoria}" class="nav-link active"
                th:classappend="${activePage == 'auditoria'} ? 'active' : ''">

@@ -2,6 +2,8 @@ package com.easydates.easydateap.entity;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "usuarios")
 public class Usuario {
@@ -28,6 +30,12 @@ public class Usuario {
     // ✅ NUEVO: Campo para el tema (claro, oscuro, elegante)
     @Column(length = 20)
     private String tema = "claro";
+
+    @Column(name = "es_premium")
+    private Boolean esPremium = false;
+
+    @Column(name = "fecha_premium_expiracion")
+    private LocalDate fechaPremiumExpiracion;
 
     public Usuario() {
     }
@@ -93,6 +101,21 @@ public class Usuario {
         return "ACTIVO".equalsIgnoreCase(this.estado);
     }
 
+    public Boolean getEsPremium() {
+        return esPremium;
+    }
+
+    public void setEsPremium(Boolean esPremium) {
+        this.esPremium = esPremium;
+    }
+
+    public LocalDate getFechaPremiumExpiracion() {
+        return fechaPremiumExpiracion;
+    }
+
+    public void setFechaPremiumExpiracion(LocalDate fechaPremiumExpiracion) {
+        this.fechaPremiumExpiracion = fechaPremiumExpiracion;
+    }
 
 
 }

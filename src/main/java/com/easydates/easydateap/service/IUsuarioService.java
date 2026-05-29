@@ -27,6 +27,8 @@ public interface IUsuarioService {
 
     Usuario actualizar(Integer id, Usuario usuarioActualizado);
 
+    boolean actualizarRolPremium(Integer usuarioId, Integer rolId, Boolean esPremium, java.time.LocalDate fechaExpiracion);
+
     boolean eliminarLogico(Integer id);
 
     boolean eliminarPermanente(Integer id);

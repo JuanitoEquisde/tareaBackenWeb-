@@ -405,6 +405,11 @@
             <a th:href="@{/admin/dashboard}" class="nav-link"><i class="fas fa-home"></i> Dashboard</a>
             <a th:href="@{/admin/usuarios}" class="nav-link active"><i class="fas fa-users"></i> Usuarios</a>
             <a th:href="@{/admin/tareas}" class="nav-link"><i class="fas fa-tasks"></i> Tareas</a>
+            <!-- NUEVO: Enlace a Suscripciones Premium -->
+            <a th:href="@{/admin/suscripciones}" class="nav-link"
+               th:classappend="${activePage == 'suscripciones'} ? 'active' : ''">
+                <i class="fas fa-crown"></i> <span>Suscripciones</span>
+            </a>
             <a th:href="@{/admin/auditoria}" class="nav-link"><i class="fas fa-history"></i> Auditoría</a>
             <div class="divider"></div>
             <a th:href="@{/cliente/home}" class="nav-link"><i class="fas fa-arrow-left"></i> Volver al Cliente</a>

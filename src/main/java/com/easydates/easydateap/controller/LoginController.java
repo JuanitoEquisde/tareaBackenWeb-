@@ -48,6 +48,11 @@ public class LoginController {
         System.out.println("🔐 Intentando login para: " + email);
 
         Optional<Usuario> usuarioOpt = usuarioService.login(email, password);
+        if (usuarioOpt.isEmpty()) {
+            System.out.println("❌ [CONTROLLER] usuarioService.login() retornó Optional.empty()");
+            System.out.println("   Posibles causas: contraseña incorrecta, usuario inactivo, o filtro de rol");
+        }
+
 
         if (usuarioOpt.isPresent()) {
             Usuario usuario = usuarioOpt.get();

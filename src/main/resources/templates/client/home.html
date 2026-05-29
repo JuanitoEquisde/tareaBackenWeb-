@@ -241,7 +241,33 @@
             box-shadow: 0 4px 16px rgba(21,101,192,0.35);
             letter-spacing: 1px;
             margin-bottom: 0.75rem;
+            position: relative;
         }
+
+        /* ✅ PREMIUM AVATAR STYLES */
+        .avatar-large.premium {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            box-shadow: 0 4px 16px rgba(255, 215, 0, 0.45);
+            border: 3px solid #FFD700;
+        }
+
+        .avatar-crown {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: white;
+            box-shadow: 0 2px 8px rgba(255, 215, 0, 0.5);
+            border: 2px solid white;
+        }
+
         .user-info-section h6 {
             font-weight: 700;
             font-size: 0.95rem;
@@ -256,6 +282,22 @@
             background: var(--color-gray-100);
             padding: 2px 10px;
             border-radius: 99px;
+        }
+
+        /* ✅ PREMIUM BADGE */
+        .premium-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: white;
+            padding: 0.3rem 0.75rem;
+            border-radius: 99px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            margin-top: 0.5rem;
+            box-shadow: 0 2px 8px rgba(255, 215, 0, 0.35);
         }
 
         /* Main menu */
@@ -897,7 +939,7 @@
             <div class="dropdown">
                 <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button"
                    data-bs-toggle="dropdown" aria-expanded="false">
-                    <div class="avatar">
+                    <div class="avatar" th:classappend="${usuario.esPremium} ? 'premium' : ''">
                         <span th:text="${#strings.toUpperCase(usuario.nombre.length() >= 2 ? #strings.substring(usuario.nombre, 0, 2) : usuario.nombre)}">US</span>
                     </div>
                     <span class="d-none d-md-inline" style="font-size:0.875rem; font-weight:700;"
@@ -907,7 +949,8 @@
                     <li>
                         <h6 class="dropdown-header text-center">
                             <span th:text="${usuario.nombre}">Usuario</span>
-                            <small class="d-block text-muted" th:text="${usuario.rol}">Rol</small>
+                            <!-- ✅ CORREGIDO: Mostrar rol.nombre en lugar de rol -->
+                            <small class="d-block text-muted" th:text="${usuario.rol.nombre}">Rol</small>
                         </h6>
                     </li>
                     <li><hr class="dropdown-divider my-1"></li>
@@ -939,12 +982,20 @@
             <!-- Info Usuario -->
             <div class="user-info-section mb-4">
                 <div class="avatar-large-wrapper mb-2">
-                    <div class="avatar-large">
+                    <div class="avatar-large" th:classappend="${usuario.esPremium} ? 'premium' : ''">
                         <span th:text="${#strings.toUpperCase(usuario.nombre.length() >= 2 ? #strings.substring(usuario.nombre, 0, 2) : usuario.nombre)}">US</span>
+                        <!-- ✅ Corona para usuarios Premium -->
+                        <i class="fas fa-crown avatar-crown" th:if="${usuario.esPremium}" title="Usuario Premium"></i>
                     </div>
                 </div>
                 <h6 th:text="${usuario.nombre}">Juan Paz</h6>
-                <small th:text="${usuario.rol}">Usuario Estándar</small>
+                <!-- ✅ Badge Premium -->
+                <div th:if="${usuario.esPremium}" class="premium-badge">
+                    <i class="fas fa-crown"></i>
+                    <span>PREMIUM</span>
+                </div>
+                <!-- ✅ CORREGIDO: Mostrar rol.nombre en lugar de rol -->
+                <small th:unless="${usuario.esPremium}" th:text="${usuario.rol.nombre}">Usuario Estándar</small>
             </div>
 
             <!-- Menú Principal -->
@@ -965,6 +1016,14 @@
                     <a class="nav-link" th:href="@{/cliente/tareas}">
                         <i class="fas fa-tasks"></i>
                         <span>Todas las Tareas</span>
+                    </a>
+                </li>
+                <!-- ✅ NUEVO: Enlace Comprar Premium -->
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/suscripciones/comprar}" th:classappend="${activePage == 'premium'} ? 'active' : ''">
+                        <i class="fas fa-crown text-warning"></i>
+                        <span>Comprar Premium</span>
+                        <span class="badge bg-warning text-dark ms-auto">NEW</span>
                     </a>
                 </li>
             </ul>

@@ -152,22 +152,22 @@ public class AdminController {
         // ✅ OBTENER ESTADÍSTICAS USANDO EL NUEVO DTO
         DashboardStats stats = usuarioService.obtenerDashboardStats();
 
-        // ✅ OBTENER USUARIOS RECIENTES (manteniendo tu lógica existente)
+        // OBTENER USUARIOS RECIENTES (manteniendo tu lógica existente)
         List<Usuario> usuariosRecientes = usuarioService.buscarConFiltrosOr(null, null, null, null)
                 .stream()
                 .limit(5)
                 .toList();
 
-        // ✅ PASAR DATOS A LA VISTA
-        model.addAttribute("stats", stats);                    // ✅ DTO para stats cards
-        model.addAttribute("usuariosRecientes", usuariosRecientes); // ✅ Lista para tabla
-        model.addAttribute("activePage", "dashboard");          // ✅ Para sidebar active state
+        // PASAR DATOS A LA VISTA
+        model.addAttribute("stats", stats);
+        model.addAttribute("usuariosRecientes", usuariosRecientes);
+        model.addAttribute("activePage", "dashboard");
 
         return "admin/dashboard";
     }
 
     // =====================================================
-    // ✅ VISTA: Listar usuarios con PAGINACIÓN DEL SERVIDOR
+    //  VISTA: Listar usuarios con PAGINACIÓN DEL SERVIDOR
     // =====================================================
     @GetMapping("/usuarios")
     public String listarUsuarios(
@@ -175,7 +175,7 @@ public class AdminController {
             @RequestParam(required = false) String nombre,
             @RequestParam(required = false) String email,
             @RequestParam(required = false) String estado,
-            @RequestParam(defaultValue = "0") int page,      // Página 0-based para Spring
+            @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "asc") String sortDir,
@@ -194,7 +194,7 @@ public class AdminController {
                 : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        // ✅ Obtener página del servicio (paginación del servidor)
+        // Obtener página del servicio (paginación del servidor)
         Page<Usuario> paginaUsuarios = usuarioService.buscarUsuariosPaginados(
                 idBusqueda, nombreBusqueda, emailBusqueda, estadoBusqueda, pageable
         );
@@ -219,8 +219,8 @@ public class AdminController {
     }
 
     // =====================================================
-// ✅ VISTA: Listar tareas con PAGINACIÓN DEL SERVIDOR
-// =====================================================
+    // VISTA: Listar tareas con PAGINACIÓN DEL SERVIDOR
+    // =====================================================
     @GetMapping("/tareas")
     public String listarTareas(
             @RequestParam(required = false) String titulo,
@@ -429,6 +429,4 @@ public class AdminController {
             return ResponseEntity.internalServerError().body("Error: " + e.getMessage());
         }
     }
-
-
 }

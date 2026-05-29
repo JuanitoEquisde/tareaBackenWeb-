@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;  // ✅ IMPORTANTE: Agregar este import
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,20 +39,30 @@ public class UsuarioServiceImpl implements IUsuarioService {
     @Override
     @Transactional(readOnly = true)
     public Optional<Usuario> login(String email, String password) {
-        System.out.println("🔍 Email: " + email);
-        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmailWithRol(email);
+        System.out.println("🔍 [SERVICE] Buscando usuario: " + email);
 
-        if (usuarioOpt.isPresent()) {
-            Usuario usuario = usuarioOpt.get();
-            if ("ELIMINADO".equals(usuario.getEstado())) {
-                System.out.println("❌ Login rechazado: usuario eliminado del sistema");
-                return Optional.empty();
-            }
-            if (passwordEncoder.matches(password, usuario.getPassword()) && "ACTIVO".equals(usuario.getEstado())) {
-                return Optional.of(usuario);
-            }
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
+
+        if (usuarioOpt.isEmpty()) {
+            System.out.println("❌ Usuario no encontrado");
+            return Optional.empty();
         }
-        System.out.println("❌ Credenciales incorrectas o usuario inactivo");
+
+        Usuario usuario = usuarioOpt.get();
+
+        if (!"ACTIVO".equalsIgnoreCase(usuario.getEstado())) {
+            System.out.println("❌ Usuario no activo: " + usuario.getEstado());
+            return Optional.empty();
+        }
+
+        boolean passwordMatches = passwordEncoder.matches(password, usuario.getPassword());
+        System.out.println("🔑 Password matches: " + passwordMatches);
+
+        if (passwordMatches) {
+            System.out.println("✅ Login exitoso - Rol: " + usuario.getRol().getNombre());
+            return Optional.of(usuario);
+        }
+
         return Optional.empty();
     }
 
@@ -92,17 +103,49 @@ public class UsuarioServiceImpl implements IUsuarioService {
             if (usuarioActualizado.getEmail() != null && !usuarioActualizado.getEmail().trim().isEmpty()) {
                 usuario.setEmail(usuarioActualizado.getEmail().trim());
             }
-            if (usuarioActualizado.getPassword() != null && !usuarioActualizado.getPassword().trim().isEmpty()) {
+
+            // ✅ CONTRASEÑA: Solo actualizar si es nueva y NO es hash BCrypt
+            if (usuarioActualizado.getPassword() != null &&
+                    !usuarioActualizado.getPassword().trim().isEmpty() &&
+                    !usuarioActualizado.getPassword().startsWith("$2a$")) {
                 usuario.setPassword(passwordEncoder.encode(usuarioActualizado.getPassword()));
             }
+
             if (usuarioActualizado.getEstado() != null && !usuarioActualizado.getEstado().trim().isEmpty()) {
                 usuario.setEstado(usuarioActualizado.getEstado().trim());
             }
+
             if (usuarioActualizado.getRol() != null && usuarioActualizado.getRol().getId() != null) {
                 rolRepository.findById(usuarioActualizado.getRol().getId()).ifPresent(usuario::setRol);
             }
+
             return usuarioRepository.save(usuario);
         }).orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
+    }
+
+    // ✅ Método específico para actualizar rol premium SIN tocar contraseña
+    @Override
+    @Transactional
+    public boolean actualizarRolPremium(Integer usuarioId, Integer rolId, Boolean esPremium, LocalDate fechaExpiracion) {
+        return usuarioRepository.findById(usuarioId).map(usuario -> {
+            // Actualizar rol si se proporciona
+            if (rolId != null) {
+                rolRepository.findById(rolId).ifPresent(usuario::setRol);
+            }
+
+            // Actualizar flag premium
+            if (esPremium != null) {
+                usuario.setEsPremium(esPremium);
+            }
+
+            // Actualizar fecha de expiración
+            if (fechaExpiracion != null) {
+                usuario.setFechaPremiumExpiracion(fechaExpiracion);
+            }
+
+            usuarioRepository.save(usuario);
+            return true;
+        }).orElse(false);
     }
 
     @Override
@@ -290,14 +333,9 @@ public class UsuarioServiceImpl implements IUsuarioService {
     public DashboardStats obtenerDashboardStats() {
         DashboardStats stats = new DashboardStats();
 
-        // Total de usuarios no eliminados
         stats.setTotalUsuarios(usuarioRepository.countActivosNoEliminados());
-
-        // Usuarios por estado
         stats.setUsuariosActivos(usuarioRepository.countByEstado("ACTIVO"));
         stats.setUsuariosInactivos(usuarioRepository.countByEstado("INACTIVO"));
-
-        // Administradores (rol = ADMINISTRADOR y no eliminados)
         stats.setTotalAdmins(usuarioRepository.countByRolNombre("ADMINISTRADOR"));
 
         return stats;

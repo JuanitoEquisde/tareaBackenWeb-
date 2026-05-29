@@ -37,5 +37,7 @@ public class Rol {
     public boolean esUsuarioEstandar() {
         return "Usuario Estandar".equalsIgnoreCase(this.nombre);
     }
-
+    public boolean esPremium() {
+        return "Premium".equalsIgnoreCase(this.nombre);
+    }
 }
