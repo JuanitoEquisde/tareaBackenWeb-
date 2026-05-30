@@ -4,6 +4,7 @@ import com.easydates.easydateap.entity.Suscripcion;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -61,6 +62,10 @@ public interface SuscripcionRepository extends JpaRepository<Suscripcion, Intege
 
     @Query("SELECT COUNT(s) FROM Suscripcion s WHERE s.estado = :estado")
     Long countByEstado(@Param("estado") Suscripcion.EstadoSuscripcion estado);
+
+    @Modifying
+    @Query("DELETE FROM Suscripcion s WHERE s.usuario.id = :usuarioId")
+    void deleteByUsuarioId(@Param("usuarioId") Integer usuarioId);
 
     @Query("SELECT COALESCE(SUM(s.precioPagado), 0) FROM Suscripcion s WHERE s.estado = :estado")
     Double sumarPreciosPagadosByEstado(@Param("estado") Suscripcion.EstadoSuscripcion estado);

@@ -2,8 +2,7 @@ package com.easydates.easydateap.service.impl;
 
 import com.easydates.easydateap.dto.DashboardStats;
 import com.easydates.easydateap.entity.Usuario;
-import com.easydates.easydateap.repository.RolRepository;
-import com.easydates.easydateap.repository.UsuarioRepository;
+import com.easydates.easydateap.repository.*;
 import com.easydates.easydateap.service.IUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,6 +24,15 @@ public class UsuarioServiceImpl implements IUsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private SuscripcionRepository suscripcionRepository;
+
+    @Autowired
+    private CategoriaRepository categoriaRepository;
+
+    @Autowired
+    private TareaRepository tareaRepository;
 
     @Autowired
     private RolRepository rolRepository;
@@ -158,15 +166,33 @@ public class UsuarioServiceImpl implements IUsuarioService {
     }
 
     @Override
+    @Transactional
     public boolean eliminarPermanente(Integer id) {
         try {
-            if (usuarioRepository.existsById(id)) {
-                usuarioRepository.deleteById(id);
-                return true;
+            // Verificar que el usuario existe
+            if (!usuarioRepository.existsById(id)) {
+                return false;
             }
-            return false;
+
+            // ✅ 1. Eliminar tareas del usuario (si tienes el servicio inyectado)
+            // Si no tienes tareaService inyectado, usa el repository directamente
+            tareaRepository.deleteByUsuarioId(id);  // ← Necesitas crear este método en TareaRepository
+
+            // ✅ 2. Eliminar categorías del usuario
+            categoriaRepository.deleteByUsuarioId(id);  // ← Necesitas crear este método en CategoriaRepository
+
+            // ✅ 3. Eliminar suscripciones del usuario
+            suscripcionRepository.deleteByUsuarioId(id);  // ← Necesitas crear este método en SuscripcionRepository
+
+            // ✅ 4. Finalmente eliminar el usuario
+            usuarioRepository.deleteById(id);
+
+            System.out.println("✅ Usuario eliminado permanentemente: ID " + id);
+            return true;
+
         } catch (Exception e) {
             System.err.println("❌ Error al eliminar permanentemente: " + e.getMessage());
+            e.printStackTrace();  // ← Para ver el error exacto en consola
             return false;
         }
     }

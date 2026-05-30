@@ -221,7 +221,6 @@
             cursor: pointer; border-radius: 8px; display: none; transition: all 0.25s;
         }
         .btn-toggle-sidebar:hover { background: rgba(255,255,255,0.25); }
-        /* ✅ PAGINACIÓN SIEMPRE VISIBLE */
         .pagination-wrapper {
             margin-top: 1.75rem; display: flex; flex-direction: column;
             align-items: center; gap: 0.75rem; animation: fadeInUp 0.5s ease 0.3s both;
@@ -355,7 +354,6 @@
             box-shadow: 0 4px 12px rgba(239,68,68,0.28);
         }
         .btn-modal-delete-perm:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(239,68,68,0.38); }
-        /* ✅ Toast mejorado */
         .toast-container { z-index: 9999; pointer-events: none; }
         .toast-container > * { pointer-events: auto; }
         #toastNotificacion {
@@ -405,13 +403,11 @@
             <a th:href="@{/admin/dashboard}" class="nav-link"><i class="fas fa-home"></i> Dashboard</a>
             <a th:href="@{/admin/usuarios}" class="nav-link active"><i class="fas fa-users"></i> Usuarios</a>
             <a th:href="@{/admin/tareas}" class="nav-link"><i class="fas fa-tasks"></i> Tareas</a>
-            <!-- NUEVO: Enlace a Suscripciones Premium -->
             <a th:href="@{/admin/suscripciones}" class="nav-link"
                th:classappend="${activePage == 'suscripciones'} ? 'active' : ''">
                 <i class="fas fa-crown"></i> <span>Suscripciones</span>
             </a>
             <a th:href="@{/admin/auditoria}" class="nav-link"><i class="fas fa-history"></i> Auditoría</a>
-
         </nav>
     </aside>
 
@@ -483,7 +479,6 @@
                         </td>
                         <td class="text-end pe-4">
                             <div class="btn-group" role="group">
-                                <!-- ✅ EDITAR: SIEMPRE visible -->
                                 <button type="button" class="btn-action edit"
                                         th:data-id="${usuario.id}"
                                         th:data-nombre="${usuario.nombre}"
@@ -494,7 +489,6 @@
                                         title="Editar usuario">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <!-- ✅ ELIMINAR: visible excepto para el propio usuario logueado -->
                                 <div class="btn-group" role="group" th:if="${session.usuarioId == null or session.usuarioId != usuario.id}">
                                     <button type="button" class="btn-action delete dropdown-toggle"
                                             data-bs-toggle="dropdown"
@@ -554,10 +548,8 @@
             </div>
         </div>
 
-        <!-- ✅ PAGINACIÓN SIEMPRE VISIBLE (sin th:if) -->
         <div class="pagination-wrapper">
             <ul class="google-pagination">
-                <!-- Anterior -->
                 <li class="pg-nav" th:classappend="${currentPage == 0} ? 'disabled' : ''">
                     <a th:if="${currentPage > 0}"
                        th:href="@{/admin/usuarios(page=${currentPage - 1}, size=${pageSize}, id=${filtroId}, nombre=${filtroNombre}, email=${filtroEmail}, estado=${filtroEstado}, sortBy=${sortBy}, sortDir=${sortDir})}"
@@ -566,15 +558,12 @@
                     </a>
                     <span th:if="${currentPage == 0 or currentPage == null}"><i class="fas fa-chevron-left" style="font-size:0.75rem;"></i></span>
                 </li>
-                <!-- Primera página -->
                 <li th:classappend="${currentPage == 0 or currentPage == null} ? 'active' : ''">
                     <a th:if="${currentPage != 0 and currentPage != null}"
                        th:href="@{/admin/usuarios(page=0, size=${pageSize}, id=${filtroId}, nombre=${filtroNombre}, email=${filtroEmail}, estado=${filtroEstado}, sortBy=${sortBy}, sortDir=${sortDir})}">1</a>
                     <span th:if="${currentPage == 0 or currentPage == null}">1</span>
                 </li>
-                <!-- Ellipsis izquierdo -->
                 <li class="ellipsis" th:if="${currentPage != null and currentPage > 2}"><span>···</span></li>
-                <!-- Páginas centrales -->
                 <li th:each="i : ${#numbers.sequence((currentPage != null ? currentPage : 0) - 1, (currentPage != null ? currentPage : 0) + 1)}"
                     th:if="${i > 0 and (totalPages == null or i < totalPages - 1)}"
                     th:classappend="${i == currentPage} ? 'active' : ''">
@@ -583,16 +572,13 @@
                        th:text="${i + 1}">2</a>
                     <span th:if="${i == currentPage}" th:text="${i + 1}">2</span>
                 </li>
-                <!-- Ellipsis derecho -->
                 <li class="ellipsis" th:if="${currentPage != null and totalPages != null and currentPage < totalPages - 3}"><span>···</span></li>
-                <!-- Última página -->
                 <li th:if="${totalPages != null and totalPages > 1}" th:classappend="${currentPage == totalPages - 1} ? 'active' : ''">
                     <a th:if="${currentPage != totalPages - 1}"
                        th:href="@{/admin/usuarios(page=${totalPages - 1}, size=${pageSize}, id=${filtroId}, nombre=${filtroNombre}, email=${filtroEmail}, estado=${filtroEstado}, sortBy=${sortBy}, sortDir=${sortDir})}"
                        th:text="${totalPages}">10</a>
                     <span th:if="${currentPage == totalPages - 1}" th:text="${totalPages}">10</span>
                 </li>
-                <!-- Siguiente -->
                 <li class="pg-nav" th:classappend="${totalPages == null or currentPage == totalPages - 1} ? 'disabled' : ''">
                     <a th:if="${totalPages != null and currentPage < totalPages - 1}"
                        th:href="@{/admin/usuarios(page=${currentPage + 1}, size=${pageSize}, id=${filtroId}, nombre=${filtroNombre}, email=${filtroEmail}, estado=${filtroEstado}, sortBy=${sortBy}, sortDir=${sortDir})}"
@@ -602,7 +588,6 @@
                     <span th:if="${totalPages == null or currentPage == totalPages - 1}"><i class="fas fa-chevron-right" style="font-size:0.75rem;"></i></span>
                 </li>
             </ul>
-            <!-- ✅ Info de paginación SIEMPRE visible -->
             <p class="pagination-info">
                 <span th:if="${totalElements != null and totalElements > 0}">
                     Mostrando <strong th:text="${(currentPage != null ? currentPage : 0) * (pageSize != null ? pageSize : 10) + 1}">1</strong> –
@@ -627,7 +612,7 @@
     </main>
 </div>
 
-<!-- MODAL CREAR USUARIO -->
+<!-- MODALES (sin cambios) -->
 <div class="modal fade" id="modalCrearUsuario" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content animate__animated animate__zoomIn">
@@ -651,7 +636,6 @@
     </div>
 </div>
 
-<!-- MODAL EDITAR USUARIO -->
 <div class="modal fade" id="modalEditarUsuario" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content animate__animated animate__zoomIn">
@@ -676,7 +660,6 @@
     </div>
 </div>
 
-<!-- MODAL ELIMINAR PERMANENTE -->
 <div class="modal fade" id="modalEliminarUsuario" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 animate__animated animate__zoomIn">
@@ -704,7 +687,6 @@
     </div>
 </div>
 
-<!-- MODAL DESACTIVAR USUARIO -->
 <div class="modal fade" id="modalEliminarSistema" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 animate__animated animate__zoomIn">
@@ -731,7 +713,6 @@
     </div>
 </div>
 
-<!-- Toast -->
 <div class="toast-container position-fixed bottom-0 end-0 p-3">
     <div id="toastNotificacion" class="toast align-items-center text-white border-0 animate__animated animate__fadeInRight" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="d-flex"><div class="toast-body"><i class="fas fa-check-circle me-2"></i><span id="toastMensaje">Operación realizada correctamente</span></div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Cerrar"></button></div>
@@ -740,14 +721,12 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Toggle sidebar móvil
     function toggleSidebar() { document.getElementById('adminSidebar').classList.toggle('show'); }
     document.addEventListener('click', function(e) {
         const sidebar = document.getElementById('adminSidebar'), toggleBtn = document.querySelector('.btn-toggle-sidebar');
         if (window.innerWidth < 992 && sidebar.classList.contains('show') && !sidebar.contains(e.target) && !toggleBtn.contains(e.target)) { sidebar.classList.remove('show'); }
     });
 
-    // ✅ TOAST mejorado
     function mostrarToast(mensaje, tipo = 'success') {
         const toastEl = document.getElementById('toastNotificacion');
         const toastBody = toastEl.querySelector('.toast-body');
@@ -764,10 +743,8 @@
         toast.show();
     }
 
-    // Modales
     function abrirModalCrear() { new bootstrap.Modal(document.getElementById('modalCrearUsuario')).show(); }
 
-    // ✅ EDITAR: obtener datos del botón
     async function abrirModalEditar(btn) {
         const id = btn.getAttribute('data-id');
         const nombre = btn.getAttribute('data-nombre');
@@ -784,7 +761,6 @@
         document.getElementById('editPassword').value = '';
     }
 
-    // ✅ ELIMINAR SISTEMA
     function abrirModalEliminarSistema(btn) {
         const id = btn.getAttribute('data-id');
         const nombre = btn.getAttribute('data-nombre');
@@ -796,7 +772,6 @@
         new bootstrap.Modal(document.getElementById('modalEliminarSistema')).show();
     }
 
-    // ✅ ELIMINAR PERMANENTE
     function abrirModalEliminar(btn) {
         const id = btn.getAttribute('data-id');
         const nombre = btn.getAttribute('data-nombre');
@@ -808,7 +783,6 @@
         new bootstrap.Modal(document.getElementById('modalEliminarUsuario')).show();
     }
 
-    // ✅ CREAR USUARIO con toast
     document.getElementById('formCrearUsuario')?.addEventListener('submit', async function(e) {
         e.preventDefault();
         const data = {
@@ -830,7 +804,6 @@
         } catch(err) { mostrarToast('❌ Error de conexión', 'danger'); }
     });
 
-    // ✅ EDITAR USUARIO con toast
     document.getElementById('formEditarUsuario')?.addEventListener('submit', async function(e) {
         e.preventDefault();
         const id = document.getElementById('editUsuarioId').value;
@@ -853,7 +826,6 @@
         } catch(err) { mostrarToast('❌ Error de conexión', 'danger'); }
     });
 
-    // ✅ DESACTIVAR (soft delete) con toast
     document.getElementById('btnConfirmarEliminarSistema')?.addEventListener('click', async function() {
         const id = this.getAttribute('data-id');
         if(!id) return mostrarToast('❌ ID no encontrado', 'danger');
@@ -869,21 +841,29 @@
         } catch(err) { mostrarToast('❌ Error de conexión', 'danger'); }
     });
 
-    // ✅ ELIMINAR PERMANENTE con toast
+    // ✅ ELIMINAR PERMANENTE - CORREGIDO: method POST para coincidir con @PostMapping en controller
     document.getElementById('btnConfirmarEliminar')?.addEventListener('click', async function() {
         const id = this.getAttribute('data-id');
         if(!id) return mostrarToast('❌ ID no encontrado', 'danger');
         try {
-            const res = await fetch(`/admin/api/usuarios/${id}/eliminar-permanente`, { method: 'DELETE' });
-            if(res.ok) {
+            const res = await fetch(`/admin/api/usuarios/${id}/eliminar-permanente`, {
+                method: 'POST',  // ← CAMBIADO DE DELETE A POST
+                headers: { 'Content-Type': 'application/json' }
+            });
+            const data = await res.json();  // ← Parsear como JSON
+            if(res.ok && data.success) {
                 bootstrap.Modal.getInstance(document.getElementById('modalEliminarUsuario'))?.hide();
                 mostrarToast('🗑️ Usuario eliminado permanentemente', 'danger');
                 setTimeout(() => location.reload(), 1500);
             } else {
-                mostrarToast('❌ ' + await res.text(), 'danger');
+                mostrarToast('❌ ' + (data.message || 'Error al eliminar'), 'danger');
             }
-        } catch(err) { mostrarToast('❌ Error de conexión', 'danger'); }
+        } catch(err) {
+            console.error('Error:', err);
+            mostrarToast('❌ Error de conexión', 'danger');
+        }
     });
+    // ✅ Función duplicada eliminada: confirmarEliminacionPermanente (no se usaba)
 </script>
 </body>
 </html>

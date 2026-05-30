@@ -429,4 +429,58 @@ public class AdminController {
             return ResponseEntity.internalServerError().body("Error: " + e.getMessage());
         }
     }
+    @PostMapping("/api/usuarios/{id}/eliminar-permanente")
+    @ResponseBody
+    public Map<String, Object> eliminarPermanente(
+            @PathVariable Integer id,
+            HttpSession session) {
+
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            // Verificar que sea admin
+            Usuario admin = (Usuario) session.getAttribute("usuario");
+            if (admin == null || !admin.isAdmin()) {
+                response.put("success", false);
+                response.put("message", "No autorizado");
+                return response;
+            }
+
+            // No permitir eliminarse a sí mismo
+            Integer adminId = (Integer) session.getAttribute("usuarioId");
+            if (adminId != null && adminId.equals(id)) {
+                response.put("success", false);
+                response.put("message", "No puedes eliminarte a ti mismo");
+                return response;
+            }
+
+            // Eliminar permanentemente
+            boolean exito = usuarioService.eliminarPermanente(id);
+
+            if (exito) {
+                // Registrar en auditoría
+                String nombreAdmin = (String) session.getAttribute("usuarioLogueado");
+                HistorialCambios historial = new HistorialCambios();
+                historial.setAccion("ELIMINAR_PERMANENTE");
+                historial.setDescripcion("Admin eliminó permanentemente al usuario ID: " + id);
+                historial.setEntidadAfectada("USUARIO");
+                historial.setUsuarioAdmin(nombreAdmin != null ? nombreAdmin : "Admin");
+                historial.setFechaCambio(LocalDateTime.now());
+                historialService.save(historial);
+
+                response.put("success", true);
+                response.put("message", "Usuario eliminado permanentemente");
+            } else {
+                response.put("success", false);
+                response.put("message", "No se encontró el usuario");
+            }
+
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Error: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return response;
+    }
 }
