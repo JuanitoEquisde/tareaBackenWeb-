@@ -340,4 +340,5 @@ public class UsuarioServiceImpl implements IUsuarioService {
 
         return stats;
     }
+
 }

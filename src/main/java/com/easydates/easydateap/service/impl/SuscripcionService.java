@@ -2,9 +2,11 @@ package com.easydates.easydateap.service.impl;
 
 import com.easydates.easydateap.dto.SuscripcionDTO;
 import com.easydates.easydateap.entity.Plan;
+import com.easydates.easydateap.entity.Rol;
 import com.easydates.easydateap.entity.Suscripcion;
 import com.easydates.easydateap.entity.Usuario;
 import com.easydates.easydateap.repository.PlanRepository;
+import com.easydates.easydateap.repository.RolRepository;
 import com.easydates.easydateap.repository.SuscripcionRepository;
 import com.easydates.easydateap.repository.UsuarioRepository;
 import com.easydates.easydateap.service.ISuscripcionService;
@@ -33,7 +35,10 @@ public class SuscripcionService implements ISuscripcionService {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private IUsuarioService usuarioService;  // ← Inyectado para actualizar usuario
+    private IUsuarioService usuarioService;
+
+    @Autowired
+    private RolRepository rolRepository;// ← Inyectado para actualizar usuario
 
     @Override
     @Transactional(readOnly = true)
@@ -188,25 +193,46 @@ public class SuscripcionService implements ISuscripcionService {
     public boolean cambiarEstadoSuscripcion(Integer id, String nuevoEstado) {
         return suscripcionRepository.findById(id).map(suscripcion -> {
             try {
-                // ✅ Convertir String a Enum
                 Suscripcion.EstadoSuscripcion estadoEnum = Suscripcion.EstadoSuscripcion.valueOf(nuevoEstado);
 
                 suscripcion.setEstado(estadoEnum);
                 suscripcion.setFechaActualizacion(LocalDateTime.now());
 
+                // ✅ Si se cancela o expira, actualizar usuario
                 if (estadoEnum == Suscripcion.EstadoSuscripcion.CANCELADA ||
                         estadoEnum == Suscripcion.EstadoSuscripcion.EXPIRADA) {
 
                     Usuario usuario = suscripcion.getUsuario();
+
+                    // Verificar si tiene otras suscripciones activas
                     long activas = suscripcionRepository.countByUsuarioIdAndEstado(
                             usuario.getId(),
-                            Suscripcion.EstadoSuscripcion.ACTIVA  // ✅ Usar enum
+                            Suscripcion.EstadoSuscripcion.ACTIVA
                     );
+
+                    // Si no tiene más suscripciones activas, quitar premium
                     if (activas == 0) {
-                        usuarioService.actualizarRolPremium(
-                                usuario.getId(), null, false, null
-                        );
+                        usuario.setEsPremium(false);
+                        usuario.setFechaPremiumExpiracion(null);
+                        if (usuario.getRol() != null && "PREMIUM".equals(usuario.getRol().getNombre())) {
+                            Rol rolUsuario = rolRepository.findByNombre("USUARIO")
+                                    .orElseThrow(() -> new RuntimeException("Rol USUARIO no encontrado"));
+                            usuario.setRol(rolUsuario);
+                        }
+
+                        usuarioRepository.save(usuario);  // ← ¡IMPORTANTE: guardar!
+
+                        System.out.println("✅ Usuario " + usuario.getNombre() + " actualizado a NO PREMIUM");
                     }
+                }
+                // ✅ Si se restaura a ACTIVA, poner premium
+                else if (estadoEnum == Suscripcion.EstadoSuscripcion.ACTIVA) {
+                    Usuario usuario = suscripcion.getUsuario();
+                    usuario.setEsPremium(true);
+                    usuario.setFechaPremiumExpiracion(suscripcion.getFechaFin());
+                    usuarioRepository.save(usuario);
+
+                    System.out.println("✅ Usuario " + usuario.getNombre() + " actualizado a PREMIUM");
                 }
 
                 suscripcionRepository.save(suscripcion);
@@ -301,4 +327,32 @@ public class SuscripcionService implements ISuscripcionService {
             }
         }).orElse(false);
     }
+
+    @Transactional
+    public void actualizarEstadoPremiumUsuario(Integer usuarioId) {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // Contar suscripciones ACTIVAS
+        long suscripcionesActivas = suscripcionRepository.countByUsuarioIdAndEstado(
+                usuarioId,
+                Suscripcion.EstadoSuscripcion.ACTIVA
+        );
+
+        // Actualizar campo es_premium
+        boolean esPremium = (suscripcionesActivas > 0);
+        usuario.setEsPremium(esPremium);
+
+        if (!esPremium) {
+            usuario.setFechaPremiumExpiracion(null);
+        }
+
+        usuarioRepository.save(usuario);
+
+        System.out.println("✅ Usuario " + usuario.getNombre() +
+                " - Premium: " + esPremium +
+                " (Suscripciones activas: " + suscripcionesActivas + ")");
+    }
+
+
 }

@@ -989,13 +989,19 @@
                     </div>
                 </div>
                 <h6 th:text="${usuario.nombre}">Juan Paz</h6>
-                <!-- ✅ Badge Premium -->
+                <!--  Badge Premium (SOLO si es premium) -->
                 <div th:if="${usuario.esPremium}" class="premium-badge">
                     <i class="fas fa-crown"></i>
                     <span>PREMIUM</span>
                 </div>
-                <!-- ✅ CORREGIDO: Mostrar rol.nombre en lugar de rol -->
-                <small th:unless="${usuario.esPremium}" th:text="${usuario.rol.nombre}">Usuario Estándar</small>
+
+                <!-- Texto del rol (SOLO si NO es premium) -->
+                <small th:unless="${usuario.esPremium}"
+                       th:text="${usuario.rol != null ? usuario.rol.nombre : 'Usuario'}"
+                       style="color: var(--color-gray-500); font-size: 0.72rem;">
+                    Usuario
+                </small>
+
             </div>
 
             <!-- Menú Principal -->
@@ -1700,6 +1706,74 @@
     document.addEventListener('DOMContentLoaded', function() {
         initDragAndDrop();
     });
+</script>
+<script>
+    // ✅ VERIFICAR ESTADO REAL DE SUSCRIPCIÓN AL CARGAR
+    document.addEventListener('DOMContentLoaded', function() {
+        verificarEstadoPremiumReal();
+    });
+
+    function verificarEstadoPremiumReal() {
+        fetch('/cliente/api/usuario/verificar-premium')
+            .then(response => response.json())
+            .then(data => {
+                console.log('Estado premium recibido:', data);
+
+                const avatarLarge = document.querySelector('.avatar-large');
+                const avatarCrown = document.querySelector('.avatar-crown');
+                const premiumBadge = document.querySelector('.premium-badge');
+                const rolSmall = document.querySelector('.user-info-section small');
+
+                // Si NO es premium o la suscripción no está activa
+                if (data.esPremium === false || data.suscripcionActiva === false) {
+                    console.log('❌ Usuario NO es premium - Actualizando UI');
+
+                    // Ocultar badge premium
+                    if (premiumBadge) {
+                        premiumBadge.style.display = 'none';
+                    }
+
+                    // Ocultar corona
+                    if (avatarCrown) {
+                        avatarCrown.style.display = 'none';
+                    }
+
+                    // Cambiar avatar a azul (no premium)
+                    if (avatarLarge) {
+                        avatarLarge.classList.remove('premium');
+                        avatarLarge.style.background = 'linear-gradient(135deg, #1565C0 0%, #2196F3 100%)';
+                        avatarLarge.style.boxShadow = '0 4px 16px rgba(21,101,192,0.35)';
+                        avatarLarge.style.border = 'none';
+                    }
+
+                    // Mostrar rol normal
+                    if (rolSmall) {
+                        rolSmall.style.display = 'inline-block';
+                        rolSmall.textContent = data.rol || 'Usuario Estándar';
+                    }
+                } else {
+                    console.log('✅ Usuario es premium - Manteniendo UI');
+
+                    // Mostrar badge premium
+                    if (premiumBadge) {
+                        premiumBadge.style.display = 'inline-flex';
+                    }
+
+                    // Mostrar corona
+                    if (avatarCrown) {
+                        avatarCrown.style.display = 'flex';
+                    }
+
+                    // Ocultar rol
+                    if (rolSmall) {
+                        rolSmall.style.display = 'none';
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('❌ Error al verificar estado premium:', error);
+            });
+    }
 </script>
 </body>
 </html>

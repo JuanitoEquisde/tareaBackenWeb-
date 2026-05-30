@@ -295,9 +295,7 @@
                 <i class="fas fa-crown"></i><span>Suscripciones</span></a>
             <a th:href="@{/admin/auditoria}" class="nav-link" th:classappend="${activePage=='auditoria'}?'active':''">
                 <i class="fas fa-history"></i><span>Auditoría</span></a>
-            <div class="divider"></div>
-            <a th:href="@{/cliente/home}" class="nav-link">
-                <i class="fas fa-arrow-left"></i><span>Volver al Cliente</span></a>
+
         </nav>
     </aside>
 
@@ -468,7 +466,7 @@
 
                                 <!-- ✅ Cancelar - CORREGIDO con th:data-* -->
                                 <button class="btn-action cancelar"
-                                        title="Cancelar/Desactivar suscripción"
+                                        title="Cancelar suscripción"
                                         th:data-id="${sus.id}"
                                         th:data-usuario="${sus.usuario?.nombre}"
                                         th:data-plan="${sus.plan?.nombre}"
@@ -476,7 +474,7 @@
                                     <i class="fas fa-ban"></i>
                                 </button>
 
-                                <!-- ✅ Restaurar - CORREGIDO con th:data-* -->
+                                <!-- ✅ Restaurar -->
                                 <button th:if="${sus.estado == 'CANCELADA' or sus.estado == 'EXPIRADA'}"
                                         class="btn-action restaurar"
                                         title="Restaurar suscripción"
@@ -773,6 +771,7 @@
         </div>
     </div>
 </div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
