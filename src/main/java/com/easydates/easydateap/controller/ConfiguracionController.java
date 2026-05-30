@@ -125,7 +125,7 @@ public class ConfiguracionController {
     }
 
     // CRUD Categorías
-    @PostMapping("/categoria/guardar")
+   /* @PostMapping("/categoria/guardar")
     @ResponseBody
     public ResponseEntity<?> guardarCategoria(@RequestParam String nombre, @RequestParam(required = false) String descripcion, @RequestParam(required = false) String color, HttpSession session) {
         Integer usuarioId = (Integer) session.getAttribute("usuarioId");
@@ -157,7 +157,7 @@ public class ConfiguracionController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("❌ Error: " + e.getMessage());
         }
-    }
+    }*/
 
     // CRUD Etiquetas
     @PostMapping("/etiqueta/guardar")

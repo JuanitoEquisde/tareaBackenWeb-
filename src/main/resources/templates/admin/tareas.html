@@ -311,6 +311,11 @@
                th:classappend="${activePage == 'auditoria'} ? 'active' : ''">
                 <i class="fas fa-history"></i> <span>Auditoría</span>
             </a>
+            <a th:href="@{/admin/categorias}" class="nav-link"
+               th:classappend="${activePage == 'categorias'} ? 'active' : ''">
+                <i class="fas fa-tags"></i>
+                <span>Categorías</span>
+            </a>
 
         </nav>
     </aside>

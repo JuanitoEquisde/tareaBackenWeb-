@@ -45,11 +45,11 @@ public class AdminController {
     @GetMapping("/api/usuarios/{id}")
     @ResponseBody
     public ResponseEntity<?> obtenerUsuario(@PathVariable Integer id) {
-        System.out.println("🔍 API: Obteniendo usuario con ID: " + id);
+        System.out.println("API: Obteniendo usuario con ID: " + id);
         try {
             return usuarioService.findById(id)
                     .map(usuario -> {
-                        System.out.println("✅ Usuario encontrado: " + usuario.getNombre());
+                        System.out.println("Usuario encontrado: " + usuario.getNombre());
                         Map<String, Object> response = new HashMap<>();
                         response.put("id", usuario.getId());
                         response.put("nombre", usuario.getNombre());
@@ -59,11 +59,9 @@ public class AdminController {
                         return ResponseEntity.ok(response);
                     })
                     .orElseGet(() -> {
-                        System.err.println("❌ Usuario no encontrado con ID: " + id);
                         return ResponseEntity.notFound().build();
                     });
         } catch (Exception e) {
-            System.err.println("💥 Error al obtener usuario: " + e.getMessage());
             e.printStackTrace();
             return ResponseEntity.internalServerError().body("Error: " + e.getMessage());
         }
@@ -397,10 +395,10 @@ public class AdminController {
             if (rolData instanceof Map) {
                 @SuppressWarnings("unchecked")
                 Map<String, Object> rolMap = (Map<String, Object>) rolData;
-                rolId = (Integer) rolMap.get("id");
+                rolId = (Integer)rolMap.get("id");
             } else {
                 rolId = (Integer) nuevoUsuarioMap.get("rolId");
-                if (rolId == null) rolId = (Integer) nuevoUsuarioMap.get("rol");
+                if (rolId != null) rolId = (Integer) nuevoUsuarioMap.get("rol");
             }
             if (rolId == null || rolId <= 0) {
                 return ResponseEntity.badRequest().body("Debe seleccionar un rol válido");
@@ -412,23 +410,17 @@ public class AdminController {
             nuevoUsuario.setPassword(password);
             nuevoUsuario.setEstado(estado != null ? estado : "ACTIVO");
             usuarioService.asignarRolPorId(nuevoUsuario, rolId);
-            Usuario usuarioCreado = usuarioService.guardar(nuevoUsuario);
 
-            String nombreAdmin = (String) session.getAttribute("usuarioLogueado");
-            HistorialCambios historial = new HistorialCambios();
-            historial.setAccion("CREAR");
-            historial.setDescripcion("Admin creó nuevo usuario: " + usuarioCreado.getNombre());
-            historial.setEntidadAfectada("USUARIO");
-            historial.setUsuarioAdmin(nombreAdmin != null ? nombreAdmin : "Admin");
-            historial.setUsuario(usuarioCreado);
-            historial.setFechaCambio(LocalDateTime.now());
-            historialService.save(historial);
+            Usuario nuevoYs = usuarioService.guardar(nuevoUsuario);
 
             return ResponseEntity.ok("Usuario creado correctamente");
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body("Error: " + e.getMessage());
         }
     }
+
+
+
     @PostMapping("/api/usuarios/{id}/eliminar-permanente")
     @ResponseBody
     public Map<String, Object> eliminarPermanente(

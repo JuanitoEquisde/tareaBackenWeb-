@@ -408,6 +408,11 @@
                 <i class="fas fa-crown"></i> <span>Suscripciones</span>
             </a>
             <a th:href="@{/admin/auditoria}" class="nav-link"><i class="fas fa-history"></i> Auditoría</a>
+            <a th:href="@{/admin/categorias}" class="nav-link"
+               th:classappend="${activePage == 'categorias'} ? 'active' : ''">
+                <i class="fas fa-tags"></i>
+                <span>Categorías</span>
+            </a>
         </nav>
     </aside>
 
@@ -796,10 +801,10 @@
             const res = await fetch('/admin/api/usuarios/crear', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) });
             if(res.ok) {
                 bootstrap.Modal.getInstance(document.getElementById('modalCrearUsuario'))?.hide();
-                mostrarToast('✅ Usuario creado correctamente', 'success');
+                mostrarToast(' Usuario creado correctamente', 'success');
                 setTimeout(() => location.reload(), 1500);
             } else {
-                mostrarToast('❌ ' + await res.text(), 'danger');
+                mostrarToast('' + await res.text(), 'danger');
             }
         } catch(err) { mostrarToast('❌ Error de conexión', 'danger'); }
     });

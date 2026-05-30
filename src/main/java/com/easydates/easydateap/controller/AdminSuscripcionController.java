@@ -27,7 +27,7 @@ public class AdminSuscripcionController {
     private ISuscripcionService suscripcionService;
 
     // =====================================================
-    // ✅ LISTAR SUSCRIPCIONES CON FILTROS Y PAGINACIÓN
+    // LISTAR SUSCRIPCIONES CON FILTROS Y PAGINACIÓN
     // =====================================================
     @GetMapping
     public String listarSuscripciones(

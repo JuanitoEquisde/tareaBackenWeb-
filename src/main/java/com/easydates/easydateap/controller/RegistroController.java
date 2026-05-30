@@ -23,7 +23,7 @@ public class RegistroController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // ✅ AGREGAR ESTO: Inyectar RolRepository
+    // AGREGAR ESTO: Inyectar RolRepository
     @Autowired
     private RolRepository rolRepository;
 
@@ -44,7 +44,7 @@ public class RegistroController {
             return "redirect:/registro";
         }
 
-        // ✅ OBTENER EL ROL DESDE LA BASE DE DATOS (NO CREAR NUEVO OBJETO)
+        // OBTENER EL ROL DESDE LA BASE DE DATOS (NO CREAR NUEVO OBJETO)
         Rol rolEstandar = rolRepository.findById(2)  // ID 2 = Usuario Estándar
                 .orElseThrow(() -> new RuntimeException("Rol 'Usuario Estándar' no encontrado"));
 
@@ -55,7 +55,7 @@ public class RegistroController {
         nuevoUsuario.setPassword(password); // Se encriptará en el service
         nuevoUsuario.setEstado("ACTIVO");
 
-        // ✅ ASIGNAR EL ROL PERSISTIDO (MANAGED ENTITY)
+        // ASIGNAR EL ROL PERSISTIDO (MANAGED ENTITY)
         nuevoUsuario.setRol(rolEstandar);
 
         // Guardar en la base de datos

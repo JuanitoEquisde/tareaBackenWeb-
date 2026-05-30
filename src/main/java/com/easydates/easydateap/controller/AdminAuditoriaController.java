@@ -39,7 +39,7 @@ public class AdminAuditoriaController {
                 ? Sort.by(sortBy).descending()
                 : Sort.by(sortBy).ascending();
 
-        // ✅ Crear Pageable - Esta es la forma correcta para Spring Boot 2.x y 3.x
+        // Crear Pageable
         Pageable pageable = PageRequest.of(page, size, sort);
 
         // Obtener página del servicio

@@ -21,7 +21,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
     boolean existsByEmail(String email);
 
-    // ✅ Buscar usuarios con filtros (AND) - PARA PAGINACIÓN DEL SERVIDOR
+    // Buscar usuarios con filtros (AND) - PARA PAGINACIÓN DEL SERVIDOR
     @Query("SELECT u FROM Usuario u JOIN u.rol r WHERE " +
             "(:id IS NULL OR u.id = :id) AND " +
             "(:nombre IS NULL OR LOWER(u.nombre) LIKE LOWER(CONCAT('%', :nombre, '%'))) AND " +
@@ -38,7 +38,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
             Pageable pageable
     );
 
-    // ✅ Contar total de usuarios activos (para estadísticas)
+    // Contar total de usuarios activos
     @Query("SELECT COUNT(u) FROM Usuario u WHERE u.estado != 'ELIMINADO'")
     Long contarActivos();
 

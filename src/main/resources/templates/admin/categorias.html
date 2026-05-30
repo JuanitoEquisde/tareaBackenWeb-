@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categorías - Panel Administrativo</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --admin-bg: #f0f2f5; --admin-sidebar: #1e3a8a; --admin-sidebar-hover: #1e40af;
+            --admin-primary: #3b82f6; --admin-primary-hover: #2563eb; --admin-success: #10b981;
+            --admin-warning: #f59e0b; --admin-danger: #ef4444; --admin-text: #1f2937;
+            --admin-text-muted: #6b7280; --admin-border: #e5e7eb;
+            --admin-card-shadow: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -1px rgba(0,0,0,0.04);
+            --admin-radius: 14px;
+        }
+        * { box-sizing: border-box; }
+        html, body { height: 100%; overflow: hidden; }
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 50%, #f0f9ff 100%);
+            color: var(--admin-text);
+        }
+        .admin-navbar {
+            background: linear-gradient(135deg, var(--admin-sidebar) 0%, #1d4ed8 100%);
+            color: white; padding: 0.875rem 2rem;
+            box-shadow: 0 4px 20px rgba(30,58,138,0.25); position: sticky; top: 0; z-index: 1000;
+        }
+        .admin-navbar .navbar-brand {
+            font-weight: 800; font-size: 1.3rem; color: white;
+            display: flex; align-items: center; gap: 0.75rem;
+            transition: transform 0.3s; text-decoration: none; letter-spacing: -0.02em;
+        }
+        .admin-navbar .navbar-brand:hover { transform: scale(1.04); }
+        .admin-navbar .brand-icon {
+            width: 36px; height: 36px; background: rgba(255,255,255,0.15);
+            border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem;
+        }
+        .admin-navbar .user-info { display: flex; align-items: center; gap: 1.25rem; }
+        .admin-navbar .user-chip {
+            display: flex; align-items: center; gap: 0.5rem;
+            background: rgba(255,255,255,0.12); border-radius: 50px;
+            padding: 0.375rem 0.875rem; font-size: 0.85rem; font-weight: 500;
+        }
+        .admin-navbar .btn-logout {
+            background: rgba(255,255,255,0.15); border: 1.5px solid rgba(255,255,255,0.25);
+            color: white; padding: 0.45rem 1.1rem; border-radius: 50px;
+            font-size: 0.82rem; font-weight: 600; transition: all 0.25s; cursor: pointer;
+        }
+        .admin-navbar .btn-logout:hover { background: rgba(255,255,255,0.25); transform: translateY(-1px); }
+        .admin-wrapper { display: flex; height: calc(100vh - 70px); overflow: hidden; }
+        .admin-sidebar {
+            width: 248px; background: white; padding: 1.5rem 0.875rem;
+            display: flex; flex-direction: column; gap: 0.25rem; flex-shrink: 0;
+            box-shadow: 2px 0 12px rgba(0,0,0,0.04); transition: transform 0.3s ease;
+            overflow-y: auto; max-height: 100%;
+        }
+        .admin-sidebar .sidebar-label {
+            font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.1em; color: var(--admin-text-muted);
+            padding: 0.5rem 1rem 0.25rem; margin-top: 0.5rem;
+        }
+        .admin-sidebar .nav-link {
+            color: var(--admin-text-muted); padding: 0.75rem 1rem; border-radius: 10px;
+            text-decoration: none; display: flex; align-items: center; gap: 0.75rem;
+            font-weight: 500; font-size: 0.9rem; transition: all 0.25s;
+        }
+        .admin-sidebar .nav-link:hover, .admin-sidebar .nav-link.active {
+            background: linear-gradient(135deg, var(--admin-primary), var(--admin-primary-hover));
+            color: white; transform: translateX(4px);
+            box-shadow: 0 4px 14px rgba(59,130,246,0.28);
+        }
+        .admin-sidebar .nav-link i { width: 20px; text-align: center; font-size: 1rem; opacity: 0.85; }
+        .admin-sidebar .divider { height: 1px; background: var(--admin-border); margin: 1rem 0.5rem; opacity: 0.6; }
+        .admin-main { flex: 1; padding: 2rem; overflow-y: auto; overflow-x: hidden; }
+        .page-header {
+            background: white; border-radius: var(--admin-radius); padding: 1.25rem 1.75rem;
+            margin-bottom: 1.5rem; box-shadow: var(--admin-card-shadow);
+            display: flex; justify-content: space-between; align-items: center;
+            animation: fadeInDown 0.5s ease; border: 1px solid rgba(0,0,0,0.04);
+        }
+        .page-header h2 {
+            font-weight: 800; color: var(--admin-text); margin: 0; font-size: 1.35rem;
+            display: flex; align-items: center; gap: 0.75rem; letter-spacing: -0.02em;
+        }
+        .page-header h2 .header-icon {
+            width: 40px; height: 40px; background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            color: var(--admin-primary); font-size: 1rem;
+        }
+        .btn-create {
+            background: linear-gradient(135deg, var(--admin-success), #059669); color: white;
+            border: none; padding: 0.625rem 1.375rem; border-radius: 50px;
+            font-weight: 700; font-size: 0.875rem; font-family: inherit;
+            transition: all 0.25s; box-shadow: 0 4px 12px rgba(16,185,129,0.28);
+            display: inline-flex; align-items: center; gap: 0.5rem; cursor: pointer;
+        }
+        .btn-create:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(16,185,129,0.38); }
+        .stats-container {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.25rem; margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: white; border-radius: var(--admin-radius); padding: 1.25rem 1.5rem;
+            box-shadow: var(--admin-card-shadow); display: flex; align-items: center; gap: 1rem;
+            transition: all 0.3s; animation: fadeInUp 0.5s ease both;
+        }
+        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+        .stat-card.bg-blue { background: linear-gradient(135deg, var(--admin-primary), var(--admin-primary-hover)); color: white; }
+        .stat-card.bg-green { background: linear-gradient(135deg, var(--admin-success), #059669); color: white; }
+        .stat-card.bg-yellow { background: linear-gradient(135deg, var(--admin-warning), #d97706); color: white; }
+        .stat-icon {
+            width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem; flex-shrink: 0;
+        }
+        .stat-card.bg-blue .stat-icon, .stat-card.bg-green .stat-icon, .stat-card.bg-yellow .stat-icon {
+            background: rgba(255,255,255,0.2);
+        }
+        .stat-info { flex: 1; }
+        .stat-value { font-size: 1.75rem; font-weight: 800; line-height: 1; margin-bottom: 0.2rem; }
+        .stat-label { font-size: 0.85rem; opacity: 0.9; font-weight: 500; }
+        .filters-card {
+            background: white; border-radius: var(--admin-radius); padding: 1.375rem 1.75rem;
+            margin-bottom: 1.5rem; box-shadow: var(--admin-card-shadow);
+            animation: fadeInUp 0.5s ease 0.1s both; border: 1px solid rgba(0,0,0,0.04);
+        }
+        .filters-card .form-label {
+            font-size: 0.72rem; font-weight: 700; color: var(--admin-text-muted);
+            text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.4rem;
+        }
+        .filters-card .form-control, .filters-card .form-select {
+            border: 1.5px solid var(--admin-border); border-radius: 9px;
+            padding: 0.575rem 0.875rem; font-size: 0.875rem; font-family: inherit;
+            transition: all 0.25s; background: #fafbfc;
+        }
+        .filters-card .form-control:focus, .filters-card .form-select:focus {
+            border-color: var(--admin-primary); box-shadow: 0 0 0 3px rgba(59,130,246,0.12); background: white;
+        }
+        .filters-card .btn-primary {
+            background: linear-gradient(135deg, var(--admin-primary), var(--admin-primary-hover));
+            border: none; padding: 0.575rem 1.375rem; border-radius: 9px;
+            font-weight: 700; font-size: 0.875rem; font-family: inherit;
+            transition: all 0.25s; box-shadow: 0 4px 12px rgba(59,130,246,0.28);
+        }
+        .filters-card .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(59,130,246,0.38); }
+        .filters-card .btn-outline-secondary {
+            border: 1.5px solid var(--admin-border); padding: 0.575rem 1.375rem; border-radius: 9px;
+            font-weight: 600; font-size: 0.875rem; font-family: inherit;
+            color: var(--admin-text-muted); background: white; transition: all 0.25s;
+        }
+        .filters-card .btn-outline-secondary:hover {
+            background: #fee2e2; border-color: #fca5a5; color: #dc2626; transform: translateY(-1px);
+        }
+        .table-card {
+            background: white; border-radius: var(--admin-radius); box-shadow: var(--admin-card-shadow);
+            overflow: visible; animation: fadeInUp 0.5s ease 0.2s both; border: 1px solid rgba(0,0,0,0.04);
+        }
+        .table-card .table-responsive { overflow-x: auto; border-radius: var(--admin-radius); }
+        .table-card .table { margin: 0; border-collapse: separate; border-spacing: 0; }
+        .table-card thead tr { background: linear-gradient(135deg, #f8fafc, #f1f5f9); }
+        .table-card th {
+            font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em;
+            color: var(--admin-text-muted); padding: 0.875rem 1.25rem;
+            border-bottom: 1.5px solid var(--admin-border); border-top: none; white-space: nowrap;
+        }
+        .table-card td { padding: 0.875rem 1.25rem; vertical-align: middle; font-size: 0.875rem; border-color: #f3f4f6; }
+        .table-card tbody tr { transition: all 0.2s; }
+        .table-card tbody tr:hover { background: linear-gradient(135deg, #f0f9ff, #eff6ff); }
+        .table-card tbody tr:last-child td { border-bottom: none; }
+        .badge-estado {
+            padding: 0.35rem 0.875rem; border-radius: 50px; font-size: 0.68rem;
+            font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+            display: inline-flex; align-items: center; gap: 0.3rem;
+        }
+        .badge-estado.activo { background: #d1fae5; color: #065f46; border: 1.5px solid #a7f3d0; }
+        .badge-estado.inactivo { background: #fef3c7; color: #92400e; border: 1.5px solid #fde68a; }
+        .status-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+        .status-dot.activo { background: #059669; }
+        .status-dot.inactivo { background: #d97706; }
+        .btn-action {
+            padding: 0.4rem 0.7rem; border-radius: 8px; border: 1.5px solid;
+            font-size: 0.82rem; font-weight: 600; transition: all 0.22s;
+            display: inline-flex; align-items: center; gap: 0.3rem;
+            cursor: pointer; background: white; font-family: inherit;
+        }
+        .btn-action.edit { border-color: #bfdbfe; color: var(--admin-primary); }
+        .btn-action.edit:hover {
+            background: var(--admin-primary); border-color: var(--admin-primary); color: white;
+            transform: translateY(-2px); box-shadow: 0 4px 12px rgba(59,130,246,0.28);
+        }
+        .btn-action.delete { border-color: #fecaca; color: var(--admin-danger); }
+        .btn-action.delete:hover {
+            background: var(--admin-danger); border-color: var(--admin-danger); color: white;
+            transform: translateY(-2px); box-shadow: 0 4px 12px rgba(239,68,68,0.28);
+        }
+        .empty-state { text-align: center; padding: 4rem 2rem; color: var(--admin-text-muted); }
+        .empty-state i { font-size: 3.5rem; opacity: 0.2; margin-bottom: 1rem; }
+        .empty-state h5 { font-weight: 600; color: #374151; }
+        .btn-back {
+            background: white; border: 1.5px solid var(--admin-border); padding: 0.625rem 1.75rem;
+            border-radius: 50px; font-weight: 600; font-size: 0.875rem; font-family: inherit;
+            transition: all 0.25s; box-shadow: var(--admin-card-shadow);
+            color: var(--admin-text-muted); text-decoration: none;
+            display: inline-flex; align-items: center; gap: 0.5rem;
+        }
+        .btn-back:hover {
+            background: var(--admin-text); border-color: var(--admin-text); color: white;
+            transform: translateY(-2px);
+        }
+        .btn-toggle-sidebar {
+            background: rgba(255,255,255,0.15); border: 1.5px solid rgba(255,255,255,0.25);
+            color: white; font-size: 1.1rem; padding: 0.45rem 0.7rem;
+            cursor: pointer; border-radius: 8px; display: none; transition: all 0.25s;
+        }
+        .btn-toggle-sidebar:hover { background: rgba(255,255,255,0.25); }
+
+        /* PAGINACIÓN ESTILO GOOGLE */
+        .pagination-wrapper {
+            margin-top: 1.75rem; display: flex; flex-direction: column;
+            align-items: center; gap: 0.75rem; animation: fadeInUp 0.5s ease 0.3s both;
+        }
+        .google-pagination {
+            display: flex; align-items: center; gap: 0.25rem; list-style: none;
+            padding: 0.5rem 0.75rem; margin: 0; background: white;
+            border-radius: 50px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .google-pagination li { display: inline-flex; }
+        .google-pagination a, .google-pagination span {
+            display: flex; align-items: center; justify-content: center;
+            min-width: 36px; height: 36px; padding: 0 0.5rem; border-radius: 50px;
+            font-size: 0.85rem; font-weight: 600; font-family: inherit;
+            color: var(--admin-text-muted); text-decoration: none; transition: all 0.2s;
+        }
+        .google-pagination a:hover { background: #eff6ff; color: var(--admin-primary); }
+        .google-pagination .active span, .google-pagination .active a {
+            background: linear-gradient(135deg, var(--admin-primary), var(--admin-primary-hover));
+            color: white; font-weight: 700; box-shadow: 0 3px 10px rgba(59,130,246,0.35); min-width: 36px;
+        }
+        .google-pagination .disabled a, .google-pagination .disabled span {
+            color: #d1d5db; cursor: not-allowed; pointer-events: none;
+        }
+        .google-pagination .ellipsis span { color: #9ca3af; cursor: default; min-width: 24px; }
+        .google-pagination .pg-nav a, .google-pagination .pg-nav span {
+            background: #f8fafc; border: 1.5px solid var(--admin-border);
+            color: var(--admin-text-muted); min-width: 36px;
+        }
+        .google-pagination .pg-nav:not(.disabled) a:hover {
+            background: var(--admin-primary); border-color: var(--admin-primary); color: white;
+        }
+        .pagination-info { font-size: 0.8rem; color: var(--admin-text-muted); font-weight: 500; }
+        .pagination-info strong { color: var(--admin-text); }
+
+        .toast-container { z-index: 9999; pointer-events: none; }
+        .toast-container > * { pointer-events: auto; }
+        #toastNotificacion {
+            min-width: 320px; max-width: 400px;
+            border-radius: 12px !important;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2) !important;
+        }
+        #toastNotificacion .toast-body {
+            padding: 0.875rem 1.25rem; font-size: 0.9rem; font-weight: 500;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 991.98px) {
+            .admin-sidebar { position: fixed; left: -260px; top: 70px; height: calc(100vh - 70px); z-index: 999; box-shadow: 4px 0 16px rgba(0,0,0,0.1); }
+            .admin-sidebar.show { transform: translateX(260px); }
+            .admin-main { padding: 1rem; }
+            .btn-toggle-sidebar { display: block; }
+            .page-header { flex-direction: column; gap: 1rem; text-align: center; }
+            .stats-container { grid-template-columns: repeat(2, 1fr); }
+            .google-pagination a, .google-pagination span { min-width: 32px; height: 32px; font-size: 0.8rem; }
+        }
+        @media (min-width: 992px) { .btn-toggle-sidebar { display: none !important; } }
+    </style>
+</head>
+<body>
+
+<nav class="admin-navbar">
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-3">
+            <button class="btn-toggle-sidebar d-lg-none" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+            <a class="navbar-brand" th:href="@{/admin/dashboard}">
+                <span class="brand-icon"><i class="fas fa-shield-alt"></i></span><span>Admin NotyGo</span>
+            </a>
+        </div>
+        <div class="user-info">
+            <span class="user-chip d-none d-sm-flex"><i class="fas fa-user-circle"></i><span th:text="${session.usuarioLogueado}">Admin</span></span>
+            <form th:action="@{/logout}" method="post" style="display:inline;">
+                <button type="submit" class="btn-logout"><i class="fas fa-sign-out-alt me-1"></i>Salir</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div class="admin-wrapper">
+    <aside class="admin-sidebar" id="adminSidebar">
+        <nav class="nav flex-column">
+            <a th:href="@{/admin/dashboard}" class="nav-link"
+               th:classappend="${activePage == 'dashboard'} ? 'active' : ''">
+                <i class="fas fa-home"></i> <span>Dashboard</span>
+            </a>
+            <a th:href="@{/admin/usuarios}" class="nav-link"
+               th:classappend="${activePage == 'usuarios'} ? 'active' : ''">
+                <i class="fas fa-users"></i> <span>Usuarios</span>
+            </a>
+            <a th:href="@{/admin/tareas}" class="nav-link"
+               th:classappend="${activePage == 'tareas'} ? 'active' : ''">
+                <i class="fas fa-tasks"></i> <span>Tareas</span>
+            </a>
+            <a th:href="@{/admin/suscripciones}" class="nav-link"
+               th:classappend="${activePage == 'suscripciones'} ? 'active' : ''">
+                <i class="fas fa-crown"></i> <span>Suscripciones</span>
+            </a>
+            <a th:href="@{/admin/categorias}" class="nav-link active"
+               th:classappend="${activePage == 'categorias'} ? 'active' : ''">
+                <i class="fas fa-tags"></i> <span>Categorías</span>
+            </a>
+            <a th:href="@{/admin/auditoria}" class="nav-link"
+               th:classappend="${activePage == 'auditoria'} ? 'active' : ''">
+                <i class="fas fa-history"></i> <span>Auditoría</span>
+            </a>
+        </nav>
+    </aside>
+
+    <main class="admin-main">
+        <div class="page-header">
+            <h2><span class="header-icon"><i class="fas fa-tags"></i></span>Gestión de Categorías</h2>
+            <button type="button" class="btn-create" onclick="abrirModalCrear()">
+                <i class="fas fa-plus"></i><span class="d-none d-sm-inline">Nueva Categoría</span>
+            </button>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-container">
+            <div class="stat-card bg-blue">
+                <div class="stat-icon"><i class="fas fa-tags"></i></div>
+                <div class="stat-info">
+                    <div class="stat-value" th:text="${stats?.total ?: 0}">0</div>
+                    <div class="stat-label">Total Categorías</div>
+                </div>
+            </div>
+            <div class="stat-card bg-green">
+                <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                <div class="stat-info">
+                    <div class="stat-value" th:text="${stats?.activas ?: 0}">0</div>
+                    <div class="stat-label">Activas</div>
+                </div>
+            </div>
+            <div class="stat-card bg-yellow">
+                <div class="stat-icon"><i class="fas fa-times-circle"></i></div>
+                <div class="stat-info">
+                    <div class="stat-value" th:text="${stats?.inactivas ?: 0}">0</div>
+                    <div class="stat-label">Inactivas</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-card">
+            <form th:action="@{/admin/categorias}" method="get" class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label">Nombre</label>
+                    <input type="text" class="form-control" name="nombre" placeholder="Buscar por nombre..." th:value="${filtroNombre}">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Estado</label>
+                    <select class="form-select" name="estado">
+                        <option value="">Todos</option>
+                        <option value="ACTIVO" th:selected="${filtroEstado == 'ACTIVO'}">Activo</option>
+                        <option value="INACTIVO" th:selected="${filtroEstado == 'INACTIVO'}">Inactivo</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Usuario</label>
+                    <input type="text" class="form-control" name="usuario" placeholder="Buscar usuario..." th:value="${filtroUsuario}">
+                </div>
+                <div class="col-md-2 d-flex">
+                    <button type="submit" class="btn btn-primary w-100"><i class="fas fa-search me-2"></i>Buscar</button>
+                </div>
+                <div class="col-md-2 d-flex">
+                    <a th:href="@{/admin/categorias}" class="btn btn-outline-secondary w-100"><i class="fas fa-redo me-2"></i>Limpiar</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Table -->
+        <div class="table-card">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                    <tr>
+                        <th class="ps-4">ID</th>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Color</th>
+                        <th>Usuario</th>
+                        <th>Estado</th>
+                        <th class="text-end pe-4">Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="categoria : ${categorias != null ? categorias : {}}">
+                        <td class="ps-4"><span class="fw-700 text-muted" style="font-size:0.8rem;">#<span th:text="${categoria.id}">1</span></span></td>
+                        <td class="fw-semibold" th:text="${categoria.nombre}">Nombre</td>
+                        <td th:text="${categoria.descripcion != null ? #strings.abbreviate(categoria.descripcion, 40) : '-'}">Descripción</td>
+                        <td>
+                            <span class="badge" th:style="'background-color: ' + ${categoria.color} + '; color: white; padding: 0.4rem 0.8rem;'">
+                                <span th:text="${categoria.color}">#1565C0</span>
+                            </span>
+                        </td>
+                        <td th:text="${categoria.usuario != null ? categoria.usuario.nombre : 'Global'}">Usuario</td>
+                        <td>
+                            <span class="badge badge-estado" th:classappend="${categoria.estado == 'ACTIVO'} ? 'activo' : 'inactivo'">
+                                <span class="status-dot" th:classappend="${categoria.estado == 'ACTIVO'} ? 'activo' : 'inactivo'"></span>
+                                <span th:text="${categoria.estado}">ACTIVO</span>
+                            </span>
+                        </td>
+                        <td class="text-end pe-4">
+                            <button type="button" class="btn-action edit"
+                                    th:data-id="${categoria.id}"
+                                    th:data-nombre="${categoria.nombre}"
+                                    th:data-descripcion="${categoria.descripcion}"
+                                    th:data-color="${categoria.color}"
+                                    th:data-estado="${categoria.estado}"
+                                    onclick="abrirModalEditar(this)"
+                                    title="Editar categoría">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button type="button" class="btn-action delete"
+                                    th:data-id="${categoria.id}"
+                                    th:data-nombre="${categoria.nombre}"
+                                    onclick="abrirModalEliminar(this)"
+                                    title="Eliminar categoría">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr th:if="${categorias == null or categorias.isEmpty()}">
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <i class="fas fa-tags"></i>
+                                <h5 class="mb-2">No se encontraron categorías</h5>
+                                <p class="mb-0 text-muted">Crea una nueva categoría para comenzar</p>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ✅ PAGINACIÓN CORREGIDA -->
+        <div class="pagination-wrapper" th:if="${totalPages != null}">
+            <ul class="google-pagination">
+
+                <!-- Anterior -->
+                <li class="pg-nav" th:classappend="${currentPage == 0} ? 'disabled' : ''">
+                    <a th:if="${currentPage > 0}"
+                       th:href="@{/admin/categorias(page=${currentPage - 1}, size=${pageSize},
+                                 nombre=${filtroNombre}, estado=${filtroEstado},
+                                 usuario=${filtroUsuario}, sortBy=${sortBy}, sortDir=${sortDir})}">
+                        <i class="fas fa-chevron-left" style="font-size:0.75rem;"></i>
+                    </a>
+                    <span th:if="${currentPage == 0}">
+                        <i class="fas fa-chevron-left" style="font-size:0.75rem;"></i>
+                    </span>
+                </li>
+
+                <!-- Primera página siempre visible -->
+                <li th:classappend="${currentPage == 0} ? 'active' : ''">
+                    <a th:if="${currentPage != 0}"
+                       th:href="@{/admin/categorias(page=0, size=${pageSize},
+                                 nombre=${filtroNombre}, estado=${filtroEstado},
+                                 usuario=${filtroUsuario}, sortBy=${sortBy}, sortDir=${sortDir})}">1</a>
+                    <span th:if="${currentPage == 0}">1</span>
+                </li>
+
+                <!-- Ellipsis izquierdo -->
+                <li class="ellipsis" th:if="${currentPage > 2}">
+                    <span>···</span>
+                </li>
+
+                <!-- Páginas centrales: currentPage-1, currentPage, currentPage+1 (excluyendo primera y última) -->
+                <th:block th:each="i : ${#numbers.sequence(currentPage - 1, currentPage + 1)}">
+                    <li th:if="${i > 0 and i < totalPages - 1}"
+                        th:classappend="${i == currentPage} ? 'active' : ''">
+                        <a th:if="${i != currentPage}"
+                           th:href="@{/admin/categorias(page=${i}, size=${pageSize},
+                                     nombre=${filtroNombre}, estado=${filtroEstado},
+                                     usuario=${filtroUsuario}, sortBy=${sortBy}, sortDir=${sortDir})}"
+                           th:text="${i + 1}">2</a>
+                        <span th:if="${i == currentPage}" th:text="${i + 1}">2</span>
+                    </li>
+                </th:block>
+
+                <!-- Ellipsis derecho -->
+                <li class="ellipsis" th:if="${currentPage < totalPages - 3}">
+                    <span>···</span>
+                </li>
+
+                <!-- Última página (solo si hay más de 1 página) -->
+                <li th:if="${totalPages > 1}"
+                    th:classappend="${currentPage == totalPages - 1} ? 'active' : ''">
+                    <a th:if="${currentPage != totalPages - 1}"
+                       th:href="@{/admin/categorias(page=${totalPages - 1}, size=${pageSize},
+                                 nombre=${filtroNombre}, estado=${filtroEstado},
+                                 usuario=${filtroUsuario}, sortBy=${sortBy}, sortDir=${sortDir})}"
+                       th:text="${totalPages}">10</a>
+                    <span th:if="${currentPage == totalPages - 1}" th:text="${totalPages}">10</span>
+                </li>
+
+                <!-- Siguiente -->
+                <li class="pg-nav" th:classappend="${currentPage >= totalPages - 1} ? 'disabled' : ''">
+                    <a th:if="${currentPage < totalPages - 1}"
+                       th:href="@{/admin/categorias(page=${currentPage + 1}, size=${pageSize},
+                                 nombre=${filtroNombre}, estado=${filtroEstado},
+                                 usuario=${filtroUsuario}, sortBy=${sortBy}, sortDir=${sortDir})}">
+                        <i class="fas fa-chevron-right" style="font-size:0.75rem;"></i>
+                    </a>
+                    <span th:if="${currentPage >= totalPages - 1}">
+                        <i class="fas fa-chevron-right" style="font-size:0.75rem;"></i>
+                    </span>
+                </li>
+
+            </ul>
+
+            <!-- Info de paginación -->
+            <p class="pagination-info">
+                <span th:if="${totalElements != null and totalElements > 0}">
+                    Mostrando
+                    <strong th:text="${currentPage * pageSize + 1}">1</strong> –
+                    <strong th:text="${(currentPage + 1) * pageSize > totalElements ? totalElements : (currentPage + 1) * pageSize}">10</strong>
+                    de <strong th:text="${totalElements}">100</strong> categorías
+                </span>
+                <span th:if="${totalElements == null or totalElements == 0}">
+                    Mostrando <strong>0</strong> categorías
+                </span>
+                &nbsp;·&nbsp; Página
+                <strong th:text="${currentPage + 1}">1</strong>
+                de <strong th:text="${totalPages > 0 ? totalPages : 1}">1</strong>
+            </p>
+        </div>
+
+        <div class="text-center mt-4 mb-2">
+            <a th:href="@{/admin/dashboard}" class="btn-back"><i class="fas fa-arrow-left"></i>Volver al Dashboard</a>
+        </div>
+    </main>
+</div>
+
+<!-- Modal Crear Categoría -->
+<div class="modal fade" id="modalCrearCategoria" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content animate__animated animate__zoomIn">
+            <div class="modal-header" style="background: linear-gradient(135deg, #10b981, #059669); color: white;">
+                <h5 class="modal-title"><i class="fas fa-plus-circle me-2"></i>Nueva Categoría</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <form id="formCrearCategoria">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="createNombre" class="form-label">Nombre <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="createNombre" required placeholder="Nombre de la categoría">
+                    </div>
+                    <div class="mb-3">
+                        <label for="createDescripcion" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="createDescripcion" rows="3" placeholder="Descripción opcional"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="createColor" class="form-label">Color</label>
+                        <input type="color" class="form-control form-control-color" id="createColor" value="#1565C0" title="Elige un color">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success"><i class="fas fa-save me-2"></i>Crear Categoría</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Editar Categoría -->
+<div class="modal fade" id="modalEditarCategoria" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content animate__animated animate__zoomIn">
+            <div class="modal-header" style="background: linear-gradient(135deg, #3b82f6, #2563eb); color: white;">
+                <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Editar Categoría</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <form id="formEditarCategoria">
+                <div class="modal-body">
+                    <input type="hidden" id="editCategoriaId">
+                    <div class="mb-3">
+                        <label for="editNombre" class="form-label">Nombre <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="editNombre" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editDescripcion" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="editDescripcion" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editColor" class="form-label">Color</label>
+                        <input type="color" class="form-control form-control-color" id="editColor">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editEstado" class="form-label">Estado</label>
+                        <select class="form-select" id="editEstado">
+                            <option value="ACTIVO">Activo</option>
+                            <option value="INACTIVO">Inactivo</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-2"></i>Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Eliminar Categoría -->
+<div class="modal fade" id="modalEliminarCategoria" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content animate__animated animate__zoomIn">
+            <div class="modal-header" style="background: linear-gradient(135deg, #ef4444, #dc2626); color: white;">
+                <h5 class="modal-title"><i class="fas fa-exclamation-triangle me-2"></i>Eliminar Categoría</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body text-center">
+                <div style="width: 64px; height: 64px; border-radius: 50%; background: #fee2e2; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                    <i class="fas fa-trash text-danger" style="font-size: 1.8rem;"></i>
+                </div>
+                <h6 class="fw-bold mb-2">¿Estás seguro de eliminar esta categoría?</h6>
+                <p class="text-muted mb-3" id="eliminarCategoriaNombre"></p>
+                <div class="alert alert-warning">
+                    <i class="fas fa-info-circle me-2"></i>Esta acción no se puede deshacer
+                </div>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="btnConfirmarEliminar">
+                    <i class="fas fa-trash me-2"></i>Sí, Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="toastNotificacion" class="toast align-items-center text-white border-0 animate__animated animate__fadeInRight" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body"><i class="fas fa-check-circle me-2"></i><span id="toastMensaje">Operación realizada correctamente</span></div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Cerrar"></button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Toggle sidebar móvil
+    function toggleSidebar() {
+        document.getElementById('adminSidebar').classList.toggle('show');
+    }
+    document.addEventListener('click', function(e) {
+        const sidebar = document.getElementById('adminSidebar');
+        const toggleBtn = document.querySelector('.btn-toggle-sidebar');
+        if (window.innerWidth < 992 && sidebar.classList.contains('show') &&
+            !sidebar.contains(e.target) && !toggleBtn.contains(e.target)) {
+            sidebar.classList.remove('show');
+        }
+    });
+
+    // Toast
+    function mostrarToast(mensaje, tipo = 'success') {
+        const toastEl = document.getElementById('toastNotificacion');
+        const toastBody = toastEl.querySelector('.toast-body');
+        if (tipo === 'success') {
+            toastEl.className = 'toast align-items-center text-white bg-success border-0 animate__animated animate__fadeInRight';
+        } else if (tipo === 'danger') {
+            toastEl.className = 'toast align-items-center text-white bg-danger border-0 animate__animated animate__fadeInRight';
+        } else if (tipo === 'warning') {
+            toastEl.className = 'toast align-items-center text-dark bg-warning border-0 animate__animated animate__fadeInRight';
+        }
+        const icono = tipo === 'success' ? 'fa-check-circle' : (tipo === 'warning' ? 'fa-info-circle' : 'fa-exclamation-circle');
+        toastBody.innerHTML = `<i class="fas ${icono} me-2"></i><span>${mensaje}</span>`;
+        const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+        toast.show();
+    }
+
+    // Modal Crear
+    function abrirModalCrear() {
+        new bootstrap.Modal(document.getElementById('modalCrearCategoria')).show();
+    }
+
+    // Modal Editar
+    function abrirModalEditar(btn) {
+        document.getElementById('editCategoriaId').value   = btn.getAttribute('data-id');
+        document.getElementById('editNombre').value        = btn.getAttribute('data-nombre');
+        document.getElementById('editDescripcion').value   = btn.getAttribute('data-descripcion') || '';
+        document.getElementById('editColor').value         = btn.getAttribute('data-color');
+        document.getElementById('editEstado').value        = btn.getAttribute('data-estado');
+        new bootstrap.Modal(document.getElementById('modalEditarCategoria')).show();
+    }
+
+    // Modal Eliminar
+    function abrirModalEliminar(btn) {
+        document.getElementById('eliminarCategoriaNombre').textContent = btn.getAttribute('data-nombre');
+        document.getElementById('btnConfirmarEliminar').setAttribute('data-id', btn.getAttribute('data-id'));
+        new bootstrap.Modal(document.getElementById('modalEliminarCategoria')).show();
+    }
+
+    // Crear Categoría
+    document.getElementById('formCrearCategoria')?.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const data = {
+            nombre:      document.getElementById('createNombre').value,
+            descripcion: document.getElementById('createDescripcion').value,
+            color:       document.getElementById('createColor').value
+        };
+        try {
+            const res    = await fetch('/admin/categorias/crear', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            if (result.success) {
+                bootstrap.Modal.getInstance(document.getElementById('modalCrearCategoria'))?.hide();
+                mostrarToast('✅ Categoría creada correctamente', 'success');
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                mostrarToast('❌ ' + result.message, 'danger');
+            }
+        } catch (err) {
+            mostrarToast('❌ Error de conexión', 'danger');
+        }
+    });
+
+    // Editar Categoría
+    document.getElementById('formEditarCategoria')?.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const id   = document.getElementById('editCategoriaId').value;
+        const data = {
+            nombre:      document.getElementById('editNombre').value,
+            descripcion: document.getElementById('editDescripcion').value,
+            color:       document.getElementById('editColor').value,
+            estado:      document.getElementById('editEstado').value
+        };
+        try {
+            const res    = await fetch(`/admin/categorias/${id}/actualizar`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            if (result.success) {
+                bootstrap.Modal.getInstance(document.getElementById('modalEditarCategoria'))?.hide();
+                mostrarToast('✅ Categoría actualizada correctamente', 'success');
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                mostrarToast('❌ ' + result.message, 'danger');
+            }
+        } catch (err) {
+            mostrarToast('❌ Error de conexión', 'danger');
+        }
+    });
+
+    // Eliminar Categoría
+    document.getElementById('btnConfirmarEliminar')?.addEventListener('click', async function() {
+        const id = this.getAttribute('data-id');
+        try {
+            const res    = await fetch(`/admin/categorias/${id}/eliminar`, { method: 'DELETE' });
+            const result = await res.json();
+            if (result.success) {
+                bootstrap.Modal.getInstance(document.getElementById('modalEliminarCategoria'))?.hide();
+                mostrarToast('🗑️ Categoría eliminada correctamente', 'danger');
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                mostrarToast('❌ ' + result.message, 'danger');
+            }
+        } catch (err) {
+            mostrarToast('❌ Error de conexión', 'danger');
+        }
+    });
+</script>
+</body>
+</html>
