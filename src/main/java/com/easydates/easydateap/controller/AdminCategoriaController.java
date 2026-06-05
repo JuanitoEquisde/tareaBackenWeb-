@@ -22,7 +22,6 @@ import java.util.Map;
 @RequestMapping("/admin/categorias")
 @PreAuthorize("hasRole('ADMINISTRADOR')")
 public class AdminCategoriaController {
-
     @Autowired
     private ICategoriaService categoriaService;
 
