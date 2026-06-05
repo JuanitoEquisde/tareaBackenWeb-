@@ -27,7 +27,6 @@ public class Usuario {
     @Column(nullable = false, length = 30)
     private String estado;
 
-    // ✅ NUEVO: Campo para el tema (claro, oscuro, elegante)
     @Column(length = 20)
     private String tema = "claro";
 

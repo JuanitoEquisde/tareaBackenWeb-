@@ -276,15 +276,20 @@ public class UsuarioServiceImpl implements IUsuarioService {
     @Override
     @Transactional(readOnly = true)
     public Page<Usuario> buscarUsuariosPaginados(Integer id, String nombre, String email, String estado, Pageable pageable) {
+        //evitar string vacios
         Integer idBusqueda = (id != null && id > 0) ? id : null;
         String nombreBusqueda = (nombre != null && !nombre.trim().isEmpty()) ? nombre.trim() : null;
         String emailBusqueda = (email != null && !email.trim().isEmpty()) ? email.trim() : null;
         String estadoBusqueda = (estado != null && !estado.trim().isEmpty()) ? estado.trim() : null;
 
+        //llama al repository con parametros
         return usuarioRepository.buscarConFiltrosPaginados(
                 idBusqueda, nombreBusqueda, emailBusqueda, estadoBusqueda, null, pageable
         );
     }
+
+
+
 
     @Override
     @Transactional(readOnly = true)
