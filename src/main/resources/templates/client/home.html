@@ -11,7 +11,7 @@
 
     <style>
         /* ============================================================
-           NOTYGO — DESIGN SYSTEM (REEMPLAZO COMPLETO DEL BLOQUE STYLE)
+           NOTYGO — DESIGN SYSTEM
         ============================================================ */
         :root {
             --color-primary: #1565C0;
@@ -45,7 +45,7 @@
         }
 
         /* ============================================================
-           KEYFRAMES — Animaciones globales del sistema
+           KEYFRAMES
         ============================================================ */
         @keyframes slideDown {
             from { opacity: 0; transform: translateY(-16px); }
@@ -96,6 +96,11 @@
         @keyframes borderGlow {
             0%, 100% { box-shadow: 0 0 0 0 rgba(21,101,192,0); }
             50%       { box-shadow: 0 0 0 4px rgba(21,101,192,0.12); }
+        }
+        @keyframes pulse {
+            0%{box-shadow:0 0 0 0 rgba(229,57,53,0.4);}
+            70%{box-shadow:0 0 0 8px rgba(229,57,53,0);}
+            100%{box-shadow:0 0 0 0 rgba(229,57,53,0);}
         }
 
         /* ============================================================
@@ -243,6 +248,39 @@
         }
         .menu-toggle:hover { background: rgba(255,255,255,0.28) !important; }
         .menu-toggle.active { background: rgba(255,255,255,0.3) !important; }
+
+        /* ============================================================
+           🔔 NUEVO DISEÑO DE NOTIFICACIONES
+        ============================================================ */
+        .notif-dropdown{width:380px;max-height:500px;padding:0;overflow:hidden;border:none;box-shadow:0 10px 40px rgba(0,0,0,0.15);border-radius:16px;}
+        .notif-header{padding:16px 20px;background:linear-gradient(135deg,#1565C0,#0D47A1);color:white;display:flex;justify-content:space-between;align-items:center;}
+        .notif-header h6{margin:0;font-weight:800;font-size:0.95rem;}
+        .notif-header .btn-mark-all{background:rgba(255,255,255,0.2);border:none;color:white;font-size:0.75rem;font-weight:700;padding:4px 10px;border-radius:20px;transition:0.2s;}
+        .notif-header .btn-mark-all:hover{background:rgba(255,255,255,0.3);}
+        .notif-list{max-height:360px;overflow-y:auto;padding:8px;}
+        .notif-list::-webkit-scrollbar{width:6px;}
+        .notif-list::-webkit-scrollbar-thumb{background:#ddd;border-radius:10px;}
+        .notif-item{display:flex;gap:12px;padding:12px;border-radius:12px;transition:0.2s;cursor:pointer;position:relative;text-decoration:none;color:inherit;}
+        .notif-item:hover{background:#F4F7FE;text-decoration:none;}
+        .notif-item.unread{background:#F8FAFF;}
+        .notif-item.unread::before{content:'';position:absolute;left:4px;top:50%;transform:translateY(-50%);width:6px;height:6px;background:#1565C0;border-radius:50%;}
+        .notif-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem;}
+        .notif-icon.admin{background:#E3F2FD;color:#1565C0;}
+        .notif-icon.recordatorio{background:#FFF3E0;color:#E65100;}
+        .notif-icon.alerta{background:#FFEBEE;color:#C62828;}
+        .notif-icon.sistema{background:#F5F5F5;color:#757575;}
+        .notif-content{flex:1;min-width:0;}
+        .notif-title{font-size:0.85rem;font-weight:700;color:#212529;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+        .notif-item.unread .notif-title{color:#0D47A1;}
+        .notif-msg{font-size:0.78rem;color:#6c757d;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+        .notif-time{font-size:0.7rem;color:#adb5bd;margin-top:4px;font-weight:600;}
+        .notif-footer{padding:12px;border-top:1px solid #eee;text-align:center;background:#FAFBFC;}
+        .notif-footer a{font-size:0.82rem;font-weight:700;color:#1565C0;text-decoration:none;}
+        .notif-footer a:hover{text-decoration:underline;}
+        .notif-empty{padding:40px 20px;text-align:center;color:#adb5bd;}
+        .notif-empty i{font-size:3rem;margin-bottom:12px;opacity:0.5;}
+        .notif-empty p{font-size:0.85rem;font-weight:600;margin:0;}
+        .notif-badge{position:absolute;top:-4px;right:-4px;width:18px;height:18px;background:#E53935;color:white;font-size:0.65rem;font-weight:800;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid white;box-shadow:0 2px 6px rgba(229,57,53,0.4);animation:pulse 2s infinite;}
 
         /* ============================================================
            LAYOUT
@@ -430,7 +468,7 @@
         .main-content-inner { padding: 1.75rem 1.5rem; }
 
         /* ============================================================
-           STAT CARDS — animaciones y shimmer
+           STAT CARDS
         ============================================================ */
         .stats-section { animation: slideDown 0.4s cubic-bezier(0.4,0,0.2,1); }
 
@@ -450,7 +488,6 @@
         .stat-card:nth-child(3) { animation-delay: 0.19s; }
         .stat-card:nth-child(4) { animation-delay: 0.26s; }
 
-        /* Shimmer sweep on each card */
         .stat-card::before {
             content: '';
             position: absolute; inset: 0;
@@ -595,7 +632,7 @@
         }
 
         /* ============================================================
-           TASK CARDS — animaciones escalonadas + hover premium
+           TASK CARDS
         ============================================================ */
         .task-card {
             background: white;
@@ -615,7 +652,6 @@
         .task-card:nth-child(4) { animation-delay: 0.26s; }
         .task-card:nth-child(5) { animation-delay: 0.33s; }
 
-        /* Barra de color lateral según prioridad */
         .task-card::before {
             content: '';
             position: absolute; left: 0; top: 12%; bottom: 12%; width: 3px;
@@ -623,7 +659,6 @@
             background: var(--color-gray-300);
             transition: background var(--transition-fast), height var(--transition-fast);
         }
-        /* Se colorea según la prioridad del badge que tenga */
         .task-card:has(.badge.bg-danger)::before  { background: #C62828; }
         .task-card:has(.badge.bg-warning)::before { background: #E65100; }
         .task-card:has(.badge.bg-success)::before { background: #2E7D32; }
@@ -661,7 +696,6 @@
         .task-card .badge.bg-warning { background: #FFF8E1 !important; color: #E65100 !important; }
         .task-card .badge.bg-success { background: #E8F5E9 !important; color: #2E7D32 !important; }
 
-        /* Punto pulsante de prioridad dentro del badge */
         .task-card .badge::before {
             content: '';
             width: 6px; height: 6px; border-radius: 50%;
@@ -903,33 +937,25 @@
                 <span class="d-none d-sm-inline">Nueva Tarea</span>
             </button>
 
-            <!-- Notificaciones -->
+            <!-- 🔔 NOTIFICACIONES - NUEVO DISEÑO -->
             <div class="dropdown">
-                <a class="nav-link position-relative" href="#" role="button"
+                <a class="nav-link position-relative p-2" href="#" role="button"
                    data-bs-toggle="dropdown" id="btnNotificaciones" onclick="cargarNotificaciones()">
                     <i class="fas fa-bell fa-lg"></i>
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                          id="notifBadge" style="font-size:0.62rem; display:none;">0</span>
+                    <span class="notif-badge" id="notifBadge" style="display:none;">0</span>
                 </a>
-                <ul class="dropdown-menu dropdown-menu-end shadow" style="width: 350px; max-height: 400px; overflow-y: auto;">
-                    <li class="dropdown-header d-flex justify-content-between align-items-center">
-                        <span><i class="fas fa-inbox me-2"></i>Mensajes del Sistema</span>
-                        <button class="btn btn-sm btn-link text-primary" onclick="marcarTodasLeidas()" style="font-size:0.75rem;">
-                            Marcar todas como leídas
-                        </button>
-                    </li>
-                    <li><hr class="dropdown-divider my-1"></li>
-                    <div id="listaNotificaciones">
-                        <!-- Las notificaciones se cargarán aquí dinámicamente -->
-                        <li><span class="dropdown-item text-muted text-center small">Cargando...</span></li>
+                <div class="dropdown-menu dropdown-menu-end notif-dropdown">
+                    <div class="notif-header">
+                        <h6><i class="fas fa-inbox me-2"></i>Notificaciones</h6>
+                        <button class="btn-mark-all" onclick="marcarTodasLeidas()">Marcar todas</button>
                     </div>
-                    <li><hr class="dropdown-divider my-1"></li>
-                    <li class="text-center p-2">
-                        <a href="#" class="btn btn-sm btn-outline-primary w-100" onclick="cargarNotificaciones()">
-                            Ver todas
-                        </a>
-                    </li>
-                </ul>
+                    <div class="notif-list" id="listaNotificaciones">
+                        <div class="notif-empty"><i class="fas fa-spinner fa-spin"></i><p>Cargando...</p></div>
+                    </div>
+                    <div class="notif-footer">
+                        <a href="#" onclick="abrirModalNotificaciones()">Ver todas las notificaciones</a>
+                    </div>
+                </div>
             </div>
 
             <!-- Perfil -->
@@ -946,7 +972,6 @@
                     <li>
                         <h6 class="dropdown-header text-center">
                             <span th:text="${usuario.nombre}">Usuario</span>
-                            <!-- ✅ CORREGIDO: Mostrar rol.nombre en lugar de rol -->
                             <small class="d-block text-muted" th:text="${usuario.rol.nombre}">Rol</small>
                         </h6>
                     </li>
@@ -985,19 +1010,15 @@
                     </div>
                 </div>
                 <h6 th:text="${usuario.nombre}">Juan Paz</h6>
-                <!--  Badge Premium (SOLO si es premium) -->
                 <div th:if="${usuario.esPremium}" class="premium-badge">
                     <i class="fas fa-crown"></i>
                     <span>PREMIUM</span>
                 </div>
-
-                <!-- Texto del rol (SOLO si NO es premium) -->
                 <small th:unless="${usuario.esPremium}"
                        th:text="${usuario.rol != null ? usuario.rol.nombre : 'Usuario'}"
                        style="color: var(--color-gray-500); font-size: 0.72rem;">
                     Usuario
                 </small>
-
             </div>
 
             <!-- Menú Principal -->
@@ -1020,7 +1041,6 @@
                         <span>Todas las Tareas</span>
                     </a>
                 </li>
-                <!-- ✅ NUEVO: Enlace Comprar Premium -->
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/suscripciones/comprar}" th:classappend="${activePage == 'premium'} ? 'active' : ''">
                         <i class="fas fa-crown text-warning"></i>
@@ -1547,26 +1567,20 @@
     </div>
 </div>
 
-<!-- Modal Ver Todas las Notificaciones -->
+<!-- 🔔 MODAL VER TODAS LAS NOTIFICACIONES - NUEVO DISEÑO -->
 <div class="modal fade" id="modalNotificaciones" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title">
-                    <i class="fas fa-inbox me-2"></i>Mensajes del Sistema
-                </h5>
+        <div class="modal-content" style="border-radius:16px; overflow:hidden; border:none;">
+            <div class="modal-header" style="background:linear-gradient(135deg,#1565C0,#0D47A1);color:white;border:none;">
+                <h5 class="modal-title fw-bold"><i class="fas fa-inbox me-2"></i>Todas las Notificaciones</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-0">
-                <div id="modalListaNotificaciones" style="max-height: 500px; overflow-y: auto;">
-                    <!-- Se cargará dinámicamente -->
-                </div>
+                <div id="modalListaNotificaciones" style="max-height: 500px; overflow-y: auto; padding: 12px;"></div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary" onclick="marcarTodasLeidas()">
-                    <i class="fas fa-check-double me-1"></i>Marcar todas como leídas
-                </button>
+            <div class="modal-footer" style="border-top:1px solid #eee;">
+                <button type="button" class="btn btn-light fw-bold" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary fw-bold" onclick="marcarTodasLeidas()"><i class="fas fa-check-double me-1"></i>Marcar todas como leídas</button>
             </div>
         </div>
     </div>
@@ -1728,6 +1742,7 @@
         initDragAndDrop();
     });
 </script>
+
 <script>
     // ✅ VERIFICAR ESTADO REAL DE SUSCRIPCIÓN AL CARGAR
     document.addEventListener('DOMContentLoaded', function() {
@@ -1738,263 +1753,161 @@
         fetch('/cliente/api/usuario/verificar-premium')
             .then(response => response.json())
             .then(data => {
-                console.log('Estado premium recibido:', data);
-
                 const avatarLarge = document.querySelector('.avatar-large');
                 const avatarCrown = document.querySelector('.avatar-crown');
                 const premiumBadge = document.querySelector('.premium-badge');
                 const rolSmall = document.querySelector('.user-info-section small');
 
-                // Si NO es premium o la suscripción no está activa
                 if (data.esPremium === false || data.suscripcionActiva === false) {
-                    console.log('❌ Usuario NO es premium - Actualizando UI');
-
-                    // Ocultar badge premium
-                    if (premiumBadge) {
-                        premiumBadge.style.display = 'none';
-                    }
-
-                    // Ocultar corona
-                    if (avatarCrown) {
-                        avatarCrown.style.display = 'none';
-                    }
-
-                    // Cambiar avatar a azul (no premium)
+                    if (premiumBadge) premiumBadge.style.display = 'none';
+                    if (avatarCrown) avatarCrown.style.display = 'none';
                     if (avatarLarge) {
                         avatarLarge.classList.remove('premium');
                         avatarLarge.style.background = 'linear-gradient(135deg, #1565C0 0%, #2196F3 100%)';
                         avatarLarge.style.boxShadow = '0 4px 16px rgba(21,101,192,0.35)';
                         avatarLarge.style.border = 'none';
                     }
-
-                    // Mostrar rol normal
                     if (rolSmall) {
                         rolSmall.style.display = 'inline-block';
                         rolSmall.textContent = data.rol || 'Usuario Estándar';
                     }
                 } else {
-                    console.log('✅ Usuario es premium - Manteniendo UI');
-
-                    // Mostrar badge premium
-                    if (premiumBadge) {
-                        premiumBadge.style.display = 'inline-flex';
-                    }
-
-                    // Mostrar corona
-                    if (avatarCrown) {
-                        avatarCrown.style.display = 'flex';
-                    }
-
-                    // Ocultar rol
-                    if (rolSmall) {
-                        rolSmall.style.display = 'none';
-                    }
+                    if (premiumBadge) premiumBadge.style.display = 'inline-flex';
+                    if (avatarCrown) avatarCrown.style.display = 'flex';
+                    if (rolSmall) rolSmall.style.display = 'none';
                 }
             })
-            .catch(error => {
-                console.error('❌ Error al verificar estado premium:', error);
-            });
+            .catch(error => console.error('❌ Error al verificar estado premium:', error));
     }
-
 </script>
+
 <script>
-    // ===== SISTEMA DE NOTIFICACIONES MEJORADO =====
+    // ===== 🔔 SISTEMA DE NOTIFICACIONES MEJORADO =====
 
-    // Cargar notificaciones al hacer clic en la campanita
     function cargarNotificaciones() {
-        console.log('🔔 Iniciando carga de notificaciones...');
-
         const container = document.getElementById('listaNotificaciones');
-        container.innerHTML = '<li><span class="dropdown-item text-muted text-center small"><i class="fas fa-spinner fa-spin me-1"></i>Cargando...</span></li>';
+        container.innerHTML = '<div class="notif-empty"><i class="fas fa-spinner fa-spin"></i><p>Cargando...</p></div>';
 
         fetch('/cliente/notificaciones/api?page=0&size=5', {
             method: 'GET',
-            credentials: 'same-origin' // Importante para cookies de sesión
+            credentials: 'same-origin'
         })
         .then(response => {
-            console.log('📥 Respuesta recibida:', response.status, response.statusText);
-
-            if (!response.ok) {
-                throw new Error(`HTTP Error: ${response.status}`);
-            }
-
+            if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
             return response.json();
         })
         .then(data => {
-            console.log('📦 Datos recibidos:', data);
-
             if (data.success) {
-                console.log('✅ Success:', data.success);
-                console.log('🔢 No leídas:', data.noLeidas);
-                console.log('📋 Notificaciones:', data.notificaciones);
-
                 actualizarBadge(data.noLeidas);
                 renderizarNotificaciones(data.notificaciones);
                 renderizarModalNotificaciones(data.notificaciones, data.totalElements);
             } else {
-                console.error('❌ Success es false:', data.message);
-                container.innerHTML = `<li><span class="dropdown-item text-danger text-center small">
-                    <i class="fas fa-exclamation-circle me-1"></i>${data.message || 'Error desconocido'}
-                </span></li>`;
+                container.innerHTML = `<div class="notif-empty"><i class="fas fa-exclamation-circle"></i><p>${data.message || 'Error desconocido'}</p></div>`;
             }
         })
         .catch(error => {
-            console.error('❌ Error fatal:', error);
-            container.innerHTML = `<li><span class="dropdown-item text-danger text-center small">
-                <i class="fas fa-exclamation-triangle me-1"></i>Error: ${error.message}
-            </span></li>`;
+            container.innerHTML = `<div class="notif-empty"><i class="fas fa-exclamation-triangle"></i><p>Error: ${error.message}</p></div>`;
         });
     }
 
-    // Actualizar badge de no leídas
     function actualizarBadge(cantidad) {
         const badge = document.getElementById('notifBadge');
-        console.log('🔢 Actualizando badge con:', cantidad);
-
         if (cantidad > 0) {
             badge.textContent = cantidad > 99 ? '99+' : cantidad;
-            badge.style.display = 'inline-block';
+            badge.style.display = 'flex';
         } else {
             badge.style.display = 'none';
         }
     }
 
-    // Renderizar notificaciones en dropdown
     function renderizarNotificaciones(notificaciones) {
         const container = document.getElementById('listaNotificaciones');
-
         if (!notificaciones || notificaciones.length === 0) {
-            container.innerHTML = '<li><span class="dropdown-item text-muted text-center small"><i class="fas fa-inbox me-1"></i>Sin notificaciones</span></li>';
+            container.innerHTML = `<div class="notif-empty"><i class="fas fa-bell-slash"></i><p>No tienes notificaciones</p></div>`;
             return;
         }
 
         let html = '';
         notificaciones.forEach(notif => {
             const fecha = formatearFecha(notif.fechaCreacion);
-            const claseLeido = notif.leido ? '' : 'fw-bold bg-light';
-            const badgeNuevo = !notif.leido ? '<span class="badge bg-primary rounded-pill ms-2" style="font-size:0.6rem;">Nuevo</span>' : '';
-
-            // Icono según tipo
-            let icono = '<i class="fas fa-bell text-secondary"></i>';
-            if (notif.tipo === 'ADMIN') icono = '<i class="fas fa-user-shield text-primary"></i>';
-            else if (notif.tipo === 'RECORDATORIO') icono = '<i class="fas fa-clock text-warning"></i>';
-            else if (notif.tipo === 'ALERTA') icono = '<i class="fas fa-exclamation-triangle text-danger"></i>';
+            const unreadClass = notif.leido ? '' : 'unread';
+            let iconClass = 'sistema'; let icon = 'fa-bell';
+            if (notif.tipo === 'ADMIN') { iconClass = 'admin'; icon = 'fa-user-shield'; }
+            else if (notif.tipo === 'RECORDATORIO') { iconClass = 'recordatorio'; icon = 'fa-clock'; }
+            else if (notif.tipo === 'ALERTA') { iconClass = 'alerta'; icon = 'fa-exclamation-triangle'; }
 
             html += `
-                <li>
-                    <a class="dropdown-item ${claseLeido}"
-                       href="${notif.linkAccion || '#'}"
-                       onclick="${notif.linkAccion ? '' : `event.preventDefault(); marcarComoLeida(${notif.id});`}">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div class="flex-grow-1">
-                                <div class="d-flex align-items-center gap-2">
-                                    ${icono}
-                                    <small class="text-muted">${fecha}</small>
-                                </div>
-                                <div class="mt-1">${notif.titulo}</div>
-                                <small class="text-muted">${notif.mensaje.substring(0, 60)}${notif.mensaje.length > 60 ? '...' : ''}</small>
-                            </div>
-                            ${badgeNuevo}
-                        </div>
-                    </a>
-                </li>
-            `;
+                <a href="${notif.linkAccion || '#'}" class="notif-item ${unreadClass}" onclick="${notif.linkAccion ? '' : `event.preventDefault(); marcarComoLeida(${notif.id});`}">
+                    <div class="notif-icon ${iconClass}"><i class="fas ${icon}"></i></div>
+                    <div class="notif-content">
+                        <div class="notif-title">${notif.titulo}</div>
+                        <div class="notif-msg">${notif.mensaje}</div>
+                        <div class="notif-time">${fecha}</div>
+                    </div>
+                </a>`;
         });
-
         container.innerHTML = html;
     }
 
-    // Renderizar modal completo
     function renderizarModalNotificaciones(notificaciones, total) {
         const container = document.getElementById('modalListaNotificaciones');
-
         if (!notificaciones || notificaciones.length === 0) {
-            container.innerHTML = `
-                <div class="text-center p-4 text-muted">
-                    <i class="fas fa-inbox fa-3x mb-3"></i>
-                    <p>No tienes notificaciones</p>
-                </div>
-            `;
+            container.innerHTML = `<div class="notif-empty"><i class="fas fa-bell-slash"></i><p>No tienes notificaciones</p></div>`;
             return;
         }
 
         let html = '';
         notificaciones.forEach(notif => {
             const fecha = formatearFecha(notif.fechaCreacion);
-            const claseFondo = notif.leido ? 'bg-light' : '';
+            const unreadClass = notif.leido ? '' : 'unread';
+            let iconClass = 'sistema'; let icon = 'fa-bell';
+            if (notif.tipo === 'ADMIN') { iconClass = 'admin'; icon = 'fa-user-shield'; }
+            else if (notif.tipo === 'RECORDATORIO') { iconClass = 'recordatorio'; icon = 'fa-clock'; }
+            else if (notif.tipo === 'ALERTA') { iconClass = 'alerta'; icon = 'fa-exclamation-triangle'; }
 
             html += `
-                <div class="p-3 border-bottom ${claseFondo}">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div class="flex-grow-1">
-                            <div class="d-flex align-items-center gap-2 mb-2">
-                                <i class="fas fa-bell text-primary"></i>
-                                <strong>${notif.titulo}</strong>
-                                <small class="text-muted">${fecha}</small>
-                            </div>
-                            <p class="mb-2">${notif.mensaje}</p>
-                            ${notif.linkAccion ? `
-                                <a href="${notif.linkAccion}" class="btn btn-sm btn-primary" onclick="marcarComoLeida(${notif.id})">
-                                    Ver más <i class="fas fa-arrow-right ms-1"></i>
-                                </a>
-                            ` : ''}
-                        </div>
-                        <button class="btn btn-sm btn-link text-muted" onclick="eliminarNotificacion(${notif.id})">
-                            <i class="fas fa-trash"></i>
-                        </button>
+                <a href="${notif.linkAccion || '#'}" class="notif-item ${unreadClass}" onclick="${notif.linkAccion ? '' : `event.preventDefault(); marcarComoLeida(${notif.id});`}">
+                    <div class="notif-icon ${iconClass}"><i class="fas ${icon}"></i></div>
+                    <div class="notif-content">
+                        <div class="notif-title">${notif.titulo}</div>
+                        <div class="notif-msg">${notif.mensaje}</div>
+                        <div class="notif-time">${fecha}</div>
                     </div>
-                </div>
-            `;
+                </a>`;
         });
-
-        if (total > 5) {
-            html += `<div class="p-3 text-center"><small class="text-muted">Mostrando 5 de ${total} notificaciones</small></div>`;
-        }
-
         container.innerHTML = html;
     }
 
-    // Marcar como leída
-    function marcarComoLeida(id) {
-        console.log('✅ Marcando como leída:', id);
+    function abrirModalNotificaciones() {
+        cargarNotificaciones();
+        const modal = new bootstrap.Modal(document.getElementById('modalNotificaciones'));
+        modal.show();
+    }
 
+    function marcarComoLeida(id) {
         fetch(`/cliente/notificaciones/${id}/leer`, {
             method: 'POST',
             credentials: 'same-origin'
         })
         .then(response => {
-            if (response.ok) {
-                console.log('✅ Marcada como leída');
-                cargarNotificaciones();
-            } else {
-                console.error('❌ Error al marcar como leída');
-            }
-        })
-        .catch(error => console.error('❌ Error:', error));
+            if (response.ok) cargarNotificaciones();
+        });
     }
 
-    // Marcar todas como leídas
     function marcarTodasLeidas() {
-        console.log('✅ Marcando todas como leídas');
-
         fetch('/cliente/notificaciones/leer-todas', {
             method: 'POST',
             credentials: 'same-origin'
         })
         .then(response => {
             if (response.ok) {
-                console.log('✅ Todas marcadas como leídas');
                 cargarNotificaciones();
                 const modal = bootstrap.Modal.getInstance(document.getElementById('modalNotificaciones'));
                 if (modal) modal.hide();
-            } else {
-                console.error('❌ Error al marcar todas');
             }
-        })
-        .catch(error => console.error('❌ Error:', error));
+        });
     }
 
-    // Eliminar notificación
     function eliminarNotificacion(id) {
         if (confirm('¿Eliminar esta notificación?')) {
             fetch(`/cliente/notificaciones/${id}`, {
@@ -2002,53 +1915,36 @@
                 credentials: 'same-origin'
             })
             .then(response => {
-                if (response.ok) {
-                    console.log('✅ Notificación eliminada');
-                    cargarNotificaciones();
-                } else {
-                    console.error('❌ Error al eliminar');
-                }
-            })
-            .catch(error => console.error('❌ Error:', error));
+                if (response.ok) cargarNotificaciones();
+            });
         }
     }
 
-    // Formatear fecha
     function formatearFecha(fechaStr) {
         if (!fechaStr) return '';
         const fecha = new Date(fechaStr);
         const ahora = new Date();
         const diffMinutos = Math.floor((ahora - fecha) / 60000);
-
         if (diffMinutos < 1) return 'Ahora';
         if (diffMinutos < 60) return `Hace ${diffMinutos}m`;
         if (diffMinutos < 1440) return `Hace ${Math.floor(diffMinutos / 60)}h`;
-        return fecha.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        return fecha.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
     }
 
     // Actualizar badge cada 30 segundos
     setInterval(() => {
-        fetch('/cliente/notificaciones/api/no-leidas/count', {
-            credentials: 'same-origin'
-        })
+        fetch('/cliente/notificaciones/api/no-leidas/count', { credentials: 'same-origin' })
         .then(response => response.json())
         .then(data => actualizarBadge(data.count))
-        .catch(error => console.error('❌ Error al actualizar badge:', error));
+        .catch(() => {});
     }, 30000);
 
     // Cargar badge al iniciar
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('🚀 Iniciando sistema de notificaciones...');
-
-        fetch('/cliente/notificaciones/api/no-leidas/count', {
-            credentials: 'same-origin'
-        })
+        fetch('/cliente/notificaciones/api/no-leidas/count', { credentials: 'same-origin' })
         .then(response => response.json())
-        .then(data => {
-            console.log('📊 Notificaciones no leídas:', data.count);
-            actualizarBadge(data.count);
-        })
-        .catch(error => console.error('❌ Error al cargar badge inicial:', error));
+        .then(data => actualizarBadge(data.count))
+        .catch(() => {});
     });
 </script>
 </body>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- ====== FRAGMENTO SCRIPTS DE NOTIFICACIONES ====== -->
+<script th:fragment="scripts_notificaciones">
+    // ===== SISTEMA DE NOTIFICACIONES MEJORADO =====
+
+    function cargarNotificaciones() {
+        console.log('🔔 Iniciando carga de notificaciones...');
+
+        const container = document.getElementById('listaNotificaciones');
+        container.innerHTML = '<li><span class="dropdown-item text-muted text-center small"><i class="fas fa-spinner fa-spin me-1"></i>Cargando...</span></li>';
+
+        fetch('/cliente/notificaciones/api?page=0&size=5', {
+            method: 'GET',
+            credentials: 'same-origin'
+        })
+        .then(response => {
+            if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                actualizarBadge(data.noLeidas);
+                renderizarNotificaciones(data.notificaciones);
+                renderizarModalNotificaciones(data.notificaciones, data.totalElements);
+            } else {
+                container.innerHTML = `<li><span class="dropdown-item text-danger text-center small">
+                    <i class="fas fa-exclamation-circle me-1"></i>${data.message || 'Error desconocido'}
+                </span></li>`;
+            }
+        })
+        .catch(error => {
+            console.error('❌ Error fatal:', error);
+            container.innerHTML = `<li><span class="dropdown-item text-danger text-center small">
+                <i class="fas fa-exclamation-triangle me-1"></i>Error: ${error.message}
+            </span></li>`;
+        });
+    }
+
+    function actualizarBadge(cantidad) {
+        const badge = document.getElementById('notifBadge');
+        if (cantidad > 0) {
+            badge.textContent = cantidad > 99 ? '99+' : cantidad;
+            badge.style.display = 'inline-block';
+        } else {
+            badge.style.display = 'none';
+        }
+    }
+
+    function renderizarNotificaciones(notificaciones) {
+        const container = document.getElementById('listaNotificaciones');
+
+        if (!notificaciones || notificaciones.length === 0) {
+            container.innerHTML = '<li><span class="dropdown-item text-muted text-center small"><i class="fas fa-inbox me-1"></i>Sin notificaciones</span></li>';
+            return;
+        }
+
+        let html = '';
+        notificaciones.forEach(notif => {
+            const fecha = formatearFecha(notif.fechaCreacion);
+            const claseLeido = notif.leido ? '' : 'fw-bold bg-light';
+            const badgeNuevo = !notif.leido ? '<span class="badge bg-primary rounded-pill ms-2" style="font-size:0.6rem;">Nuevo</span>' : '';
+
+            let icono = '<i class="fas fa-bell text-secondary"></i>';
+            if (notif.tipo === 'ADMIN') icono = '<i class="fas fa-user-shield text-primary"></i>';
+            else if (notif.tipo === 'RECORDATORIO') icono = '<i class="fas fa-clock text-warning"></i>';
+            else if (notif.tipo === 'ALERTA') icono = '<i class="fas fa-exclamation-triangle text-danger"></i>';
+
+            html += `
+                <li>
+                    <a class="dropdown-item ${claseLeido}"
+                       href="${notif.linkAccion || '#'}"
+                       onclick="${notif.linkAccion ? '' : `event.preventDefault(); marcarComoLeida(${notif.id});`}">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-center gap-2">
+                                    ${icono}
+                                    <small class="text-muted">${fecha}</small>
+                                </div>
+                                <div class="mt-1">${notif.titulo}</div>
+                                <small class="text-muted">${notif.mensaje.substring(0, 60)}${notif.mensaje.length > 60 ? '...' : ''}</small>
+                            </div>
+                            ${badgeNuevo}
+                        </div>
+                    </a>
+                </li>
+            `;
+        });
+
+        container.innerHTML = html;
+    }
+
+    function renderizarModalNotificaciones(notificaciones, total) {
+        const container = document.getElementById('modalListaNotificaciones');
+
+        if (!notificaciones || notificaciones.length === 0) {
+            container.innerHTML = `
+                <div class="text-center p-4 text-muted">
+                    <i class="fas fa-inbox fa-3x mb-3"></i>
+                    <p>No tienes notificaciones</p>
+                </div>
+            `;
+            return;
+        }
+
+        let html = '';
+        notificaciones.forEach(notif => {
+            const fecha = formatearFecha(notif.fechaCreacion);
+            const claseFondo = notif.leido ? 'bg-light' : '';
+
+            html += `
+                <div class="p-3 border-bottom ${claseFondo}">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div class="flex-grow-1">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <i class="fas fa-bell text-primary"></i>
+                                <strong>${notif.titulo}</strong>
+                                <small class="text-muted">${fecha}</small>
+                            </div>
+                            <p class="mb-2">${notif.mensaje}</p>
+                            ${notif.linkAccion ? `
+                                <a href="${notif.linkAccion}" class="btn btn-sm btn-primary" onclick="marcarComoLeida(${notif.id})">
+                                    Ver más <i class="fas fa-arrow-right ms-1"></i>
+                                </a>
+                            ` : ''}
+                        </div>
+                        <button class="btn btn-sm btn-link text-muted" onclick="eliminarNotificacion(${notif.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        });
+
+        if (total > 5) {
+            html += `<div class="p-3 text-center"><small class="text-muted">Mostrando 5 de ${total} notificaciones</small></div>`;
+        }
+
+        container.innerHTML = html;
+    }
+
+    function marcarComoLeida(id) {
+        fetch(`/cliente/notificaciones/${id}/leer`, {
+            method: 'POST',
+            credentials: 'same-origin'
+        })
+        .then(response => {
+            if (response.ok) cargarNotificaciones();
+        });
+    }
+
+    function marcarTodasLeidas() {
+        fetch('/cliente/notificaciones/leer-todas', {
+            method: 'POST',
+            credentials: 'same-origin'
+        })
+        .then(response => {
+            if (response.ok) {
+                cargarNotificaciones();
+                const modal = bootstrap.Modal.getInstance(document.getElementById('modalNotificaciones'));
+                if (modal) modal.hide();
+            }
+        });
+    }
+
+    function eliminarNotificacion(id) {
+        if (confirm('¿Eliminar esta notificación?')) {
+            fetch(`/cliente/notificaciones/${id}`, {
+                method: 'DELETE',
+                credentials: 'same-origin'
+            })
+            .then(response => {
+                if (response.ok) cargarNotificaciones();
+            });
+        }
+    }
+
+    function formatearFecha(fechaStr) {
+        if (!fechaStr) return '';
+        const fecha = new Date(fechaStr);
+        const ahora = new Date();
+        const diffMinutos = Math.floor((ahora - fecha) / 60000);
+
+        if (diffMinutos < 1) return 'Ahora';
+        if (diffMinutos < 60) return `Hace ${diffMinutos}m`;
+        if (diffMinutos < 1440) return `Hace ${Math.floor(diffMinutos / 60)}h`;
+        return fecha.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    }
+
+    // Actualizar badge cada 30 segundos
+    setInterval(() => {
+        fetch('/cliente/notificaciones/api/no-leidas/count', {
+            credentials: 'same-origin'
+        })
+        .then(response => response.json())
+        .then(data => actualizarBadge(data.count))
+        .catch(error => console.error('❌ Error al actualizar badge:', error));
+    }, 30000);
+
+    // Cargar badge al iniciar
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch('/cliente/notificaciones/api/no-leidas/count', {
+            credentials: 'same-origin'
+        })
+        .then(response => response.json())
+        .then(data => actualizarBadge(data.count))
+        .catch(error => console.error('❌ Error al cargar badge inicial:', error));
+    });
+</script>
+
+</body>
+</html>
