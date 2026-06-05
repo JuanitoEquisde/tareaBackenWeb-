@@ -60,9 +60,9 @@ public class Suscripcion {
     public enum EstadoSuscripcion {
         ACTIVA,
         CANCELADA,
-        EXPIRADA,
         VENCIDA,
-        ELIMINADA
+        PENDIENTE
+
 
     }
 

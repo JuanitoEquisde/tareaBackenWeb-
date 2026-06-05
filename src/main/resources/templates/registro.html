@@ -4,46 +4,624 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro - NotyGo</title>
-
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Fredoka+One&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    <!-- Tu CSS personalizado (ruta correcta para Thymeleaf) -->
-    <link rel="stylesheet" th:href="@{/css/login.css}">
+        :root {
+            --blue-500: #3b82f6;
+            --blue-600: #2563eb;
+            --blue-700: #1d4ed8;
+            --blue-800: #1e40af;
+            --blue-900: #1e3a8a;
+            --gray-50:  #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-400: #94a3b8;
+            --gray-500: #64748b;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --radius: 24px;
+            --radius-sm: 12px;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: #eef2f7;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+            overflow-x: hidden;
+        }
+
+        /* ── Contenedor Split (La gran diferencia con el login) ── */
+        .split-container {
+            background: #fff;
+            border-radius: var(--radius);
+            box-shadow: 0 12px 50px rgba(30, 64, 175, 0.12);
+            width: 920px;
+            max-width: 100%;
+            display: flex;
+            min-height: 600px;
+            overflow: hidden;
+            position: relative;
+            z-index: 10;
+            animation: cardIn .6s cubic-bezier(.22,1,.36,1) both;
+        }
+
+        @keyframes cardIn {
+            from { opacity:0; transform:translateY(30px) scale(.98); }
+            to   { opacity:1; transform:translateY(0) scale(1); }
+        }
+
+        /* Panel Izquierdo de Bienvenida */
+        .info-panel {
+            background: linear-gradient(135deg, var(--blue-700) 0%, var(--blue-900) 100%);
+            padding: 3rem;
+            width: 45%;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        /* Panel Derecho del Formulario */
+        .form-panel {
+            padding: 3.5rem 3rem 3rem;
+            width: 55%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* ── Logo ── */
+        .logo-wrap {
+            display: flex;
+            align-items: center;
+            gap: .8rem;
+            margin-bottom: 2rem;
+        }
+        .logo-icon {
+            width: 46px; height: 46px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.25rem; color: #fff;
+        }
+        .logo-name {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.8rem;
+            color: #fff;
+            letter-spacing: .5px;
+            line-height: 1;
+        }
+
+        /* Características del registro */
+        .features-list {
+            list-style: none;
+            margin-top: 1.5rem;
+        }
+        .features-list li {
+            display: flex;
+            align-items: center;
+            gap: .8rem;
+            margin-bottom: 1.2rem;
+            font-size: .95rem;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+        .features-list i {
+            color: #fde68a;
+            font-size: 1.1rem;
+        }
+
+        /* Headings Formulario */
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--gray-800);
+            margin-bottom: .3rem;
+            letter-spacing: -.3px;
+        }
+        .card-subtitle {
+            font-size: .9rem;
+            color: var(--gray-400);
+            font-weight: 600;
+            margin-bottom: 2rem;
+        }
+
+        /* Labels e Inputs con Icono Interno */
+        .form-label {
+            font-size: .78rem;
+            font-weight: 800;
+            color: var(--gray-700);
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            margin-bottom: .5rem;
+        }
+
+        .input-group-custom {
+            position: relative;
+        }
+        .input-group-custom i.input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-400);
+            transition: color .2s;
+            pointer-events: none;
+        }
+        .form-control {
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-sm);
+            padding: .78rem 1.1rem .78rem 2.8rem;
+            font-size: .95rem;
+            font-weight: 600;
+            color: var(--gray-800);
+            background: var(--gray-50);
+            width: 100%;
+            transition: border-color .2s, box-shadow .2s, background .2s;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--blue-500);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(59,130,246,.1);
+        }
+        .form-control:focus + i.input-icon {
+            color: var(--blue-500);
+        }
+
+        /* Password Wrapper */
+        .pw-wrap .form-control { padding-right: 3.2rem; }
+        .toggle-password {
+            position: absolute; right: .9rem; top: 50%;
+            transform: translateY(-50%);
+            background: none; border: none; cursor: pointer;
+            color: var(--gray-400); font-size: .95rem;
+            transition: color .2s; padding:.2rem;
+        }
+        .toggle-password:hover { color: var(--blue-500); }
+        .toggle-password .fa-eye-slash { display: none; }
+        .toggle-password.active .fa-eye { display: none; }
+        .toggle-password.active .fa-eye-slash { display: inline; }
+
+        /* Botón de Registro */
+        .btn-register {
+            background: linear-gradient(135deg, var(--blue-600) 0%, var(--blue-700) 100%);
+            border: none;
+            border-radius: var(--radius-sm);
+            padding: .88rem 1rem;
+            font-size: .98rem;
+            font-weight: 800;
+            letter-spacing: .04em;
+            color: #fff;
+            width: 100%;
+            position: relative; overflow: hidden;
+            transition: transform .2s, box-shadow .2s;
+            box-shadow: 0 4px 18px rgba(37,99,235,.25);
+            cursor: pointer;
+            margin-top: .5rem;
+        }
+        .btn-register:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(37,99,235,.35); }
+        .btn-register:active { transform: translateY(0); }
+        .btn-register .ripple {
+            position: absolute; border-radius: 50%;
+            background: rgba(255,255,255,.25);
+            transform: scale(0);
+            animation: rippleAnim .55s linear;
+            pointer-events: none;
+        }
+        @keyframes rippleAnim { to { transform: scale(4); opacity:0; } }
+
+        .link-primary {
+            color: var(--blue-600); font-weight: 800; font-size: .88rem;
+            text-decoration: none; transition: color .2s;
+        }
+        .link-primary:hover { color: var(--blue-700); text-decoration: underline; }
+
+        .mb-field { margin-bottom: 1.25rem; }
+        .mt-links { margin-top: 1.5rem; text-align: center; }
+
+        /* ── Responsivo Avanzado ── */
+        @media(max-width: 860px) {
+            .info-panel { display: none; }
+            .form-panel { width: 100%; padding: 3rem 2rem; }
+            .split-container { width: 460px; }
+        }
+        @media(max-width: 480px) {
+            body { padding: 1rem .5rem; }
+            .form-panel { padding: 2.2rem 1.5rem; }
+            .card-title { font-size: 1.3rem; }
+        }
+
+        /* ══════════════════════════════
+           MASCOTA
+        ══════════════════════════════ */
+        #mascot-wrap {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            z-index: 500;
+            pointer-events: none;
+            transform-origin: bottom center;
+        }
+        #mascot-wrap svg {
+            pointer-events: all;
+            cursor: pointer;
+            display: block;
+        }
+        .speech {
+            position: fixed;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1rem;
+            color: var(--gray-800);
+            background: #fff;
+            padding: .4rem .8rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            pointer-events: none;
+            z-index: 501;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity .3s;
+        }
+        .speech.visible { opacity: 1; }
+    </style>
 </head>
 <body>
-<div class="registro-container">
+
+<div class="speech" id="speech"></div>
+
+<!-- Contenedor Split Principal -->
+<div class="split-container" id="loginCard">
+
+    <!-- Panel Izquierdo (Diferenciador del Login) -->
+    <div class="info-panel" id="infoPanel">
+        <div>
+            <div class="logo-wrap">
+                <div class="logo-icon"><i class="fas fa-rocket"></i></div>
+                <div class="logo-name">NotyGo</div>
+            </div>
+            <h3 class="fw-bold text-white mt-4" style="font-size: 1.6rem; letter-spacing: -0.5px;">¡Estás a un paso de mejorar tu productividad!</h3>
+            <p class="text-white-50 small mt-2">Crea tu cuenta estándar completamente gratis y accede a nuestro ecosistema inteligente.</p>
+
+            <ul class="features-list">
+                <li><i class="fas fa-check-circle"></i> Recordatorios inteligentes</li>
+                <li><i class="fas fa-check-circle"></i> Sincronización en tiempo real</li>
+                <li><i class="fas fa-check-circle"></i> Panel de control dinámico</li>
+            </ul>
+        </div>
+        <div class="text-white-50 small">
+            © 2026 NotyGo Inc. Todos los derechos reservados.
+        </div>
+    </div>
+
+    <!-- Panel Derecho (Formulario) -->
     <div class="form-panel">
-        <h2 class="text-center mb-4">Crea tu cuenta Estándar</h2>
+        <h2 class="card-title">Crea tu cuenta Estándar</h2>
+        <p class="card-subtitle">Regístrate en pocos segundos</p>
 
         <form th:action="@{/registro}" method="post">
-            <div class="form-group mb-3">
+
+            <div class="mb-field">
                 <label class="form-label" for="nombre">Nombre completo</label>
-                <input type="text" id="nombre" class="form-control" name="nombre"
-                       placeholder="Ingresa tu nombre" required>
+                <div class="input-group-custom">
+                    <input type="text" id="nombre" class="form-control" name="nombre"
+                           placeholder="Ingresa tu nombre" required autofocus>
+                    <i class="fas fa-user input-icon"></i>
+                </div>
             </div>
 
-            <div class="form-group mb-3">
+            <div class="mb-field">
                 <label class="form-label" for="email">Correo electrónico</label>
-                <input type="email" id="email" class="form-control" name="email"
-                       placeholder="ejemplo@correo.com" required>
+                <div class="input-group-custom">
+                    <input type="email" id="email" class="form-control" name="email"
+                           placeholder="ejemplo@correo.com" required>
+                    <i class="fas fa-envelope input-icon"></i>
+                </div>
             </div>
 
-            <div class="form-group mb-4">
+            <div class="mb-field">
                 <label class="form-label" for="password">Contraseña</label>
-                <input type="password" id="password" class="form-control" name="password"
-                       placeholder="••••••••" required>
+                <div class="input-group-custom pw-wrap">
+                    <input type="password" id="password" class="form-control" name="password"
+                           placeholder="••••••••" required>
+                    <i class="fas fa-lock input-icon"></i>
+                    <button type="button" class="toggle-password" id="togglePassword" aria-label="Mostrar contraseña">
+                        <i class="fas fa-eye"></i>
+                        <i class="fas fa-eye-slash"></i>
+                    </button>
+                </div>
             </div>
 
             <input type="hidden" name="rol" value="ESTANDAR">
 
-            <button type="submit" class="btn btn-register w-100">Registrarme</button>
+            <button type="submit" class="btn-register" id="submitBtn">
+                Registrarme
+            </button>
 
-            <div class="text-center mt-4">
-                <a th:href="@{/login}" class="link-login">← Volver al Login</a>
+            <div class="mt-links">
+                <a th:href="@{/login}" class="link-primary">
+                    <i class="fas fa-arrow-left me-1" style="font-size:.8rem"></i> Volver al Login
+                </a>
             </div>
         </form>
     </div>
 </div>
+
+<!-- Mascota Interactiva Animada -->
+<div id="mascot-wrap">
+    <svg id="mascot-svg" width="80" height="90" viewBox="0 0 80 90">
+        <ellipse id="shadow" cx="40" cy="87" rx="18" ry="4" fill="rgba(0,0,0,.12)"/>
+        <rect id="leg-l" x="23" y="66" width="12" height="18" rx="6" fill="#2563eb"/>
+        <rect id="leg-r" x="45" y="66" width="12" height="18" rx="6" fill="#2563eb"/>
+        <ellipse id="shoe-l" cx="29" cy="84" rx="9" ry="4" fill="#1e40af"/>
+        <ellipse id="shoe-r" cx="51" cy="84" rx="9" ry="4" fill="#1e40af"/>
+        <ellipse cx="40" cy="52" rx="26" ry="24" fill="#3b82f6"/>
+        <ellipse cx="32" cy="42" rx="10" ry="6" fill="rgba(255,255,255,.18)" transform="rotate(-20 32 42)"/>
+        <rect id="arm-l" x="8"  y="46" width="14" height="9" rx="4.5" fill="#2563eb"/>
+        <rect id="arm-r" x="58" y="46" width="14" height="9" rx="4.5" fill="#2563eb"/>
+        <circle cx="12" cy="50" r="5" fill="#60a5fa"/>
+        <circle cx="68" cy="50" r="5" fill="#60a5fa"/>
+        <ellipse cx="31" cy="49" rx="7" ry="8" fill="white"/>
+        <ellipse cx="49" cy="49" rx="7" ry="8" fill="white"/>
+        <circle id="pupil-l" cx="32" cy="50" r="4" fill="#1e293b"/>
+        <circle id="pupil-r" cx="50" cy="50" r="4" fill="#1e293b"/>
+        <circle cx="33.5" cy="48" r="1.5" fill="white"/>
+        <circle cx="51.5" cy="48" r="1.5" fill="white"/>
+        <path id="mouth" d="M33 58 Q40 65 47 58" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <line x1="33" y1="28" x2="26" y2="18" stroke="#3b82f6" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="25" cy="16" r="4.5" fill="#fbbf24"/>
+        <line x1="47" y1="28" x2="54" y2="18" stroke="#3b82f6" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="55" cy="16" r="4.5" fill="#fbbf24"/>
+        <g id="task-card">
+            <rect x="54" y="18" width="22" height="16" rx="3.5" fill="white" opacity=".92"/>
+            <rect x="57" y="22" width="12" height="2.5" rx="1.5" fill="#93c5fd"/>
+            <rect x="57" y="26" width="8"  height="2" rx="1" fill="#bfdbfe"/>
+            <path d="M59 30 L61 32 L65 28" stroke="#3b82f6" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+    </svg>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    /* ── Toggle password ── */
+    const toggleBtn = document.getElementById('togglePassword');
+    const pwInput   = document.getElementById('password');
+    toggleBtn.addEventListener('click', () => {
+        pwInput.type = pwInput.type === 'password' ? 'text' : 'password';
+        toggleBtn.classList.toggle('active');
+    });
+
+    /* ── Ripple ── */
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.addEventListener('click', function(e) {
+        const r = document.createElement('span');
+        r.classList.add('ripple');
+        const rect = this.getBoundingClientRect(), sz = Math.max(rect.width, rect.height);
+        r.style.cssText = `width:${sz}px;height:${sz}px;left:${e.clientX-rect.left-sz/2}px;top:${e.clientY-rect.top-sz/2}px`;
+        this.appendChild(r);
+        setTimeout(() => r.remove(), 600);
+    });
+
+    /* ── Stagger inputs ── */
+    document.querySelectorAll('.form-control').forEach((el, i) => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(10px)';
+        el.style.transition = `opacity .4s ease ${i*.1+.2}s, transform .4s ease ${i*.1+.2}s, border-color .2s, box-shadow .2s, background .2s`;
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+            el.style.opacity = '1'; el.style.transform = 'translateY(0)';
+        }));
+    });
+
+    /* ════════════════════════════════════════════
+       MASCOTA (Controlador JS Adaptado)
+    ════════════════════════════════════════════ */
+    const wrap    = document.getElementById('mascot-wrap');
+    const mascSvg = document.getElementById('mascot-svg');
+    const pupilL  = document.getElementById('pupil-l');
+    const pupilR  = document.getElementById('pupil-r');
+    const mouth   = document.getElementById('mouth');
+    const legL    = document.getElementById('leg-l');
+    const legR    = document.getElementById('leg-r');
+    const shoeL   = document.getElementById('shoe-l');
+    const shoeR   = document.getElementById('shoe-r');
+    const armL    = document.getElementById('arm-l');
+    const armR    = document.getElementById('arm-r');
+    const speech  = document.getElementById('speech');
+
+    const W = 80;
+    let x = 40;
+    let vx = 1.2;
+    let facingRight = true;
+
+    let isJumping = false;
+    let isHugging = false;
+    let jumpY = 0;
+    let jumpVY = 0;
+    let walkFrame = 0;
+    let blinkCt = 0;
+    let blinkDown = false;
+    let speechTimer = 0;
+
+    function showSpeech(text, duration = 3000) {
+        speech.textContent = text;
+        speech.classList.add('visible');
+        setTimeout(() => speech.classList.remove('visible'), duration);
+    }
+
+    function positionSpeech() {
+        const wr = wrap.getBoundingClientRect();
+        let sx = wr.left + (facingRight ? 85 : -speech.offsetWidth - 10);
+        let sy = wr.top - 10;
+        if (sx < 4) sx = 4;
+        if (sx + speech.offsetWidth > window.innerWidth - 4)
+            sx = window.innerWidth - speech.offsetWidth - 4;
+        speech.style.left = sx + 'px';
+        speech.style.top  = sy + 'px';
+    }
+
+    const frasesNormal  = ['¡Regístrate!', 'Únete a NotyGo', '¿Todo listo?', 'Es superfácil', '¡Crea tu cuenta!'];
+    const frasesHug     = ['¡Abrazo de bienvenida!', '¡Te va a gustar!', '¡Únete al equipo!'];
+
+    function animateWalk(speed) {
+        walkFrame += speed * 0.12;
+        const swingL = Math.sin(walkFrame) * 7;
+        const swingR = Math.sin(walkFrame + Math.PI) * 7;
+        legL.setAttribute('transform', `rotate(${swingL}, 29, 66)`);
+        legR.setAttribute('transform', `rotate(${swingR}, 51, 66)`);
+        shoeL.setAttribute('transform', `rotate(${swingL * .6}, 29, 84)`);
+        shoeR.setAttribute('transform', `rotate(${swingR * .6}, 51, 84)`);
+        armL.setAttribute('transform', `rotate(${-swingL * .7}, 15, 50)`);
+        armR.setAttribute('transform', `rotate(${-swingR * .7}, 65, 50)`);
+    }
+
+    function animateIdle() {
+        walkFrame += 0.04;
+        armL.setAttribute('transform', `rotate(${Math.sin(walkFrame)*8}, 15, 50)`);
+        armR.setAttribute('transform', `rotate(${-Math.sin(walkFrame)*8}, 65, 50)`);
+        legL.setAttribute('transform', '');
+        legR.setAttribute('transform', '');
+    }
+
+    function doJump() {
+        if (isJumping) return;
+        isJumping = true;
+        jumpVY = -14;
+    }
+
+    function doHug() {
+        const card = document.getElementById('loginCard');
+        if (!card || isHugging) return;
+        isHugging = true;
+        const rect = card.getBoundingClientRect();
+
+        // En pantallas grandes se apoya al panel izquierdo, en pequeñas al borde de la caja
+        if (window.innerWidth > 860) {
+            x = rect.left - W * 0.2;
+        } else {
+            x = rect.left - W * 0.5;
+        }
+
+        vx = 0;
+        setTimeout(() => {
+            showSpeech(frasesHug[Math.floor(Math.random()*frasesHug.length)], 2500);
+            armL.setAttribute('transform', 'rotate(-60, 15, 46)');
+            armR.setAttribute('transform', 'rotate(-60, 65, 46)');
+            setTimeout(() => {
+                armL.setAttribute('transform', '');
+                armR.setAttribute('transform', '');
+                isHugging = false;
+                vx = -1.2;
+            }, 2000);
+        }, 400);
+    }
+
+    function doBlink() {
+        if (blinkDown) return;
+        blinkDown = true;
+        const eyes = mascSvg.querySelectorAll('ellipse[rx="7"]');
+        eyes.forEach(e => e.setAttribute('ry', '1'));
+        setTimeout(() => {
+            eyes.forEach(e => e.setAttribute('ry', '8'));
+            blinkDown = false;
+        }, 100);
+    }
+
+    let cursorX = window.innerWidth / 2;
+    let cursorY = window.innerHeight / 2;
+    document.addEventListener('mousemove', e => { cursorX = e.clientX; cursorY = e.clientY; });
+
+    function updatePupils() {
+        const wr = wrap.getBoundingClientRect();
+        const cx = wr.left + 40, cy = wr.top + 50;
+        const dx = cursorX - cx, dy = cursorY - cy;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        const maxOffset = 2;
+        const ox = dist > 1 ? (dx / dist) * maxOffset : 0;
+        const oy = dist > 1 ? (dy / dist) * maxOffset : 0;
+        pupilL.setAttribute('cx', 32 + ox);
+        pupilL.setAttribute('cy', 50 + oy);
+        pupilR.setAttribute('cx', 50 + ox);
+        pupilR.setAttribute('cy', 50 + oy);
+    }
+
+    let frameCount = 0;
+    function loop() {
+        frameCount++;
+
+        if (isJumping) {
+            jumpVY += 1.0;
+            jumpY  += jumpVY;
+            if (jumpY >= 0) { jumpY = 0; jumpVY = 0; isJumping = false; }
+        } else {
+            jumpY = 0;
+        }
+
+        if (!isHugging) {
+            x += vx;
+            if (x <= 0)                          { x = 0;                          vx = Math.abs(vx);  facingRight = true; }
+            if (x >= window.innerWidth - W - 2)  { x = window.innerWidth - W - 2; vx = -Math.abs(vx); facingRight = false; }
+        }
+
+        wrap.style.left = x + 'px';
+        wrap.style.bottom = Math.max(0, -jumpY) + 'px';
+        mascSvg.style.transform = facingRight ? 'scaleX(1)' : 'scaleX(-1)';
+
+        if (isHugging) { animateIdle(); }
+        else           { animateWalk(Math.abs(vx)); }
+
+        updatePupils();
+
+        blinkCt++;
+        if (blinkCt > 200 + Math.random() * 100) { blinkCt = 0; doBlink(); }
+
+        if (speech.classList.contains('visible')) positionSpeech();
+
+        speechTimer++;
+        if (speechTimer > 400) {
+            speechTimer = 0;
+            if (Math.random() < .4) {
+                showSpeech(frasesNormal[Math.floor(Math.random()*frasesNormal.length)], 2800);
+            }
+        }
+
+        if (!isHugging && !isJumping && frameCount % 600 === 0 && Math.random() < .4) {
+            doHug();
+        }
+
+        requestAnimationFrame(loop);
+    }
+
+    mascSvg.addEventListener('click', () => { doJump(); showSpeech('¡A trabajar!', 1500); });
+
+    setTimeout(() => {
+        showSpeech('¡Hola! Regístrate aquí', 2800);
+    }, 800);
+
+    setInterval(() => {
+        const card = document.getElementById('loginCard');
+        if (!card || isHugging) return;
+        const rect = card.getBoundingClientRect();
+
+        let targetX = window.innerWidth > 860 ? rect.left : rect.left - 20;
+
+        const mascRight = x + W;
+        if (mascRight > targetX - 20 && mascRight < targetX + 20 && Math.random() < .3) {
+            doHug();
+        }
+    }, 1500);
+
+    loop();
+</script>
 </body>
 </html>

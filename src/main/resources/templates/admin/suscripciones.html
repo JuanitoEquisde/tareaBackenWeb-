@@ -285,17 +285,39 @@
 <div class="admin-wrapper">
     <aside class="admin-sidebar" id="adminSidebar">
         <nav class="nav flex-column">
-            <a th:href="@{/admin/dashboard}" class="nav-link" th:classappend="${activePage=='dashboard'}?'active':''">
-                <i class="fas fa-home"></i><span>Dashboard</span></a>
-            <a th:href="@{/admin/usuarios}" class="nav-link" th:classappend="${activePage=='usuarios'}?'active':''">
-                <i class="fas fa-users"></i><span>Usuarios</span></a>
-            <a th:href="@{/admin/tareas}" class="nav-link" th:classappend="${activePage=='tareas'}?'active':''">
-                <i class="fas fa-tasks"></i><span>Tareas</span></a>
-            <a th:href="@{/admin/suscripciones}" class="nav-link" th:classappend="${activePage=='suscripciones'}?'active':''">
-                <i class="fas fa-crown"></i><span>Suscripciones</span></a>
-            <a th:href="@{/admin/auditoria}" class="nav-link" th:classappend="${activePage=='auditoria'}?'active':''">
-                <i class="fas fa-history"></i><span>Auditoría</span></a>
-
+            <a th:href="@{/admin/dashboard}" class="nav-link"
+               th:classappend="${activePage == 'dashboard'} ? 'active' : ''">
+                <i class="fas fa-home"></i> <span>Dashboard</span>
+            </a>
+            <a th:href="@{/admin/usuarios}" class="nav-link"
+               th:classappend="${activePage == 'usuarios'} ? 'active' : ''">
+                <i class="fas fa-users"></i> <span>Usuarios</span>
+            </a>
+            <a th:href="@{/admin/tareas}" class="nav-link"
+               th:classappend="${activePage == 'tareas'} ? 'active' : ''">
+                <i class="fas fa-tasks"></i> <span>Tareas</span>
+            </a>
+            <a th:href="@{/admin/categorias}" class="nav-link"
+               th:classappend="${activePage == 'categorias'} ? 'active' : ''">
+                <i class="fas fa-folder me-2"></i> <span>Categorías</span>
+            </a>
+            <a th:href="@{/admin/suscripciones}" class="nav-link"
+               th:classappend="${activePage == 'suscripciones'} ? 'active' : ''">
+                <i class="fas fa-crown"></i> <span>Suscripciones</span>
+            </a>
+            <a th:href="@{/admin/suscripciones/reporte}" class="nav-link"
+               th:classappend="${activePage == 'reporte-suscripciones'} ? 'active' : ''">
+                <i class="fas fa-chart-line"></i> <span>Reporte Suscripciones</span>
+            </a>
+            <!-- ✅ NUEVO: Customer Success 360° -->
+            <a th:href="@{/admin/customer-success}" class="nav-link"
+               th:classappend="${activePage == 'customer-success'} ? 'active' : ''">
+                <i class="fas fa-heartbeat"></i> <span>Customer Success</span>
+            </a>
+            <a th:href="@{/admin/auditoria}" class="nav-link"
+               th:classappend="${activePage == 'auditoria'} ? 'active' : ''">
+                <i class="fas fa-history"></i> <span>Auditoría</span>
+            </a>
         </nav>
     </aside>
 

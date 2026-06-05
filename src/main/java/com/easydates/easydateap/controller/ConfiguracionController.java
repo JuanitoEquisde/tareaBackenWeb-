@@ -124,40 +124,6 @@ public class ConfiguracionController {
         return ResponseEntity.status(500).body("❌ Error desconocido");
     }
 
-    // CRUD Categorías
-    @PostMapping("/categoria/guardar")
-    @ResponseBody
-    public ResponseEntity<?> guardarCategoria(@RequestParam String nombre, @RequestParam(required = false) String descripcion, @RequestParam(required = false) String color, HttpSession session) {
-        Integer usuarioId = (Integer) session.getAttribute("usuarioId");
-        if (usuarioId == null) {
-            return ResponseEntity.status(401).body("❌ Sesión expirada");
-        }
-
-        try {
-            Categoria categoria = categoriaService.crearCategoria(nombre, descripcion, color, usuarioId);
-            return ResponseEntity.ok(categoria);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("❌ Error: " + e.getMessage());
-        }
-    }
-
-    @PostMapping("/categoria/eliminar/{id}")
-    @ResponseBody
-    public ResponseEntity<?> eliminarCategoria(@PathVariable Integer id, HttpSession session) {
-        Integer usuarioId = (Integer) session.getAttribute("usuarioId");
-        if (usuarioId == null) {
-            return ResponseEntity.status(401).body("❌ Sesión expirada");
-        }
-
-        try {
-            if (categoriaService.eliminarCategoria(id)) {
-                return ResponseEntity.ok("✅ Categoría eliminada");
-            }
-            return ResponseEntity.badRequest().body("❌ No se pudo eliminar");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("❌ Error: " + e.getMessage());
-        }
-    }
 
     // CRUD Etiquetas
     @PostMapping("/etiqueta/guardar")

@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte de Suscripciones - NotyGo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --admin-bg:#f0f2f5;--admin-sidebar:#1e3a8a;--admin-sidebar-hover:#1e40af;
+            --admin-primary:#3b82f6;--admin-primary-hover:#2563eb;--admin-success:#10b981;
+            --admin-warning:#f59e0b;--admin-danger:#ef4444;--admin-text:#1f2937;
+            --admin-text-muted:#6b7280;--admin-border:#e5e7eb;
+            --admin-card-shadow:0 4px 6px -1px rgba(0,0,0,0.07),0 2px 4px -1px rgba(0,0,0,0.04);
+            --admin-radius:14px;
+        }
+        *{box-sizing:border-box}
+        html,body{height:100%;overflow:hidden}
+        body{font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+            background:linear-gradient(135deg,#eef2ff 0%,#e0e7ff 50%,#f0f9ff 100%);color:var(--admin-text)}
+
+        /* NAVBAR */
+        .admin-navbar{background:linear-gradient(135deg,var(--admin-sidebar) 0%,#1d4ed8 100%);color:white;
+            padding:.875rem 2rem;box-shadow:0 4px 20px rgba(30,58,138,.25);position:sticky;top:0;z-index:1000}
+        .admin-navbar .navbar-brand{font-weight:800;font-size:1.3rem;color:white;display:flex;align-items:center;
+            gap:.75rem;transition:transform .3s;text-decoration:none;letter-spacing:-.02em}
+        .admin-navbar .navbar-brand:hover{transform:scale(1.04)}
+        .admin-navbar .brand-icon{width:36px;height:36px;background:rgba(255,255,255,.15);border-radius:10px;
+            display:flex;align-items:center;justify-content:center;font-size:1rem}
+        .admin-navbar .user-info{display:flex;align-items:center;gap:1.25rem}
+        .admin-navbar .user-chip{display:flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.12);
+            border-radius:50px;padding:.375rem .875rem;font-size:.85rem;font-weight:500}
+        .admin-navbar .btn-logout{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.25);
+            color:white;padding:.45rem 1.1rem;border-radius:50px;font-size:.82rem;font-weight:600;
+            transition:all .25s;cursor:pointer}
+        .admin-navbar .btn-logout:hover{background:rgba(255,255,255,.25);transform:translateY(-1px)}
+        .btn-toggle-sidebar{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.25);
+            color:white;font-size:1.1rem;padding:.45rem .7rem;cursor:pointer;border-radius:8px;
+            display:none;transition:all .25s}
+        .btn-toggle-sidebar:hover{background:rgba(255,255,255,.25)}
+
+        /* LAYOUT */
+        .admin-wrapper{display:flex;height:calc(100vh - 70px);overflow:hidden}
+
+        /* SIDEBAR */
+        .admin-sidebar{width:248px;background:white;padding:1.5rem .875rem;display:flex;
+            flex-direction:column;gap:.25rem;flex-shrink:0;box-shadow:2px 0 12px rgba(0,0,0,.04);
+            transition:transform .3s ease;overflow-y:auto;max-height:100%}
+        .admin-sidebar .nav-link{color:var(--admin-text-muted);padding:.75rem 1rem;border-radius:10px;
+            text-decoration:none;display:flex;align-items:center;gap:.75rem;font-weight:500;
+            font-size:.9rem;transition:all .25s}
+        .admin-sidebar .nav-link:hover,.admin-sidebar .nav-link.active{
+            background:linear-gradient(135deg,var(--admin-primary),var(--admin-primary-hover));
+            color:white;transform:translateX(4px);box-shadow:0 4px 14px rgba(59,130,246,.28)}
+        .admin-sidebar .nav-link i{width:20px;text-align:center;font-size:1rem;opacity:.85}
+        .admin-sidebar .divider{height:1px;background:var(--admin-border);margin:1rem .5rem;opacity:.6}
+
+        /* MAIN */
+        .admin-main{flex:1;padding:2rem;overflow-y:auto;overflow-x:hidden}
+
+        /* PAGE HEADER */
+        .page-header{background:white;border-radius:var(--admin-radius);padding:1.25rem 1.75rem;
+            margin-bottom:1.5rem;box-shadow:var(--admin-card-shadow);display:flex;
+            justify-content:space-between;align-items:center;animation:fadeInDown .5s ease;
+            border:1px solid rgba(0,0,0,.04)}
+        .page-header h2{font-weight:800;color:var(--admin-text);margin:0;font-size:1.35rem;
+            display:flex;align-items:center;gap:.75rem;letter-spacing:-.02em}
+        .page-header h2 .header-icon{width:40px;height:40px;
+            background:linear-gradient(135deg,#dbeafe,#bfdbfe);border-radius:10px;
+            display:flex;align-items:center;justify-content:center;color:var(--admin-primary);font-size:1rem}
+
+        /* STAT CARDS */
+        .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;margin-bottom:1.5rem}
+        .stat-card{border-radius:var(--admin-radius);padding:1.25rem 1.25rem;
+            box-shadow:var(--admin-card-shadow);position:relative;overflow:hidden;
+            border:1px solid rgba(0,0,0,.04);animation:fadeInUp .5s ease both;
+            cursor:default;transition:transform .25s,box-shadow .25s;display:flex;flex-direction:column;justify-content:space-between}
+        .stat-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.12)}
+        .stat-card:nth-child(1){animation-delay:.05s}.stat-card:nth-child(2){animation-delay:.10s}
+        .stat-card:nth-child(3){animation-delay:.15s}.stat-card:nth-child(4){animation-delay:.20s}
+        .stat-card.c-blue{background:linear-gradient(135deg,#1e3a8a 0%,#1d4ed8 100%);color:white}
+        .stat-card.c-green{background:linear-gradient(135deg,#065f46 0%,#059669 100%);color:white}
+        .stat-card.c-amber{background:linear-gradient(135deg,#92400e 0%,#d97706 100%);color:white}
+        .stat-card.c-red{background:linear-gradient(135deg,#991b1b 0%,#dc2626 100%);color:white}
+        .stat-card .sc-glow{position:absolute;right:-20px;top:-20px;width:100px;height:100px;
+            border-radius:50%;background:rgba(255,255,255,.08);pointer-events:none}
+        .stat-card .sc-icon{width:44px;height:44px;border-radius:10px;background:rgba(255,255,255,.18);
+            display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:1rem}
+        .stat-card .sc-value{font-size:2rem;font-weight:800;line-height:1;
+            margin-bottom:.25rem;letter-spacing:-.03em}
+        .stat-card .sc-label{font-size:.78rem;font-weight:600;opacity:.8;
+            text-transform:uppercase;letter-spacing:.06em}
+
+        /* FILTERS */
+        .filters-card{background:white;border-radius:var(--admin-radius);padding:1.375rem 1.75rem;
+            margin-bottom:1.5rem;box-shadow:var(--admin-card-shadow);
+            animation:fadeInUp .5s ease .1s both;border:1px solid rgba(0,0,0,.04)}
+        .filters-card .form-label{font-size:.72rem;font-weight:700;color:var(--admin-text-muted);
+            text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem}
+        .filters-card .form-control,.filters-card .form-select{border:1.5px solid var(--admin-border);
+            border-radius:9px;padding:.575rem .875rem;font-size:.875rem;font-family:inherit;
+            transition:all .25s;background:#fafbfc}
+        .filters-card .form-control:focus,.filters-card .form-select:focus{
+            border-color:var(--admin-primary);box-shadow:0 0 0 3px rgba(59,130,246,.12);background:white}
+        .filters-card .btn-primary{background:linear-gradient(135deg,var(--admin-primary),var(--admin-primary-hover));
+            border:none;padding:.575rem 1.375rem;border-radius:9px;font-weight:700;font-size:.875rem;
+            font-family:inherit;transition:all .25s;box-shadow:0 4px 12px rgba(59,130,246,.28)}
+        .filters-card .btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(59,130,246,.38)}
+        .filters-card .btn-outline-secondary{border:1.5px solid var(--admin-border);padding:.575rem 1.375rem;
+            border-radius:9px;font-weight:600;font-size:.875rem;font-family:inherit;
+            color:var(--admin-text-muted);background:white;transition:all .25s}
+        .filters-card .btn-outline-secondary:hover{background:#fee2e2;border-color:#fca5a5;
+            color:#dc2626;transform:translateY(-1px)}
+
+        /* TABLE */
+        .table-card{background:white;border-radius:var(--admin-radius);box-shadow:var(--admin-card-shadow);
+            overflow:hidden;animation:fadeInUp .5s ease .15s both;border:1px solid rgba(0,0,0,.04);
+            margin-bottom:1.5rem}
+        .table-card .table{margin:0;border-collapse:separate;border-spacing:0}
+        .table-card thead tr{background:linear-gradient(135deg,#f8fafc,#f1f5f9)}
+        .table-card th{font-weight:700;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;
+            color:var(--admin-text-muted);padding:.75rem 1.25rem;
+            border-bottom:1.5px solid var(--admin-border);border-top:none;white-space:nowrap}
+        .table-card td{padding:.75rem 1.25rem;vertical-align:middle;font-size:.875rem;border-color:#f3f4f6}
+        .table-card tbody tr{transition:all .2s}
+        .table-card tbody tr:hover{background:linear-gradient(135deg,#f0f9ff,#eff6ff)}
+
+        /* BADGES */
+        .badge-estado{padding:.35rem .75rem;border-radius:50px;font-size:.7rem;font-weight:700;
+            text-transform:uppercase;letter-spacing:.06em;display:inline-flex;align-items:center;gap:.3rem}
+        .badge-estado.activa{background:#d1fae5;color:#065f46;border:1.5px solid #a7f3d0}
+        .badge-estado.vencida{background:#fee2e2;color:#991b1b;border:1.5px solid #fecaca}
+        .badge-estado.cancelada{background:#fef3c7;color:#92400e;border:1.5px solid #fde68a}
+        .badge-estado.expirada{background:#f3f4f6;color:#4b5563;border:1.5px solid #e5e7eb}
+
+        .badge-plan{padding:.3rem .7rem;border-radius:50px;font-size:.68rem;font-weight:700;
+            background:linear-gradient(135deg,#dbeafe,#bfdbfe);color:#1d4ed8;border:1.5px solid #bfdbfe}
+
+        /* METODO PAGO - CORREGIDO */
+        .metodo-pago-cell {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+        }
+        .metodo-pago-cell i {
+            font-size: 1.1rem;
+        }
+
+        /* PAGINATION */
+        .pagination-wrapper{margin-top:1.75rem;display:flex;flex-direction:column;
+            align-items:center;gap:.75rem;animation:fadeInUp .5s ease .3s both}
+        .google-pagination{display:flex;align-items:center;gap:.25rem;list-style:none;
+            padding:.5rem .75rem;margin:0;background:white;border-radius:50px;
+            box-shadow:0 2px 12px rgba(0,0,0,.08);border:1px solid rgba(0,0,0,.05)}
+        .google-pagination li{display:inline-flex}
+        .google-pagination a,.google-pagination span{display:flex;align-items:center;justify-content:center;
+            min-width:36px;height:36px;padding:0 .5rem;border-radius:50px;font-size:.85rem;
+            font-weight:600;font-family:inherit;color:var(--admin-text-muted);
+            text-decoration:none;transition:all .2s}
+        .google-pagination a:hover{background:#eff6ff;color:var(--admin-primary)}
+        .google-pagination .active span,.google-pagination .active a{
+            background:linear-gradient(135deg,var(--admin-primary),var(--admin-primary-hover));
+            color:white;font-weight:700;box-shadow:0 3px 10px rgba(59,130,246,.35);min-width:36px}
+        .google-pagination .disabled a,.google-pagination .disabled span{
+            color:#d1d5db;cursor:not-allowed;pointer-events:none}
+        .pagination-info{font-size:.8rem;color:var(--admin-text-muted);font-weight:500}
+        .pagination-info strong{color:var(--admin-text)}
+
+        /* ANIMATIONS */
+        @keyframes fadeInDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes fadeInUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+        /* RESPONSIVE */
+        @media(max-width:1200px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
+        @media(max-width:991.98px){
+            .admin-sidebar{position:fixed;left:-260px;top:70px;height:calc(100vh - 70px);z-index:999;
+                box-shadow:4px 0 16px rgba(0,0,0,.1)}
+            .admin-sidebar.show{transform:translateX(260px)}
+            .admin-main{padding:1rem}.btn-toggle-sidebar{display:block}
+            .page-header{flex-direction:column;gap:1rem;text-align:center}
+            .stats-grid{grid-template-columns:repeat(2,1fr)}
+        }
+        @media(max-width:576px){.stats-grid{grid-template-columns:1fr}}
+        @media(min-width:992px){.btn-toggle-sidebar{display:none!important}}
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="admin-navbar">
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-3">
+            <button class="btn-toggle-sidebar d-lg-none" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+            <a class="navbar-brand" th:href="@{/admin/dashboard}">
+                <span class="brand-icon"><i class="fas fa-shield-alt"></i></span><span>Admin NotyGo</span>
+            </a>
+        </div>
+        <div class="user-info">
+            <span class="user-chip d-none d-sm-flex"><i class="fas fa-user-circle"></i>
+                <span th:text="${session.usuarioLogueado}">Admin</span></span>
+            <form th:action="@{/logout}" method="post" style="display:inline;">
+                <button type="submit" class="btn-logout"><i class="fas fa-sign-out-alt me-1"></i>Salir</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div class="admin-wrapper">
+    <aside class="admin-sidebar" id="adminSidebar">
+        <nav class="nav flex-column">
+            <a th:href="@{/admin/dashboard}" class="nav-link"
+               th:classappend="${activePage == 'dashboard'} ? 'active' : ''">
+                <i class="fas fa-home"></i> <span>Dashboard</span>
+            </a>
+            <a th:href="@{/admin/usuarios}" class="nav-link"
+               th:classappend="${activePage == 'usuarios'} ? 'active' : ''">
+                <i class="fas fa-users"></i> <span>Usuarios</span>
+            </a>
+            <a th:href="@{/admin/tareas}" class="nav-link"
+               th:classappend="${activePage == 'tareas'} ? 'active' : ''">
+                <i class="fas fa-tasks"></i> <span>Tareas</span>
+            </a>
+            <a th:href="@{/admin/categorias}" class="nav-link"
+               th:classappend="${activePage == 'categorias'} ? 'active' : ''">
+                <i class="fas fa-folder me-2"></i> <span>Categorías</span>
+            </a>
+            <a th:href="@{/admin/suscripciones}" class="nav-link"
+               th:classappend="${activePage == 'suscripciones'} ? 'active' : ''">
+                <i class="fas fa-crown"></i> <span>Suscripciones</span>
+            </a>
+            <a th:href="@{/admin/suscripciones/reporte}" class="nav-link"
+               th:classappend="${activePage == 'reporte-suscripciones'} ? 'active' : ''">
+                <i class="fas fa-chart-line"></i> <span>Reporte Suscripciones</span>
+            </a>
+            <!-- ✅ NUEVO: Customer Success 360° -->
+            <a th:href="@{/admin/customer-success}" class="nav-link"
+               th:classappend="${activePage == 'customer-success'} ? 'active' : ''">
+                <i class="fas fa-heartbeat"></i> <span>Customer Success</span>
+            </a>
+            <a th:href="@{/admin/auditoria}" class="nav-link"
+               th:classappend="${activePage == 'auditoria'} ? 'active' : ''">
+                <i class="fas fa-history"></i> <span>Auditoría</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="admin-main">
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <h2>
+                <span class="header-icon"><i class="fas fa-chart-line"></i></span>
+                Reporte de Seguimiento de Suscripciones
+            </h2>
+            <a id="btnExportarExcel" href="#"
+               onclick="exportarExcel()"
+               style="background:linear-gradient(135deg,#059669,#065f46);color:white;border:none;
+              padding:.575rem 1.375rem;border-radius:9px;font-weight:700;font-size:.875rem;
+              text-decoration:none;display:inline-flex;align-items:center;gap:.5rem;
+              box-shadow:0 4px 12px rgba(5,150,105,.28);transition:all .25s">
+                <i class="fas fa-file-excel"></i> Exportar Excel
+            </a>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card c-blue">
+                <div class="sc-glow"></div>
+                <div class="sc-icon"><i class="fas fa-receipt"></i></div>
+                <div class="sc-value" th:text="${reporteStats.totalSuscripciones}">0</div>
+                <div class="sc-label">Total Suscripciones</div>
+            </div>
+            <div class="stat-card c-green">
+                <div class="sc-glow"></div>
+                <div class="sc-icon"><i class="fas fa-check-circle"></i></div>
+                <div class="sc-value" th:text="${reporteStats.suscripcionesActivas}">0</div>
+                <div class="sc-label">Suscripciones Activas</div>
+            </div>
+            <div class="stat-card c-red">
+                <div class="sc-glow"></div>
+                <div class="sc-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                <div class="sc-value" th:text="${reporteStats.suscripcionesVencidas}">0</div>
+                <div class="sc-label">Suscripciones Vencidas</div>
+            </div>
+            <div class="stat-card c-amber">
+                <div class="sc-glow"></div>
+                <div class="sc-icon"><i class="fas fa-dollar-sign"></i></div>
+                <div class="sc-value" th:text="'$' + ${reporteStats.ingresosTotales}">0</div>
+                <div class="sc-label">Ingresos Totales</div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-card">
+            <form th:action="@{/admin/suscripciones/reporte}" method="get" class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label">Usuario</label>
+                    <input type="text" class="form-control" name="usuario"
+                           placeholder="Buscar por nombre o email..."
+                           th:value="${filtroUsuario}">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Plan</label>
+                    <input type="text" class="form-control" name="plan"
+                           placeholder="Nombre del plan..."
+                           th:value="${filtroPlan}">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Estado</label>
+                    <select class="form-select" name="estado">
+                        <option value="">Todos</option>
+                        <option value="ACTIVA" th:selected="${filtroEstado == 'ACTIVA'}">Activa</option>
+                        <option value="VENCIDA" th:selected="${filtroEstado == 'VENCIDA'}">Vencida</option>
+                        <option value="CANCELADA" th:selected="${filtroEstado == 'CANCELADA'}">Cancelada</option>
+                        <option value="EXPIRADA" th:selected="${filtroEstado == 'EXPIRADA'}">Expirada</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Fecha Inicio</label>
+                    <input type="date" class="form-control" name="fechaInicio"
+                           th:value="${filtroFechaInicio}">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Fecha Fin</label>
+                    <input type="date" class="form-control" name="fechaFin"
+                           th:value="${filtroFechaFin}">
+                </div>
+                <div class="col-md-1 d-flex">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search me-2"></i>Filtrar
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Table -->
+        <div class="table-card">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                    <tr>
+                        <th class="ps-4">Usuario</th>
+                        <th>Email</th>
+                        <th>Plan</th>
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Fin</th>
+                        <th>Monto Pagado</th>
+                        <th>Método Pago</th>
+                        <th>Estado</th>
+                        <th>Transacción</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="suscripcion : ${suscripciones}">
+                        <td class="ps-4">
+                            <div class="d-flex align-items-center">
+                                <div class="user-avatar me-2"
+                                     th:text="${#strings.substring(suscripcion.usuario.nombre, 0, 1)}">
+                                    U
+                                </div>
+                                <span class="fw-semibold" th:text="${suscripcion.usuario.nombre}">Usuario</span>
+                            </div>
+                        </td>
+                        <td class="text-muted" th:text="${suscripcion.usuario.email}">email@ejemplo.com</td>
+                        <td>
+                            <span class="badge-plan" th:text="${suscripcion.plan.nombre}">Premium</span>
+                        </td>
+                        <td th:text="${#temporals.format(suscripcion.fechaInicio, 'dd/MM/yyyy')}">01/01/2026</td>
+                        <td th:text="${#temporals.format(suscripcion.fechaFin, 'dd/MM/yyyy')}">01/02/2026</td>
+                        <td class="fw-bold" th:text="'$' + ${suscripcion.precioPagado}">$9.99</td>
+
+                        <!-- ✅ METODO DE PAGO - CORREGIDO CON TH:SWITCH -->
+                        <td>
+                            <div class="metodo-pago-cell">
+                                <span th:switch="${suscripcion.metodoPago?.name()}">
+                                    <span th:case="'TARJETA'" class="text-primary" title="Pago con tarjeta">
+                                        <i class="fas fa-credit-card"></i> Tarjeta
+                                    </span>
+                                    <span th:case="'PAYPAL'" class="text-info" title="Pago con PayPal">
+                                        <i class="fab fa-paypal"></i> PayPal
+                                    </span>
+                                    <span th:case="'TRANSFERENCIA'" class="text-success" title="Transferencia bancaria">
+                                        <i class="fas fa-university"></i> Transferencia
+                                    </span>
+                                    <span th:case="*" class="text-muted" title="Método no especificado">
+                                        <i class="fas fa-question-circle"></i>
+                                        <span th:text="${suscripcion.metodoPago?.name() ?: 'N/A'}">-</span>
+                                    </span>
+                                </span>
+                            </div>
+                        </td>
+
+                        <td>
+                            <span class="badge badge-estado"
+                                  th:classappend="${suscripcion.estado.name() == 'ACTIVA'} ? 'activa' :
+                                                 (${suscripcion.estado.name() == 'VENCIDA'} ? 'vencida' :
+                                                 (${suscripcion.estado.name() == 'CANCELADA'} ? 'cancelada' : 'expirada'))"
+                                  th:text="${suscripcion.estado.name()}">ACTIVA</span>
+                        </td>
+                        <td class="text-muted small" th:text="${suscripcion.numeroTransaccion}">TXN-123456</td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(suscripciones)}">
+                        <td colspan="9" class="text-center py-5 text-muted">
+                            <i class="fas fa-inbox fa-3x mb-3 d-block" style="opacity:0.2"></i>
+                            <p class="mb-0 fw-semibold">No hay suscripciones registradas</p>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ✅ PAGINACIÓN CORREGIDA - Comienza desde página 1 -->
+        <div class="pagination-wrapper" th:if="${totalPages > 0}">
+            <ul class="google-pagination">
+
+                <!-- ===== ANTERIOR ===== -->
+                <li class="pg-nav" th:classappend="${currentPage == 0} ? 'disabled' : ''">
+                    <a th:if="${currentPage > 0}"
+                       th:href="@{/admin/suscripciones/reporte(
+                           page=${currentPage - 1},
+                           size=${pageSize},
+                           estado=${filtroEstado},
+                           plan=${filtroPlan},
+                           usuario=${filtroUsuario},
+                           fechaInicio=${filtroFechaInicio},
+                           fechaFin=${filtroFechaFin},
+                           sortBy=${sortBy},
+                           sortDir=${sortDir}
+                       )}"
+                       title="Página anterior">
+                        <i class="fas fa-chevron-left" style="font-size:0.75rem"></i>
+                    </a>
+                    <span th:if="${currentPage == 0}">
+                        <i class="fas fa-chevron-left" style="font-size:0.75rem"></i>
+                    </span>
+                </li>
+
+                <!-- ===== PRIMERA PÁGINA (siempre visible) ===== -->
+                <li th:classappend="${currentPage == 0} ? 'active' : ''">
+                    <a th:if="${currentPage != 0}"
+                       th:href="@{/admin/suscripciones/reporte(
+                           page=0,
+                           size=${pageSize},
+                           estado=${filtroEstado},
+                           plan=${filtroPlan},
+                           usuario=${filtroUsuario},
+                           fechaInicio=${filtroFechaInicio},
+                           fechaFin=${filtroFechaFin},
+                           sortBy=${sortBy},
+                           sortDir=${sortDir}
+                       )}">1</a>
+                    <span th:if="${currentPage == 0}">1</span>
+                </li>
+
+                <!-- ===== ELLIPSIS IZQUIERDO ===== -->
+                <li class="ellipsis" th:if="${currentPage > 2}">
+                    <span>···</span>
+                </li>
+
+                <!-- ===== PÁGINAS CENTRALES (dinámicas) ===== -->
+                <li th:each="i : ${#numbers.sequence(
+                        currentPage > 1 ? currentPage - 1 : 1,
+                        currentPage < totalPages - 2 ? currentPage + 1 : totalPages - 2
+                    )}"
+                    th:if="${i > 0 and i < totalPages - 1}"
+                    th:classappend="${i == currentPage} ? 'active' : ''">
+                    <a th:if="${i != currentPage}"
+                       th:href="@{/admin/suscripciones/reporte(
+                           page=${i},
+                           size=${pageSize},
+                           estado=${filtroEstado},
+                           plan=${filtroPlan},
+                           usuario=${filtroUsuario},
+                           fechaInicio=${filtroFechaInicio},
+                           fechaFin=${filtroFechaFin},
+                           sortBy=${sortBy},
+                           sortDir=${sortDir}
+                       )}"
+                       th:text="${i + 1}">2</a>
+                    <span th:if="${i == currentPage}" th:text="${i + 1}">2</span>
+                </li>
+
+                <!-- ===== ELLIPSIS DERECHO ===== -->
+                <li class="ellipsis" th:if="${currentPage < totalPages - 3 and totalPages > 4}">
+                    <span>···</span>
+                </li>
+
+                <!-- ===== ÚLTIMA PÁGINA (si hay más de 1 página) ===== -->
+                <li th:if="${totalPages > 1}" th:classappend="${currentPage == totalPages - 1} ? 'active' : ''">
+                    <a th:if="${currentPage != totalPages - 1}"
+                       th:href="@{/admin/suscripciones/reporte(
+                           page=${totalPages - 1},
+                           size=${pageSize},
+                           estado=${filtroEstado},
+                           plan=${filtroPlan},
+                           usuario=${filtroUsuario},
+                           fechaInicio=${filtroFechaInicio},
+                           fechaFin=${filtroFechaFin},
+                           sortBy=${sortBy},
+                           sortDir=${sortDir}
+                       )}"
+                       th:text="${totalPages}">10</a>
+                    <span th:if="${currentPage == totalPages - 1}" th:text="${totalPages}">10</span>
+                </li>
+
+                <!-- ===== SIGUIENTE ===== -->
+                <li class="pg-nav" th:classappend="${currentPage == totalPages - 1} ? 'disabled' : ''">
+                    <a th:if="${currentPage < totalPages - 1}"
+                       th:href="@{/admin/suscripciones/reporte(
+                           page=${currentPage + 1},
+                           size=${pageSize},
+                           estado=${filtroEstado},
+                           plan=${filtroPlan},
+                           usuario=${filtroUsuario},
+                           fechaInicio=${filtroFechaInicio},
+                           fechaFin=${filtroFechaFin},
+                           sortBy=${sortBy},
+                           sortDir=${sortDir}
+                       )}"
+                       title="Página siguiente">
+                        <i class="fas fa-chevron-right" style="font-size:0.75rem"></i>
+                    </a>
+                    <span th:if="${currentPage == totalPages - 1}">
+                        <i class="fas fa-chevron-right" style="font-size:0.75rem"></i>
+                    </span>
+                </li>
+
+            </ul>
+
+            <!-- ===== INFO DE PAGINACIÓN ===== -->
+            <p class="pagination-info">
+                <span th:if="${totalElements > 0}">
+                    Mostrando
+                    <strong th:text="${(currentPage * pageSize) + 1}">1</strong> –
+<strong th:text="${(currentPage + 1) * pageSize < totalElements ? (currentPage + 1) * pageSize : totalElements}">15</strong>                    de <strong th:text="${totalElements}">100</strong> suscripciones
+                </span>
+                <span th:if="${totalElements == 0}">
+                    Mostrando <strong>0</strong> suscripciones
+                </span>
+                <span th:if="${totalPages > 0}">
+                     · Página <strong th:text="${currentPage + 1}">1</strong> de <strong th:text="${totalPages}">10</strong>
+                </span>
+            </p>
+        </div>
+
+    </main>
+</div>
+
+<!-- Toast -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="toastNotificacion" class="toast align-items-center text-white border-0 animate__animated animate__fadeInRight"
+         role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="fas fa-check-circle me-2"></i><span id="toastMensaje">Operación exitosa</span>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Sidebar toggle
+    function toggleSidebar(){document.getElementById('adminSidebar').classList.toggle('show')}
+    document.addEventListener('click',function(e){
+        const sb=document.getElementById('adminSidebar'),tb=document.querySelector('.btn-toggle-sidebar');
+        if(window.innerWidth<992&&sb.classList.contains('show')&&!sb.contains(e.target)&&!tb.contains(e.target))
+            sb.classList.remove('show');
+    });
+</script>
+<script>
+    // Construye la URL de exportación reutilizando los filtros activos de la página actual
+    function exportarExcel() {
+        const params = new URLSearchParams(window.location.search);
+        params.delete('page');
+        params.delete('size');
+        params.delete('sortBy');
+        params.delete('sortDir');
+        window.location.href = '/admin/suscripciones/reporte/exportar-excel?' + params.toString();
+    }
+</script>
+</body>
+</html>

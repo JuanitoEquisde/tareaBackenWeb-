@@ -11,7 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;  // ✅ IMPORTANTE: Agregar este import
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,34 +40,31 @@ public class UsuarioServiceImpl implements IUsuarioService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private HistorialCambiosRepository historialCambiosRepository;
     // =====================================================
-    // 🔹 MÉTODOS EXISTENTES (NO MODIFICAR - Ya funcionan)
+    // MÉTODOS EXISTENTES (NO MODIFICAR - Ya funcionan)
     // =====================================================
 
     @Override
     @Transactional(readOnly = true)
     public Optional<Usuario> login(String email, String password) {
-        System.out.println("🔍 [SERVICE] Buscando usuario: " + email);
 
         Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
 
         if (usuarioOpt.isEmpty()) {
-            System.out.println("❌ Usuario no encontrado");
             return Optional.empty();
         }
 
         Usuario usuario = usuarioOpt.get();
 
         if (!"ACTIVO".equalsIgnoreCase(usuario.getEstado())) {
-            System.out.println("❌ Usuario no activo: " + usuario.getEstado());
             return Optional.empty();
         }
 
         boolean passwordMatches = passwordEncoder.matches(password, usuario.getPassword());
-        System.out.println("🔑 Password matches: " + passwordMatches);
 
         if (passwordMatches) {
-            System.out.println("✅ Login exitoso - Rol: " + usuario.getRol().getNombre());
             return Optional.of(usuario);
         }
 
@@ -112,7 +109,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
                 usuario.setEmail(usuarioActualizado.getEmail().trim());
             }
 
-            // ✅ CONTRASEÑA: Solo actualizar si es nueva y NO es hash BCrypt
+            // CONTRASEÑA: Solo actualizar si es nueva y NO es hash BCrypt
             if (usuarioActualizado.getPassword() != null &&
                     !usuarioActualizado.getPassword().trim().isEmpty() &&
                     !usuarioActualizado.getPassword().startsWith("$2a$")) {
@@ -131,7 +128,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
         }).orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
     }
 
-    // ✅ Método específico para actualizar rol premium SIN tocar contraseña
+    // Método específico para actualizar rol premium SIN tocar contraseña
     @Override
     @Transactional
     public boolean actualizarRolPremium(Integer usuarioId, Integer rolId, Boolean esPremium, LocalDate fechaExpiracion) {
@@ -174,24 +171,16 @@ public class UsuarioServiceImpl implements IUsuarioService {
                 return false;
             }
 
-            // ✅ 1. Eliminar tareas del usuario (si tienes el servicio inyectado)
-            // Si no tienes tareaService inyectado, usa el repository directamente
-            tareaRepository.deleteByUsuarioId(id);  // ← Necesitas crear este método en TareaRepository
-
-            // ✅ 2. Eliminar categorías del usuario
-            categoriaRepository.deleteByUsuarioId(id);  // ← Necesitas crear este método en CategoriaRepository
-
-            // ✅ 3. Eliminar suscripciones del usuario
-            suscripcionRepository.deleteByUsuarioId(id);  // ← Necesitas crear este método en SuscripcionRepository
-
-            // ✅ 4. Finalmente eliminar el usuario
+            //eliminar historial cambios
+            historialCambiosRepository.deleteByUsuarioId(id);
+            tareaRepository.deleteByUsuarioId(id);
+            categoriaRepository.deleteByUsuarioId(id);
+            suscripcionRepository.deleteByUsuarioId(id);
             usuarioRepository.deleteById(id);
-
-            System.out.println("✅ Usuario eliminado permanentemente: ID " + id);
             return true;
 
         } catch (Exception e) {
-            System.err.println("❌ Error al eliminar permanentemente: " + e.getMessage());
+            System.err.println(" Error al eliminar permanentemente: " + e.getMessage());
             e.printStackTrace();  // ← Para ver el error exacto en consola
             return false;
         }
@@ -351,7 +340,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
     }
 
     // =====================================================
-    // ✅ NUEVO: Implementación de obtenerDashboardStats()
+    // NUEVO: Implementación de obtenerDashboardStats()
     // =====================================================
 
     @Override

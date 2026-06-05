@@ -7,6 +7,7 @@ import com.easydates.easydateap.entity.Usuario;
 import com.easydates.easydateap.service.IHistorialCambiosService;
 import com.easydates.easydateap.service.ITareaService;
 import com.easydates.easydateap.service.IUsuarioService;
+import com.easydates.easydateap.service.impl.SuscripcionService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,17 +40,19 @@ public class AdminController {
     @Autowired
     private IHistorialCambiosService historialService;
 
+    @Autowired
+    SuscripcionService suscripcionService;
     // =====================================================
     // API: Obtener usuario por ID
     // =====================================================
     @GetMapping("/api/usuarios/{id}")
     @ResponseBody
     public ResponseEntity<?> obtenerUsuario(@PathVariable Integer id) {
-        System.out.println("🔍 API: Obteniendo usuario con ID: " + id);
+        System.out.println(" API: Obteniendo usuario con ID: " + id);
         try {
             return usuarioService.findById(id)
                     .map(usuario -> {
-                        System.out.println("✅ Usuario encontrado: " + usuario.getNombre());
+                        System.out.println(" Usuario encontrado: " + usuario.getNombre());
                         Map<String, Object> response = new HashMap<>();
                         response.put("id", usuario.getId());
                         response.put("nombre", usuario.getNombre());
@@ -59,11 +62,11 @@ public class AdminController {
                         return ResponseEntity.ok(response);
                     })
                     .orElseGet(() -> {
-                        System.err.println("❌ Usuario no encontrado con ID: " + id);
+                        System.err.println(" Usuario no encontrado con ID: " + id);
                         return ResponseEntity.notFound().build();
                     });
         } catch (Exception e) {
-            System.err.println("💥 Error al obtener usuario: " + e.getMessage());
+            System.err.println("Error al obtener usuario: " + e.getMessage());
             e.printStackTrace();
             return ResponseEntity.internalServerError().body("Error: " + e.getMessage());
         }
@@ -72,6 +75,9 @@ public class AdminController {
     // =====================================================
     // API: Actualizar usuario
     // =====================================================
+    // =====================================================
+// API: Actualizar usuario
+// =====================================================
     @PutMapping("/api/usuarios/{id}/actualizar")
     @ResponseBody
     public ResponseEntity<?> actualizarUsuario(
@@ -83,6 +89,11 @@ public class AdminController {
             Usuario usuario = usuarioService.findById(id)
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
 
+            // Guardar el rol anterior para comparar
+            Integer rolAnteriorId = usuario.getRol() != null ? usuario.getRol().getId() : null;
+            String rolAnteriorNombre = usuario.getRol() != null ? usuario.getRol().getNombre() : "";
+
+            // Actualizar campos básicos
             if (usuarioActualizadoMap.get("nombre") != null) {
                 String nombre = (String) usuarioActualizadoMap.get("nombre");
                 if (!nombre.trim().isEmpty()) usuario.setNombre(nombre.trim());
@@ -102,22 +113,68 @@ public class AdminController {
                 }
             }
 
+            // ✅ ACTUALIZAR ROL Y es_premium
             Object rolData = usuarioActualizadoMap.get("rol");
             Integer rolId = null;
+            String rolNombre = null;
+
             if (rolData instanceof Map) {
                 @SuppressWarnings("unchecked")
                 Map<String, Object> rolMap = (Map<String, Object>) rolData;
                 rolId = (Integer) rolMap.get("id");
+                rolNombre = (String) rolMap.get("nombre");
             } else {
                 rolId = (Integer) usuarioActualizadoMap.get("rolId");
                 if (rolId == null) rolId = (Integer) usuarioActualizadoMap.get("rol");
             }
+
             if (rolId != null && rolId > 0) {
+                // Asignar el nuevo rol
                 usuarioService.asignarRol(id, rolId);
+
+                // ✅ ACTUALIZAR es_premium según el rol
+                if (rolNombre != null) {
+                    boolean esPremium = rolNombre.equalsIgnoreCase("PREMIUM");
+
+                    // 🚨 LÓGICA IMPORTANTE: Si pasa de PREMIUM a NO PREMIUM
+                    if (rolAnteriorNombre.equalsIgnoreCase("PREMIUM") && !esPremium) {
+                        System.out.println("⚠️ Usuario pasó de PREMIUM a NO PREMIUM. Cancelando suscripciones...");
+
+                        // Cancelar suscripciones activas
+                        suscripcionService.cancelarSuscripcionesPorUsuario(id);
+                    }
+
+                    usuario.setEsPremium(esPremium);
+
+                    // Si NO es premium, limpiar fecha de expiración
+                    if (!esPremium) {
+                        usuario.setFechaPremiumExpiracion(null);
+                    }
+                } else {
+                    // Si no tenemos el nombre del rol, consultarlo
+                    usuarioService.findById(id).ifPresent(u -> {
+                        if (u.getRol() != null) {
+                            boolean esPremium = u.getRol().getNombre().equalsIgnoreCase("PREMIUM");
+
+                            // Verificar si cambió de PREMIUM a NO PREMIUM
+                            if (rolAnteriorNombre.equalsIgnoreCase("PREMIUM") && !esPremium) {
+                                System.out.println("⚠️ Usuario pasó de PREMIUM a NO PREMIUM. Cancelando suscripciones...");
+                                suscripcionService.cancelarSuscripcionesPorUsuario(id);
+                            }
+
+                            usuario.setEsPremium(esPremium);
+                            if (!esPremium) {
+                                usuario.setFechaPremiumExpiracion(null);
+                            }
+                        }
+                    });
+                }
             }
 
+            // Guardar cambios
             usuarioService.actualizar(id, usuario);
-            System.out.println("✅ Usuario actualizado correctamente");
+
+            System.out.println("✅ Usuario actualizado correctamente. es_premium: " + usuario.getEsPremium());
             return ResponseEntity.ok("Usuario actualizado correctamente");
 
         } catch (Exception e) {
@@ -138,7 +195,7 @@ public class AdminController {
     }
 
     // =====================================================
-    // ✅ VISTA: Dashboard con Estadísticas Funcionales (DTO)
+    //  VISTA: Dashboard con Estadísticas Funcionales (DTO)
     // =====================================================
     @GetMapping("/dashboard")
     public String dashboard(Model model, HttpSession session) {

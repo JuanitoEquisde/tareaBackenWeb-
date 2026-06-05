@@ -16,12 +16,19 @@
 
     <style>
         :root {
-            --admin-bg: #f0f2f5; --admin-sidebar: #1e3a8a; --admin-sidebar-hover: #1e40af;
-            --admin-primary: #3b82f6; --admin-primary-hover: #2563eb; --admin-success: #10b981;
-            --admin-warning: #f59e0b; --admin-danger: #ef4444; --admin-text: #1f2937;
-            --admin-text-muted: #6b7280; --admin-border: #e5e7eb;
-            --admin-card-shadow: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -1px rgba(0,0,0,0.04);
-            --admin-radius: 14px;
+            --admin-bg: #f8fafc;
+            --admin-sidebar: #1e3a8a;
+            --admin-sidebar-hover: #1e40af;
+            --admin-primary: #3b82f6;
+            --admin-primary-hover: #2563eb;
+            --admin-success: #10b981;
+            --admin-warning: #f59e0b;
+            --admin-danger: #ef4444;
+            --admin-text: #1e293b;
+            --admin-text-muted: #64748b;
+            --admin-border: #e2e8f0;
+            --admin-card-shadow: 0 10px 30px rgba(0,0,0,0.03), 0 4px 6px -1px rgba(0,0,0,0.02);
+            --admin-radius: 16px;
         }
         * { box-sizing: border-box; }
         html, body { height: 100%; overflow: hidden; }
@@ -58,6 +65,8 @@
         }
         .admin-navbar .btn-logout:hover { background: rgba(255,255,255,0.25); transform: translateY(-1px); }
         .admin-wrapper { display: flex; height: calc(100vh - 70px); overflow: hidden; }
+
+        /* SIDEBAR INTACTO */
         .admin-sidebar {
             width: 248px; background: white; padding: 1.5rem 0.875rem;
             display: flex; flex-direction: column; gap: 0.25rem; flex-shrink: 0;
@@ -81,274 +90,256 @@
         }
         .admin-sidebar .nav-link i { width: 20px; text-align: center; font-size: 1rem; opacity: 0.85; }
         .admin-sidebar .divider { height: 1px; background: var(--admin-border); margin: 1rem 0.5rem; opacity: 0.6; }
+
+        /* MAIN AREA MEJORADA */
         .admin-main { flex: 1; padding: 2rem; overflow-y: auto; overflow-x: hidden; }
+        .main-content-wrapper { max-width: 1100px; margin: 0 auto; } /* Centrado fluido */
+
+        .header-layout {
+            display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: space-between; align-items: stretch; margin-bottom: 2rem;
+        }
+
         .page-header {
-            background: white; border-radius: var(--admin-radius); padding: 1.25rem 1.75rem;
-            margin-bottom: 1.5rem; box-shadow: var(--admin-card-shadow);
-            display: flex; justify-content: space-between; align-items: center;
-            animation: fadeInDown 0.5s ease; border: 1px solid rgba(0,0,0,0.04);
+            flex: 1; min-width: 300px;
+            background: white; border-radius: var(--admin-radius); padding: 1.5rem 1.75rem;
+            box-shadow: var(--admin-card-shadow); display: flex; flex-direction: column; justify-content: center;
+            animation: fadeInDown 0.5s ease; border: 1px solid rgba(0,0,0,0.02);
         }
         .page-header h2 {
-            font-weight: 800; color: var(--admin-text); margin: 0; font-size: 1.35rem;
+            font-weight: 800; color: var(--admin-text); margin: 0; font-size: 1.5rem;
             display: flex; align-items: center; gap: 0.75rem; letter-spacing: -0.02em;
         }
+        .page-header p { margin: 0.5rem 0 0; color: var(--admin-text-muted); font-size: 0.95rem; font-weight: 500; }
         .page-header h2 .header-icon {
-            width: 40px; height: 40px; background: linear-gradient(135deg, #dbeafe, #bfdbfe);
-            border-radius: 10px; display: flex; align-items: center; justify-content: center;
-            color: var(--admin-primary); font-size: 1rem;
+            width: 44px; height: 44px; background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            color: var(--admin-primary); font-size: 1.1rem;
         }
-        .stats-container {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.25rem; margin-bottom: 2rem;
-        }
+
         .stat-card {
-            background: white; border-radius: var(--admin-radius); padding: 1.25rem 1.5rem;
-            box-shadow: var(--admin-card-shadow); display: flex; align-items: center; gap: 1rem;
-            transition: all 0.3s; animation: fadeInUp 0.5s ease both;
+            min-width: 280px;
+            background: linear-gradient(135deg, #6366f1, #4f46e5); border-radius: var(--admin-radius); padding: 1.5rem;
+            box-shadow: 0 10px 25px rgba(79,70,229,0.25); display: flex; align-items: center; gap: 1.25rem;
+            transition: all 0.3s; animation: fadeInUp 0.5s ease both; color: white; border: none;
         }
-        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
-        .stat-card.bg-purple { background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; }
+        .stat-card:hover { transform: translateY(-4px); box-shadow: 0 15px 35px rgba(79,70,229,0.35); }
         .stat-icon {
-            width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
-            font-size: 1.4rem; flex-shrink: 0;
+            width: 56px; height: 56px; border-radius: 14px; display: flex; align-items: center; justify-content: center;
+            font-size: 1.6rem; flex-shrink: 0; background: rgba(255,255,255,0.2); backdrop-filter: blur(4px);
         }
-        .stat-card.bg-purple .stat-icon { background: rgba(255,255,255,0.2); }
         .stat-info { flex: 1; }
-        .stat-value { font-size: 1.75rem; font-weight: 800; line-height: 1; margin-bottom: 0.2rem; }
-        .stat-label { font-size: 0.85rem; opacity: 0.9; font-weight: 500; }
+        .stat-value { font-size: 2.2rem; font-weight: 800; line-height: 1; margin-bottom: 0.2rem; }
+        .stat-label { font-size: 0.9rem; opacity: 0.9; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+
         .filters-card {
-            background: white; border-radius: var(--admin-radius); padding: 1.375rem 1.75rem;
-            margin-bottom: 1.5rem; box-shadow: var(--admin-card-shadow);
-            animation: fadeInUp 0.5s ease 0.1s both; border: 1px solid rgba(0,0,0,0.04);
+            background: white; border-radius: var(--admin-radius); padding: 1.25rem 1.75rem;
+            margin-bottom: 2.5rem; box-shadow: var(--admin-card-shadow);
+            animation: fadeInUp 0.5s ease 0.1s both; border: 1px solid rgba(0,0,0,0.02);
         }
         .filters-card .form-label {
-            font-size: 0.72rem; font-weight: 700; color: var(--admin-text-muted);
-            text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.4rem;
+            font-size: 0.75rem; font-weight: 700; color: var(--admin-text-muted);
+            text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;
         }
-        .filters-card .form-control, .filters-card .form-select {
-            border: 1.5px solid var(--admin-border); border-radius: 9px;
-            padding: 0.575rem 0.875rem; font-size: 0.875rem; font-family: inherit;
-            transition: all 0.25s; background: #fafbfc;
+        .filters-card .form-control {
+            border: 1.5px solid var(--admin-border); border-radius: 10px;
+            padding: 0.65rem 1rem; font-size: 0.9rem; font-family: inherit; font-weight: 500;
+            transition: all 0.25s; background: #f8fafc; color: var(--admin-text);
         }
-        .filters-card .form-control:focus, .filters-card .form-select:focus {
-            border-color: var(--admin-primary); box-shadow: 0 0 0 3px rgba(59,130,246,0.12); background: white;
+        .filters-card .form-control:focus {
+            border-color: var(--admin-primary); box-shadow: 0 0 0 4px rgba(59,130,246,0.1); background: white; outline: none;
         }
         .filters-card .btn-primary {
             background: linear-gradient(135deg, var(--admin-primary), var(--admin-primary-hover));
-            border: none; padding: 0.575rem 1.375rem; border-radius: 9px;
-            font-weight: 700; font-size: 0.875rem; font-family: inherit;
-            transition: all 0.25s; box-shadow: 0 4px 12px rgba(59,130,246,0.28);
+            border: none; padding: 0.65rem 1.5rem; border-radius: 10px;
+            font-weight: 700; font-size: 0.9rem; transition: all 0.25s; box-shadow: 0 4px 12px rgba(59,130,246,0.25);
         }
-        .filters-card .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(59,130,246,0.38); }
+        .filters-card .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(59,130,246,0.35); }
         .filters-card .btn-outline-secondary {
-            border: 1.5px solid var(--admin-border); padding: 0.575rem 1.375rem; border-radius: 9px;
-            font-weight: 600; font-size: 0.875rem; font-family: inherit;
-            color: var(--admin-text-muted); background: white; transition: all 0.25s;
+            border: 1.5px solid var(--admin-border); padding: 0.65rem 1.5rem; border-radius: 10px;
+            font-weight: 600; font-size: 0.9rem; color: var(--admin-text-muted); background: white; transition: all 0.25s;
         }
-        .filters-card .btn-outline-secondary:hover {
-            background: #fee2e2; border-color: #fca5a5; color: #dc2626; transform: translateY(-1px);
-        }
-        /* ✅ TIMELINE DE AUDITORÍA - Adaptado al diseño de usuarios.html */
+        .filters-card .btn-outline-secondary:hover { background: #f1f5f9; color: var(--admin-text); transform: translateY(-1px); }
+
+        /* ✅ TIMELINE MEJORADO */
         .timeline {
-            position: relative; padding-left: 3rem; margin-bottom: 2rem;
+            position: relative; padding-left: 2.5rem; margin-bottom: 2rem;
             animation: fadeInUp 0.5s ease 0.2s both;
         }
         .timeline::before {
-            content: ''; position: absolute; left: 1.25rem; top: 0; bottom: 0;
-            width: 3px; background: linear-gradient(to bottom, var(--admin-primary), var(--admin-primary-hover));
-            border-radius: 3px;
+            content: ''; position: absolute; left: 0.7rem; top: 1rem; bottom: -1rem;
+            width: 2px; background: #cbd5e1; border-radius: 2px; border-right: 1px dashed #94a3b8;
         }
         .timeline-item {
             position: relative; background: white; border-radius: var(--admin-radius);
             padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: var(--admin-card-shadow);
-            border: 1px solid var(--admin-border); transition: all 0.3s;
+            border: 1px solid var(--admin-border); transition: all 0.3s ease;
             animation: fadeInUp 0.5s ease both;
         }
-        .timeline-item:hover {
-            transform: translateX(8px); box-shadow: 0 12px 40px rgba(0,0,0,0.12);
-            border-color: var(--admin-primary);
-        }
+        .timeline-item:hover { transform: translateY(-3px); box-shadow: 0 12px 35px rgba(0,0,0,0.06); }
+
         .timeline-item::before {
-            content: ''; position: absolute; left: -2.625rem; top: 2rem;
-            width: 18px; height: 18px; border-radius: 50%;
-            background: var(--admin-primary); border: 3px solid white;
-            box-shadow: 0 0 0 3px var(--admin-primary); transition: all 0.3s;
+            content: ''; position: absolute; left: -2.3rem; top: 1.7rem;
+            width: 20px; height: 20px; border-radius: 50%;
+            background: white; border: 4px solid var(--admin-primary);
+            box-shadow: 0 0 0 4px white; transition: all 0.3s; z-index: 2;
         }
-        .timeline-item:hover::before { transform: scale(1.3); }
-        .timeline-item.crear::before { background: var(--admin-success); box-shadow: 0 0 0 3px var(--admin-success); }
-        .timeline-item.actualizar::before { background: var(--admin-warning); box-shadow: 0 0 0 3px var(--admin-warning); }
-        .timeline-item.eliminar::before { background: var(--admin-danger); box-shadow: 0 0 0 3px var(--admin-danger); }
-        .timeline-item.eliminar_sistema::before { background: #f59e0b; box-shadow: 0 0 0 3px #f59e0b; }
-        .timeline-item.eliminar_permanente::before { background: #991b1b; box-shadow: 0 0 0 3px #991b1b; }
-        .timeline-item.restaurar::before { background: #10b981; box-shadow: 0 0 0 3px #10b981; }
+        .timeline-item:hover::before { transform: scale(1.2); }
+
+        /* Colores según acción */
+        .timeline-item.crear { border-left: 4px solid var(--admin-success); }
+        .timeline-item.crear::before { border-color: var(--admin-success); }
+        .timeline-item.actualizar { border-left: 4px solid var(--admin-warning); }
+        .timeline-item.actualizar::before { border-color: var(--admin-warning); }
+        .timeline-item.eliminar { border-left: 4px solid var(--admin-danger); }
+        .timeline-item.eliminar::before { border-color: var(--admin-danger); }
+        .timeline-item.eliminar_sistema { border-left: 4px solid #d97706; }
+        .timeline-item.eliminar_sistema::before { border-color: #d97706; }
+        .timeline-item.eliminar_permanente { border-left: 4px solid #991b1b; }
+        .timeline-item.eliminar_permanente::before { border-color: #991b1b; }
+        .timeline-item.restaurar { border-left: 4px solid #10b981; }
+        .timeline-item.restaurar::before { border-color: #10b981; }
+
         .timeline-header {
-            display: flex; justify-content: space-between; align-items: flex-start;
-            margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 1rem;
         }
         .timeline-accion-wrapper { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
         .timeline-accion {
-            font-weight: 700; font-size: 0.85rem; text-transform: uppercase;
-            letter-spacing: 0.03em; padding: 0.35rem 0.85rem; border-radius: 50px;
+            font-weight: 700; font-size: 0.8rem; text-transform: uppercase;
+            letter-spacing: 0.05em; padding: 0.4rem 0.85rem; border-radius: 8px;
             display: inline-flex; align-items: center; gap: 0.5rem;
         }
-        .timeline-accion.crear { color: var(--admin-success); background: linear-gradient(135deg, #d1fae5, #a7f3d0); border: 2px solid #a7f3d0; }
-        .timeline-accion.actualizar { color: #92400e; background: linear-gradient(135deg, #fef3c7, #fde68a); border: 2px solid #fde68a; }
-        .timeline-accion.eliminar { color: var(--admin-danger); background: linear-gradient(135deg, #fee2e2, #fecaca); border: 2px solid #fecaca; }
-        .timeline-accion.eliminar_sistema { color: #92400e; background: linear-gradient(135deg, #fef3c7, #fde68a); border: 2px solid #fde68a; }
-        .timeline-accion.eliminar_permanente { color: #991b1b; background: linear-gradient(135deg, #fee2e2, #fecaca); border: 2px solid #fecaca; }
-        .timeline-accion.restaurar { color: var(--admin-success); background: linear-gradient(135deg, #d1fae5, #a7f3d0); border: 2px solid #a7f3d0; }
-        .timeline-fecha {
-            font-size: 0.8rem; color: var(--admin-text-muted); font-weight: 500;
-            background: var(--admin-bg); padding: 0.4rem 0.85rem; border-radius: 20px;
+        .timeline-accion.crear { color: #065f46; background: #d1fae5; }
+        .timeline-accion.actualizar { color: #92400e; background: #fef3c7; }
+        .timeline-accion.eliminar { color: #991b1b; background: #fee2e2; }
+        .timeline-accion.eliminar_sistema { color: #92400e; background: #fef3c7; }
+        .timeline-accion.eliminar_permanente { color: #7f1d1d; background: #fecaca; }
+        .timeline-accion.restaurar { color: #065f46; background: #d1fae5; }
+
+        .badge-entidad {
+            padding: 0.4rem 0.85rem; border-radius: 8px; font-size: 0.75rem;
+            font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
             display: inline-flex; align-items: center; gap: 0.4rem;
         }
-        .timeline-content { margin-top: 1rem; }
-        .timeline-entity {
-            font-size: 0.9rem; color: var(--admin-text); margin-bottom: 0.5rem;
-            font-weight: 500; display: flex; align-items: center; gap: 0.5rem;
+        .badge-entidad.usuario { background: #e0e7ff; color: #3730a3; }
+        .badge-entidad.usuario.eliminado { background: #ffedd5; color: #9a3412; }
+        .badge-entidad.tarea { background: #fef3c7; color: #b45309; }
+
+        .timeline-fecha {
+            font-size: 0.85rem; color: var(--admin-text-muted); font-weight: 600;
+            display: inline-flex; align-items: center; gap: 0.4rem;
         }
-        .timeline-entity i { color: var(--admin-primary); width: 20px; }
-        .timeline-admin {
-            font-size: 0.8rem; color: var(--admin-text-muted); margin-bottom: 0.75rem;
-            display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.85rem;
-            background: var(--admin-bg); border-radius: 8px;
+
+        /* Chips de información (Reemplaza los textos largos) */
+        .timeline-info-group {
+            display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.25rem;
         }
+        .info-chip {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 50px;
+            padding: 0.35rem 0.85rem; font-size: 0.85rem; font-weight: 500; color: #334155;
+        }
+        .info-chip i { color: var(--admin-primary); font-size: 0.9rem; }
+        .info-chip strong { color: var(--admin-text); font-weight: 700; margin-right: 0.2rem; }
+
         .timeline-descripcion {
-            font-size: 0.85rem; color: var(--admin-text-muted); line-height: 1.5;
-            padding: 0.75rem; background: var(--admin-bg); border-radius: 8px;
-            border-left: 3px solid var(--admin-primary);
+            font-size: 0.9rem; color: #334155; line-height: 1.6;
+            padding: 1rem 1.25rem; background: #f8fafc; border-radius: 0 10px 10px 0;
+            border-left: 3px solid var(--admin-primary); font-weight: 500;
         }
-        .badge-entidad {
-            padding: 0.3rem 0.75rem; border-radius: 50px; font-size: 0.7rem;
-            font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
-            display: inline-flex; align-items: center; gap: 0.3rem;
-        }
-        .badge-entidad.usuario { background: linear-gradient(135deg, #dbeafe, #bfdbfe); color: #1a56db; border: 2px solid #bfdbfe; }
-        .badge-entidad.usuario.eliminado { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #92400e; border: 2px solid #fde68a; }
-        .badge-entidad.tarea { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #d97706; border: 2px solid #fde68a; }
+
         .timeline-actions {
-            margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--admin-border);
+            margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px dashed var(--admin-border);
             display: flex; gap: 0.75rem; justify-content: flex-end;
         }
         .btn-restore {
             background: linear-gradient(135deg, var(--admin-success), #059669);
-            color: white; border: none; padding: 0.45rem 1rem; border-radius: 8px;
-            font-weight: 600; font-size: 0.8rem; transition: all 0.3s;
-            display: inline-flex; align-items: center; gap: 0.4rem;
+            color: white; border: none; padding: 0.55rem 1.25rem; border-radius: 10px;
+            font-weight: 700; font-size: 0.85rem; transition: all 0.3s;
+            display: inline-flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 10px rgba(16,185,129,0.3);
         }
         .btn-restore:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(16,185,129,0.4); }
-        .empty-state { text-align: center; padding: 4rem 2rem; color: var(--admin-text-muted); }
-        .empty-state i { font-size: 3.5rem; opacity: 0.2; margin-bottom: 1rem; }
-        .empty-state h5 { font-weight: 600; color: #374151; }
+
+        .empty-state { text-align: center; padding: 5rem 2rem; color: var(--admin-text-muted); background: white; border-radius: var(--admin-radius); border: 1px dashed #cbd5e1; }
+        .empty-state i { font-size: 4rem; color: #cbd5e1; margin-bottom: 1.5rem; }
+        .empty-state h5 { font-weight: 700; color: #334155; font-size: 1.25rem; }
+
         .btn-back {
             background: white; border: 1.5px solid var(--admin-border); padding: 0.625rem 1.75rem;
-            border-radius: 50px; font-weight: 600; font-size: 0.875rem; font-family: inherit;
+            border-radius: 50px; font-weight: 600; font-size: 0.9rem; font-family: inherit;
             transition: all 0.25s; box-shadow: var(--admin-card-shadow);
             color: var(--admin-text-muted); text-decoration: none;
-            display: inline-flex; align-items: center; gap: 0.5rem;
+            display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1rem;
         }
-        .btn-back:hover {
-            background: var(--admin-text); border-color: var(--admin-text); color: white;
-            transform: translateY(-2px);
-        }
-        .btn-toggle-sidebar {
-            background: rgba(255,255,255,0.15); border: 1.5px solid rgba(255,255,255,0.25);
-            color: white; font-size: 1.1rem; padding: 0.45rem 0.7rem;
-            cursor: pointer; border-radius: 8px; display: none; transition: all 0.25s;
-        }
-        .btn-toggle-sidebar:hover { background: rgba(255,255,255,0.25); }
-        /* ✅ PAGINACIÓN SIEMPRE VISIBLE - IGUAL QUE USUARIOS */
+        .btn-back:hover { background: #f8fafc; color: var(--admin-text); transform: translateY(-2px); }
+
+        /* ✅ PAGINACIÓN INTACTA/ESTILIZADA */
         .pagination-wrapper {
-            margin-top: 1.75rem; display: flex; flex-direction: column;
+            margin-top: 2rem; display: flex; flex-direction: column;
             align-items: center; gap: 0.75rem; animation: fadeInUp 0.5s ease 0.3s both;
         }
         .google-pagination {
             display: flex; align-items: center; gap: 0.25rem; list-style: none;
             padding: 0.5rem 0.75rem; margin: 0; background: white;
-            border-radius: 50px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-            border: 1px solid rgba(0,0,0,0.05);
+            border-radius: 50px; box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+            border: 1px solid rgba(0,0,0,0.03);
         }
         .google-pagination li { display: inline-flex; }
         .google-pagination a, .google-pagination span {
             display: flex; align-items: center; justify-content: center;
-            min-width: 36px; height: 36px; padding: 0 0.5rem; border-radius: 50px;
-            font-size: 0.85rem; font-weight: 600; font-family: inherit;
+            min-width: 38px; height: 38px; padding: 0 0.5rem; border-radius: 50px;
+            font-size: 0.9rem; font-weight: 600; font-family: inherit;
             color: var(--admin-text-muted); text-decoration: none; transition: all 0.2s;
         }
         .google-pagination a:hover { background: #eff6ff; color: var(--admin-primary); }
         .google-pagination .active span, .google-pagination .active a {
             background: linear-gradient(135deg, var(--admin-primary), var(--admin-primary-hover));
-            color: white; font-weight: 700; box-shadow: 0 3px 10px rgba(59,130,246,0.35); min-width: 36px;
+            color: white; font-weight: 700; box-shadow: 0 4px 12px rgba(59,130,246,0.3);
         }
-        .google-pagination .disabled a, .google-pagination .disabled span {
-            color: #d1d5db; cursor: not-allowed; pointer-events: none;
-        }
-        .google-pagination .ellipsis span { color: #9ca3af; cursor: default; min-width: 24px; }
+        .google-pagination .disabled a, .google-pagination .disabled span { color: #cbd5e1; cursor: not-allowed; pointer-events: none; }
+        .google-pagination .ellipsis span { color: #94a3b8; cursor: default; min-width: 24px; }
         .google-pagination .pg-nav a, .google-pagination .pg-nav span {
-            background: #f8fafc; border: 1.5px solid var(--admin-border);
-            color: var(--admin-text-muted); min-width: 36px;
+            background: #f8fafc; border: 1.5px solid var(--admin-border); color: var(--admin-text-muted);
         }
         .google-pagination .pg-nav:not(.disabled) a:hover {
             background: var(--admin-primary); border-color: var(--admin-primary); color: white;
         }
-        .pagination-info { font-size: 0.8rem; color: var(--admin-text-muted); font-weight: 500; }
+        .pagination-info { font-size: 0.85rem; color: var(--admin-text-muted); font-weight: 500; }
         .pagination-info strong { color: var(--admin-text); }
-        /* ✅ MODAL ESTILOS - Igual que usuarios.html */
+
+        /* ✅ MODAL & TOAST */
         .modal-content { border: none; border-radius: 18px; box-shadow: 0 24px 64px rgba(0,0,0,0.18); overflow: hidden; }
-        .modal-header-success, .modal-header-primary, .modal-header-warning, .modal-header-danger {
-            display: flex; align-items: center; justify-content: space-between; position: relative; padding: 1.375rem 1.75rem; border: none;
-        }
-        .modal-header-success { background: linear-gradient(135deg, var(--admin-success), #059669); color: white; }
-        .modal-header-primary { background: linear-gradient(135deg, #1e3a8a, #1d4ed8); color: white; }
-        .modal-header-warning { background: linear-gradient(135deg, #fffbeb, #fef3c7); color: #92400e; border-bottom: 1.5px solid #fde68a; }
-        .modal-header-danger { background: linear-gradient(135deg, #fef2f2, #fee2e2); color: #991b1b; border-bottom: 1.5px solid #fecaca; }
-        .modal-header-success .modal-title, .modal-header-primary .modal-title,
-        .modal-header-warning .modal-title, .modal-header-danger .modal-title {
-            font-weight: 700; font-size: 1rem; display: flex; align-items: center; gap: 0.6rem; margin: 0; flex: 1;
-        }
-        .modal-header-success .header-icon-sm, .modal-header-primary .header-icon-sm,
-        .modal-header-warning .header-icon-sm, .modal-header-danger .header-icon-sm {
-            width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem;
-        }
-        .modal-header-success .header-icon-sm { background: rgba(255,255,255,0.15); }
-        .modal-header-primary .header-icon-sm { background: rgba(255,255,255,0.15); }
-        .modal-header-warning .header-icon-sm { background: #fde68a; color: #d97706; }
-        .modal-header-danger .header-icon-sm { background: #fecaca; color: #dc2626; }
-        .modal-header-success .btn-close, .modal-header-primary .btn-close,
-        .modal-header-warning .btn-close, .modal-header-danger .btn-close {
-            position: static; margin-left: auto; margin-right: 0; opacity: 1; z-index: 10; flex-shrink: 0;
-        }
-        .btn-close-white { filter: invert(1) grayscale(100%) brightness(200%); opacity: 0.9; transition: opacity 0.2s; }
-        .btn-close-white:hover { opacity: 1; }
+        .modal-header-warning { display: flex; align-items: center; justify-content: space-between; position: relative; padding: 1.375rem 1.75rem; border: none; background: linear-gradient(135deg, #fffbeb, #fef3c7); color: #92400e; border-bottom: 1.5px solid #fde68a; }
+        .modal-header-warning .modal-title { font-weight: 700; font-size: 1rem; display: flex; align-items: center; gap: 0.6rem; margin: 0; flex: 1; }
+        .modal-header-warning .header-icon-sm { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; background: #fde68a; color: #d97706; }
+        .btn-close { position: static; margin-left: auto; margin-right: 0; opacity: 1; z-index: 10; flex-shrink: 0; }
         .modal-body { padding: 1.75rem; background: #fafbfc; }
         .modal-footer { padding: 1rem 1.75rem; background: white; border-top: 1.5px solid #f3f4f6; gap: 0.5rem; }
-        /* ✅ Toast mejorado */
         .toast-container { z-index: 9999; pointer-events: none; }
         .toast-container > * { pointer-events: auto; }
-        #toastNotificacion {
-            min-width: 320px; max-width: 400px;
-            border-radius: 12px !important;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2) !important;
+        #toastNotificacion { min-width: 320px; max-width: 400px; border-radius: 12px !important; box-shadow: 0 8px 32px rgba(0,0,0,0.2) !important; }
+        #toastNotificacion .toast-body { padding: 0.875rem 1.25rem; font-size: 0.9rem; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; }
+
+        .btn-toggle-sidebar {
+            background: rgba(255,255,255,0.15); border: 1.5px solid rgba(255,255,255,0.25);
+            color: white; font-size: 1.1rem; padding: 0.45rem 0.7rem;
+            cursor: pointer; border-radius: 8px; display: none; transition: all 0.25s;
         }
-        #toastNotificacion .toast-body {
-            padding: 0.875rem 1.25rem; font-size: 0.9rem; font-weight: 500;
-            display: flex; align-items: center; gap: 0.5rem;
-        }
+
         @keyframes fadeInDown { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
         @media (max-width: 991.98px) {
             .admin-sidebar { position: fixed; left: -260px; top: 70px; height: calc(100vh - 70px); z-index: 999; box-shadow: 4px 0 16px rgba(0,0,0,0.1); }
             .admin-sidebar.show { transform: translateX(260px); }
-            .admin-main { padding: 1rem; }
             .btn-toggle-sidebar { display: block; }
-            .page-header { flex-direction: column; gap: 1rem; text-align: center; }
-            .stats-container { grid-template-columns: repeat(2, 1fr); }
-            .timeline { padding-left: 2.5rem; }
-            .timeline::before { left: 1rem; }
-            .timeline-item::before { left: -2.125rem; }
-            .timeline-header { flex-direction: column; align-items: flex-start; }
-            .timeline-actions { justify-content: flex-start; }
-            .google-pagination a, .google-pagination span { min-width: 32px; height: 32px; font-size: 0.8rem; }
+            .admin-main { padding: 1rem; }
+            .header-layout { flex-direction: column; }
+            .stat-card { min-width: 100%; }
+            .timeline { padding-left: 1.5rem; }
+            .timeline::before { left: 0; }
+            .timeline-item::before { left: -1.7rem; width: 16px; height: 16px; top: 1.8rem; border-width: 3px; }
+            .timeline-item { padding: 1.25rem; }
         }
         @media (min-width: 992px) { .btn-toggle-sidebar { display: none !important; } }
     </style>
@@ -373,7 +364,7 @@
 </nav>
 
 <div class="admin-wrapper">
-    <!-- ✅ SIDEBAR IDÉNTICO A USUARIOS.HTML -->
+    <!-- SIDEBAR SIN TOCAR -->
     <aside class="admin-sidebar" id="adminSidebar">
         <nav class="nav flex-column">
             <a th:href="@{/admin/dashboard}" class="nav-link"
@@ -387,201 +378,216 @@
             <a th:href="@{/admin/tareas}" class="nav-link"
                th:classappend="${activePage == 'tareas'} ? 'active' : ''">
                 <i class="fas fa-tasks"></i> <span>Tareas</span>
-
             </a>
-
+            <a th:href="@{/admin/categorias}" class="nav-link"
+               th:classappend="${activePage == 'categorias'} ? 'active' : ''">
+                <i class="fas fa-folder me-2"></i> <span>Categorías</span>
+            </a>
             <a th:href="@{/admin/suscripciones}" class="nav-link"
                th:classappend="${activePage == 'suscripciones'} ? 'active' : ''">
                 <i class="fas fa-crown"></i> <span>Suscripciones</span>
             </a>
-            <a th:href="@{/admin/auditoria}" class="nav-link active"
+            <a th:href="@{/admin/suscripciones/reporte}" class="nav-link"
+               th:classappend="${activePage == 'reporte-suscripciones'} ? 'active' : ''">
+                <i class="fas fa-chart-line"></i> <span>Reporte Suscripciones</span>
+            </a>
+            <a th:href="@{/admin/customer-success}" class="nav-link"
+               th:classappend="${activePage == 'customer-success'} ? 'active' : ''">
+                <i class="fas fa-heartbeat"></i> <span>Customer Success</span>
+            </a>
+            <a th:href="@{/admin/auditoria}" class="nav-link"
                th:classappend="${activePage == 'auditoria'} ? 'active' : ''">
                 <i class="fas fa-history"></i> <span>Auditoría</span>
             </a>
-
-
         </nav>
     </aside>
 
     <main class="admin-main">
-        <!-- ✅ PAGE-HEADER NO STICKY (se mueve con el scroll) -->
-        <div class="page-header">
-            <h2><span class="header-icon"><i class="fas fa-history"></i></span>Registro de Auditoría</h2>
-        </div>
+        <div class="main-content-wrapper">
 
-        <!-- Stats Card -->
-        <div class="stats-container">
-            <div class="stat-card bg-purple">
-                <div class="stat-icon"><i class="fas fa-clipboard-list"></i></div>
-                <div class="stat-info">
-                    <div class="stat-value" th:text="${totalCambios}">0</div>
-                    <div class="stat-label">Eventos Registrados</div>
+            <!-- Header y Estadísticas integrados -->
+            <div class="header-layout">
+                <div class="page-header">
+                    <h2><span class="header-icon"><i class="fas fa-history"></i></span>Registro de Auditoría</h2>
+                    <p>Monitorea todas las acciones y cambios realizados en el sistema.</p>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-clipboard-list"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-value" th:text="${totalCambios}">0</div>
+                        <div class="stat-label">Eventos Registrados</div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Filters -->
-        <div class="filters-card">
-            <form th:action="@{/admin/auditoria}" method="get" class="row g-3 align-items-end">
-                <div class="col-md-6">
-                    <label class="form-label">Filtrar por Acción</label>
-                    <input type="text" class="form-control" name="filtroAccion"
-                           placeholder="Ej: CREAR, ACTUALIZAR, ELIMINAR..."
-                           th:value="${filtroAccion}">
-                </div>
-                <div class="col-md-3 d-flex">
-                    <button type="submit" class="btn btn-primary w-100"><i class="fas fa-search me-2"></i>Filtrar</button>
-                </div>
-                <div class="col-md-3 d-flex">
-                    <a th:href="@{/admin/auditoria}" class="btn btn-outline-secondary w-100"><i class="fas fa-redo me-2"></i>Limpiar</a>
-                </div>
-            </form>
-        </div>
+            <!-- Filters -->
+            <div class="filters-card">
+                <form th:action="@{/admin/auditoria}" method="get" class="row g-3 align-items-end">
+                    <div class="col-md-6">
+                        <label class="form-label">Filtrar por Acción</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="fas fa-search text-muted"></i></span>
+                            <input type="text" class="form-control border-start-0 ps-0" name="filtroAccion"
+                                   placeholder="Ej: CREAR, ACTUALIZAR, ELIMINAR..."
+                                   th:value="${filtroAccion}">
+                        </div>
+                    </div>
+                    <div class="col-md-3 d-flex">
+                        <button type="submit" class="btn btn-primary w-100">Aplicar Filtro</button>
+                    </div>
+                    <div class="col-md-3 d-flex">
+                        <a th:href="@{/admin/auditoria}" class="btn btn-outline-secondary w-100"><i class="fas fa-redo me-2"></i>Limpiar</a>
+                    </div>
+                </form>
+            </div>
 
-        <!-- Timeline de Cambios -->
-        <div class="timeline" th:if="${historiales != null and !#lists.isEmpty(historiales)}">
-            <div th:each="historial, iterStat : ${historiales}"
-                 class="timeline-item"
-                 th:classappend="${#strings.toLowerCase(historial.accion)}"
-                 th:style="'animation-delay: ' + ${iterStat.index * 0.05} + 's'">
+            <!-- Timeline de Cambios -->
+            <div class="timeline" th:if="${historiales != null and !#lists.isEmpty(historiales)}">
+                <div th:each="historial, iterStat : ${historiales}"
+                     class="timeline-item"
+                     th:classappend="${#strings.toLowerCase(historial.accion)}"
+                     th:style="'animation-delay: ' + ${iterStat.index * 0.05} + 's'">
 
-                <div class="timeline-header">
-                    <div class="timeline-accion-wrapper">
-                        <span class="timeline-accion"
-                              th:classappend="${#strings.toLowerCase(historial.accion)}">
-                            <i th:if="${historial.accion == 'CREAR'}" class="fas fa-plus"></i>
-                            <i th:if="${historial.accion == 'ACTUALIZAR'}" class="fas fa-edit"></i>
-                            <i th:if="${historial.accion == 'ELIMINAR'}" class="fas fa-trash"></i>
-                            <i th:if="${historial.accion == 'ELIMINAR_SISTEMA'}" class="fas fa-user-slash"></i>
-                            <i th:if="${historial.accion == 'ELIMINAR_PERMANENTE'}" class="fas fa-skull-crossbones"></i>
-                            <i th:if="${historial.accion == 'RESTAURAR'}" class="fas fa-undo"></i>
-                            <span th:text="${historial.accion}">ACCIÓN</span>
+                    <div class="timeline-header">
+                        <div class="timeline-accion-wrapper">
+                            <span class="timeline-accion"
+                                  th:classappend="${#strings.toLowerCase(historial.accion)}">
+                                <i th:if="${historial.accion == 'CREAR'}" class="fas fa-plus"></i>
+                                <i th:if="${historial.accion == 'ACTUALIZAR'}" class="fas fa-edit"></i>
+                                <i th:if="${historial.accion == 'ELIMINAR'}" class="fas fa-trash"></i>
+                                <i th:if="${historial.accion == 'ELIMINAR_SISTEMA'}" class="fas fa-user-slash"></i>
+                                <i th:if="${historial.accion == 'ELIMINAR_PERMANENTE'}" class="fas fa-skull-crossbones"></i>
+                                <i th:if="${historial.accion == 'RESTAURAR'}" class="fas fa-undo"></i>
+                                <span th:text="${historial.accion}">ACCIÓN</span>
+                            </span>
+                            <span th:if="${historial.entidadAfectada != null}"
+                                  class="badge badge-entidad"
+                                  th:classappend="${historial.entidadAfectada == 'USUARIO' and historial.accion == 'ELIMINAR_SISTEMA'} ? 'usuario eliminado' : (${historial.entidadAfectada == 'USUARIO'} ? 'usuario' : 'tarea')"
+                                  th:text="${historial.entidadAfectada}">ENTIDAD</span>
+                        </div>
+                        <span class="timeline-fecha">
+                            <i class="far fa-clock"></i>
+                            <span th:text="${historial.fechaCambio != null ? #temporals.format(historial.fechaCambio, 'dd/MM/yyyy HH:mm') : '-'}">01/01/2026 12:00</span>
                         </span>
-                        <span th:if="${historial.entidadAfectada != null}"
-                              class="badge badge-entidad"
-                              th:classappend="${historial.entidadAfectada == 'USUARIO' and historial.accion == 'ELIMINAR_SISTEMA'} ? 'usuario eliminado' : (${historial.entidadAfectada == 'USUARIO'} ? 'usuario' : 'tarea')"
-                              th:text="${historial.entidadAfectada}">ENTIDAD</span>
                     </div>
-                    <span class="timeline-fecha">
-                        <i class="far fa-clock"></i>
-                        <span th:text="${historial.fechaCambio != null ? #temporals.format(historial.fechaCambio, 'dd/MM/yyyy HH:mm') : '-'}">01/01/2026 12:00</span>
-                    </span>
-                </div>
 
-                <div class="timeline-content">
-                    <div class="timeline-admin" th:if="${historial.usuarioAdmin != null}">
-                        <i class="fas fa-user-shield"></i>
-                        <strong>Administrador:</strong>
-                        <span th:text="${historial.usuarioAdmin}">Nombre Admin</span>
-                    </div>
-                    <div class="timeline-entity" th:if="${historial.tarea != null}">
-                        <i class="fas fa-tasks"></i>
-                        <strong>Tarea:</strong> <span th:text="${historial.tarea.titulo}">Título de la tarea</span>
-                    </div>
-                    <div class="timeline-entity" th:if="${historial.usuario != null}">
-                        <i class="fas fa-user"></i>
-                        <strong>Usuario:</strong>
-                        <span th:text="${historial.usuario.nombre}">Nombre usuario</span>
-                        <span class="text-muted" th:text="'(' + ${historial.usuario.email} + ')'">(email)</span>
-                    </div>
-                    <div class="timeline-descripcion" th:text="${historial.descripcion}">
-                        Descripción del cambio realizado
-                    </div>
-                    <div class="timeline-actions" th:if="${historial.accion == 'ELIMINAR_SISTEMA' and historial.usuario != null}">
-                        <button type="button"
-                                class="btn-restore"
-                                th:data-usuario-id="${historial.usuario.id}"
-                                th:data-usuario-nombre="${historial.usuario.nombre}"
-                                onclick="abrirModalRestaurar(this)">
-                            <i class="fas fa-undo"></i>
-                            Restaurar Usuario
-                        </button>
+                    <div class="timeline-content">
+                        <!-- Chips de Información -->
+                        <div class="timeline-info-group">
+                            <span class="info-chip" th:if="${historial.usuarioAdmin != null}" title="Administrador Responsable">
+                                <i class="fas fa-user-shield"></i>
+                                <strong>Admin:</strong> <span th:text="${historial.usuarioAdmin}">Nombre Admin</span>
+                            </span>
+
+                            <span class="info-chip" th:if="${historial.tarea != null}" title="Tarea Afectada">
+                                <i class="fas fa-tasks"></i>
+                                <strong>Tarea:</strong> <span th:text="${historial.tarea.titulo}">Título de la tarea</span>
+                            </span>
+
+                            <span class="info-chip" th:if="${historial.usuario != null}" title="Usuario Afectado">
+                                <i class="fas fa-user"></i>
+                                <strong>Usuario:</strong>
+                                <span th:text="${historial.usuario.nombre}">Nombre</span>
+                                <span class="text-muted ms-1" th:text="'(' + ${historial.usuario.email} + ')'" style="font-size: 0.8em;">(email)</span>
+                            </span>
+                        </div>
+
+                        <!-- Caja de Descripción -->
+                        <div class="timeline-descripcion" th:text="${historial.descripcion}">
+                            Descripción del cambio realizado
+                        </div>
+
+                        <!-- Botones de Acción -->
+                        <div class="timeline-actions" th:if="${historial.accion == 'ELIMINAR_SISTEMA' and historial.usuario != null}">
+                            <button type="button"
+                                    class="btn-restore"
+                                    th:data-usuario-id="${historial.usuario.id}"
+                                    th:data-usuario-nombre="${historial.usuario.nombre}"
+                                    onclick="abrirModalRestaurar(this)">
+                                <i class="fas fa-undo"></i>
+                                Restaurar Usuario
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Empty State -->
-        <div th:if="${historiales == null or #lists.isEmpty(historiales)}" class="empty-state">
-            <i class="fas fa-clipboard-list"></i>
-            <h5 class="mb-2">No hay registros de auditoría</h5>
-            <p class="mb-0 text-muted">Los cambios realizados por administradores aparecerán aquí</p>
-        </div>
+            <!-- Empty State -->
+            <div th:if="${historiales == null or #lists.isEmpty(historiales)}" class="empty-state">
+                <i class="fas fa-clipboard-check"></i>
+                <h5 class="mb-2">No hay registros de auditoría</h5>
+                <p class="mb-0 text-muted">Aún no se han detectado cambios recientes en el sistema.</p>
+            </div>
 
-        <!-- ✅ PAGINACIÓN SIEMPRE VISIBLE - IGUAL QUE USUARIOS -->
-        <div class="pagination-wrapper">
-            <ul class="google-pagination">
-                <!-- Anterior -->
-                <li class="pg-nav" th:classappend="${currentPage == 0} ? 'disabled' : ''">
-                    <a th:if="${currentPage > 0}"
-                       th:href="@{/admin/auditoria(page=${currentPage - 1}, size=${pageSize}, filtroAccion=${filtroAccion}, sortBy=${sortBy}, sortDir=${sortDir})}"
-                       title="Página anterior">
-                        <i class="fas fa-chevron-left" style="font-size:0.75rem;"></i>
-                    </a>
-                    <span th:if="${currentPage == 0 or currentPage == null}"><i class="fas fa-chevron-left" style="font-size:0.75rem;"></i></span>
-                </li>
-                <!-- Primera página -->
-                <li th:classappend="${currentPage == 0 or currentPage == null} ? 'active' : ''">
-                    <a th:if="${currentPage != 0 and currentPage != null}"
-                       th:href="@{/admin/auditoria(page=0, size=${pageSize}, filtroAccion=${filtroAccion}, sortBy=${sortBy}, sortDir=${sortDir})}">1</a>
-                    <span th:if="${currentPage == 0 or currentPage == null}">1</span>
-                </li>
-                <!-- Ellipsis izquierdo -->
-                <li class="ellipsis" th:if="${currentPage != null and currentPage > 2}"><span>···</span></li>
-                <!-- Páginas centrales -->
-                <li th:each="i : ${#numbers.sequence((currentPage != null ? currentPage : 0) - 1, (currentPage != null ? currentPage : 0) + 1)}"
-                    th:if="${i > 0 and (totalPages == null or i < totalPages - 1)}"
-                    th:classappend="${i == currentPage} ? 'active' : ''">
-                    <a th:if="${i != currentPage}"
-                       th:href="@{/admin/auditoria(page=${i}, size=${pageSize}, filtroAccion=${filtroAccion}, sortBy=${sortBy}, sortDir=${sortDir})}"
-                       th:text="${i + 1}">2</a>
-                    <span th:if="${i == currentPage}" th:text="${i + 1}">2</span>
-                </li>
-                <!-- Ellipsis derecho -->
-                <li class="ellipsis" th:if="${currentPage != null and totalPages != null and currentPage < totalPages - 3}"><span>···</span></li>
-                <!-- Última página -->
-                <li th:if="${totalPages != null and totalPages > 1}" th:classappend="${currentPage == totalPages - 1} ? 'active' : ''">
-                    <a th:if="${currentPage != totalPages - 1}"
-                       th:href="@{/admin/auditoria(page=${totalPages - 1}, size=${pageSize}, filtroAccion=${filtroAccion}, sortBy=${sortBy}, sortDir=${sortDir})}"
-                       th:text="${totalPages}">10</a>
-                    <span th:if="${currentPage == totalPages - 1}" th:text="${totalPages}">10</span>
-                </li>
-                <!-- Siguiente -->
-                <li class="pg-nav" th:classappend="${totalPages == null or currentPage == totalPages - 1} ? 'disabled' : ''">
-                    <a th:if="${totalPages != null and currentPage < totalPages - 1}"
-                       th:href="@{/admin/auditoria(page=${currentPage + 1}, size=${pageSize}, filtroAccion=${filtroAccion}, sortBy=${sortBy}, sortDir=${sortDir})}"
-                       title="Página siguiente">
-                        <i class="fas fa-chevron-right" style="font-size:0.75rem;"></i>
-                    </a>
-                    <span th:if="${totalPages == null or currentPage == totalPages - 1}"><i class="fas fa-chevron-right" style="font-size:0.75rem;"></i></span>
-                </li>
-            </ul>
-            <!-- Info de paginación SIEMPRE visible -->
-            <p class="pagination-info">
-                <span th:if="${totalElements != null and totalElements > 0}">
-                    Mostrando <strong th:text="${(currentPage != null ? currentPage : 0) * (pageSize != null ? pageSize : 10) + 1}">1</strong> –
-                    <strong th:text="${totalElements < ((currentPage != null ? currentPage : 0) + 1) * (pageSize != null ? pageSize : 10) ? totalElements : ((currentPage != null ? currentPage : 0) + 1) * (pageSize != null ? pageSize : 10)}">10</strong>
-                    de <strong th:text="${totalElements}">100</strong> registros
-                </span>
-                <span th:if="${totalElements == null or totalElements == 0}">
-                    Mostrando <strong>0</strong> registros
-                </span>
-                <span th:if="${totalPages != null and totalPages > 0}">
-                     · Página <strong th:text="${(currentPage != null ? currentPage : 0) + 1}">1</strong> de <strong th:text="${totalPages}">1</strong>
-                </span>
-                <span th:if="${totalPages == null or totalPages == 0}">
-                     · Página <strong>1</strong> de <strong>1</strong>
-                </span>
-            </p>
-        </div>
+            <!-- ✅ PAGINACIÓN -->
+            <div class="pagination-wrapper">
+                <ul class="google-pagination">
+                    <li class="pg-nav" th:classappend="${currentPage == 0} ? 'disabled' : ''">
+                        <a th:if="${currentPage > 0}"
+                           th:href="@{/admin/auditoria(page=${currentPage - 1}, size=${pageSize}, filtroAccion=${filtroAccion}, sortBy=${sortBy}, sortDir=${sortDir})}"
+                           title="Página anterior">
+                            <i class="fas fa-chevron-left" style="font-size:0.75rem;"></i>
+                        </a>
+                        <span th:if="${currentPage == 0 or currentPage == null}"><i class="fas fa-chevron-left" style="font-size:0.75rem;"></i></span>
+                    </li>
+                    <li th:classappend="${currentPage == 0 or currentPage == null} ? 'active' : ''">
+                        <a th:if="${currentPage != 0 and currentPage != null}"
+                           th:href="@{/admin/auditoria(page=0, size=${pageSize}, filtroAccion=${filtroAccion}, sortBy=${sortBy}, sortDir=${sortDir})}">1</a>
+                        <span th:if="${currentPage == 0 or currentPage == null}">1</span>
+                    </li>
+                    <li class="ellipsis" th:if="${currentPage != null and currentPage > 2}"><span>···</span></li>
+                    <li th:each="i : ${#numbers.sequence((currentPage != null ? currentPage : 0) - 1, (currentPage != null ? currentPage : 0) + 1)}"
+                        th:if="${i > 0 and (totalPages == null or i < totalPages - 1)}"
+                        th:classappend="${i == currentPage} ? 'active' : ''">
+                        <a th:if="${i != currentPage}"
+                           th:href="@{/admin/auditoria(page=${i}, size=${pageSize}, filtroAccion=${filtroAccion}, sortBy=${sortBy}, sortDir=${sortDir})}"
+                           th:text="${i + 1}">2</a>
+                        <span th:if="${i == currentPage}" th:text="${i + 1}">2</span>
+                    </li>
+                    <li class="ellipsis" th:if="${currentPage != null and totalPages != null and currentPage < totalPages - 3}"><span>···</span></li>
+                    <li th:if="${totalPages != null and totalPages > 1}" th:classappend="${currentPage == totalPages - 1} ? 'active' : ''">
+                        <a th:if="${currentPage != totalPages - 1}"
+                           th:href="@{/admin/auditoria(page=${totalPages - 1}, size=${pageSize}, filtroAccion=${filtroAccion}, sortBy=${sortBy}, sortDir=${sortDir})}"
+                           th:text="${totalPages}">10</a>
+                        <span th:if="${currentPage == totalPages - 1}" th:text="${totalPages}">10</span>
+                    </li>
+                    <li class="pg-nav" th:classappend="${totalPages == null or currentPage == totalPages - 1} ? 'disabled' : ''">
+                        <a th:if="${totalPages != null and currentPage < totalPages - 1}"
+                           th:href="@{/admin/auditoria(page=${currentPage + 1}, size=${pageSize}, filtroAccion=${filtroAccion}, sortBy=${sortBy}, sortDir=${sortDir})}"
+                           title="Página siguiente">
+                            <i class="fas fa-chevron-right" style="font-size:0.75rem;"></i>
+                        </a>
+                        <span th:if="${totalPages == null or currentPage == totalPages - 1}"><i class="fas fa-chevron-right" style="font-size:0.75rem;"></i></span>
+                    </li>
+                </ul>
+                <p class="pagination-info">
+                    <span th:if="${totalElements != null and totalElements > 0}">
+                        Mostrando <strong th:text="${(currentPage != null ? currentPage : 0) * (pageSize != null ? pageSize : 10) + 1}">1</strong> –
+                        <strong th:text="${totalElements < ((currentPage != null ? currentPage : 0) + 1) * (pageSize != null ? pageSize : 10) ? totalElements : ((currentPage != null ? currentPage : 0) + 1) * (pageSize != null ? pageSize : 10)}">10</strong>
+                        de <strong th:text="${totalElements}">100</strong> registros
+                    </span>
+                    <span th:if="${totalElements == null or totalElements == 0}">
+                        Mostrando <strong>0</strong> registros
+                    </span>
+                    <span th:if="${totalPages != null and totalPages > 0}">
+                         · Página <strong th:text="${(currentPage != null ? currentPage : 0) + 1}">1</strong> de <strong th:text="${totalPages}">1</strong>
+                    </span>
+                    <span th:if="${totalPages == null or totalPages == 0}">
+                         · Página <strong>1</strong> de <strong>1</strong>
+                    </span>
+                </p>
+            </div>
 
-        <div class="text-center mt-4 mb-2">
-            <a th:href="@{/admin/dashboard}" class="btn-back"><i class="fas fa-arrow-left"></i>Volver al Dashboard</a>
-        </div>
+            <div class="text-center">
+                <a th:href="@{/admin/dashboard}" class="btn-back"><i class="fas fa-arrow-left"></i> Volver al Dashboard</a>
+            </div>
+
+        </div> <!-- /main-content-wrapper -->
     </main>
 </div>
 
-<!-- ✅ MODAL RESTAURAR USUARIO - Estilo igual a usuarios.html -->
+<!-- ✅ MODAL RESTAURAR USUARIO -->
 <div class="modal fade" id="modalRestaurarUsuario" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 animate__animated animate__zoomIn">
@@ -590,26 +596,28 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
-                <div class="modal-notice notice-warning mb-4">
-                    <i class="fas fa-info-circle"></i>
+                <div class="alert alert-warning d-flex align-items-center mb-4" style="border-radius: 12px; font-weight: 500;">
+                    <i class="fas fa-info-circle me-3 fs-4"></i>
                     <span>El usuario será restaurado y podrá iniciar sesión nuevamente.</span>
                 </div>
-                <p class="mb-3" style="font-size:0.9rem;">¿Estás seguro de restaurar este usuario?</p>
-                <div class="modal-user-card mb-3">
-                    <div class="user-avatar-lg" id="restaurarUsuarioInicial">N</div>
-                    <div class="user-details">
-                        <div class="user-name" id="restaurarUsuarioNombre">Nombre del usuario</div>
-                        <div class="user-email" id="restaurarUsuarioEmail">correo@ejemplo.com</div>
+                <p class="mb-3" style="font-size:0.95rem; font-weight: 600; color: #334155;">¿Estás seguro de restaurar este usuario?</p>
+                <div class="d-flex align-items-center gap-3 p-3 mb-4 bg-white" style="border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                    <div id="restaurarUsuarioInicial" style="width: 48px; height: 48px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 800;">N</div>
+                    <div>
+                        <div id="restaurarUsuarioNombre" style="font-weight: 700; color: #1e293b;">Nombre del usuario</div>
+                        <div id="restaurarUsuarioEmail" style="font-size: 0.85rem; color: #64748b;">correo@ejemplo.com</div>
                     </div>
                 </div>
-                <div class="modal-notice notice-info">
-                    <i class="fas fa-check-circle"></i>
+                <div class="d-flex align-items-center text-success" style="font-size: 0.85rem; font-weight: 600;">
+                    <i class="fas fa-check-circle me-2"></i>
                     <span>El estado del usuario cambiará a "ACTIVO" automáticamente.</span>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn-modal-cancel" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn-modal-save" id="btnConfirmarRestaurar"><i class="fas fa-undo"></i>Sí, Restaurar Usuario</button>
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal" style="font-weight: 600; border-radius: 8px;">Cancelar</button>
+                <button type="button" class="btn btn-warning" id="btnConfirmarRestaurar" style="font-weight: 700; border-radius: 8px; color: #92400e;">
+                    <i class="fas fa-undo me-2"></i>Sí, Restaurar Usuario
+                </button>
             </div>
         </div>
     </div>
@@ -631,7 +639,7 @@
         if (window.innerWidth < 992 && sidebar.classList.contains('show') && !sidebar.contains(e.target) && !toggleBtn.contains(e.target)) { sidebar.classList.remove('show'); }
     });
 
-    // ✅ TOAST mejorado
+    // TOAST mejorado
     function mostrarToast(mensaje, tipo = 'success') {
         const toastEl = document.getElementById('toastNotificacion');
         const toastBody = toastEl.querySelector('.toast-body');
@@ -648,7 +656,7 @@
         toast.show();
     }
 
-    // ✅ RESTAURAR USUARIO
+    // RESTAURAR USUARIO
     let usuarioIdARestaurar = null;
     function abrirModalRestaurar(btn) {
         usuarioIdARestaurar = btn.getAttribute('data-usuario-id');

@@ -59,13 +59,6 @@ public interface IUsuarioService {
 
     void asignarRolPorId(Usuario usuario, Integer rolId);
 
-    // =====================================================
-    // ✅ NUEVO: Método para DashboardStats DTO
-    // =====================================================
 
-    /**
-     * Obtiene estadísticas estructuradas para el dashboard administrativo
-     * @return DashboardStats con totalUsuarios, usuariosActivos, usuariosInactivos, totalAdmins
-     */
     DashboardStats obtenerDashboardStats();
 }

@@ -2,6 +2,8 @@ package com.easydates.easydateap.entity;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "categorias")
 public class Categoria {
@@ -25,6 +27,15 @@ public class Categoria {
 
     @Column(name = "estado", nullable = false, length = 30)
     private String estado = "ACTIVO";
+    @Column(name = "fecha_creacion")
+    private LocalDateTime fechaCreacion;
+
+    @Column(name = "fecha_actualizacion")
+    private LocalDateTime fechaActualizacion;
+    @PreUpdate
+    protected void onUpdate() {
+        fechaActualizacion = LocalDateTime.now();
+    }
 
     // Getters y Setters
     public Integer getId() {
@@ -73,5 +84,21 @@ public class Categoria {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+    // Getters y Setters
+    public LocalDateTime getFechaCreacion() {
+        return fechaCreacion;
+    }
+
+    public void setFechaCreacion(LocalDateTime fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
+    }
+
+    public LocalDateTime getFechaActualizacion() {
+        return fechaActualizacion;
+    }
+
+    public void setFechaActualizacion(LocalDateTime fechaActualizacion) {
+        this.fechaActualizacion = fechaActualizacion;
     }
 }

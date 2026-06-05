@@ -95,7 +95,7 @@ public class ClienteController {
         return "client/home";
     }
 
-    // ✅ MÉTODO NUEVO: Verificar y actualizar estado premium
+
     private Usuario verificarYActualizarEstadoPremium(Integer usuarioId) {
         try {
             // Obtener usuario actualizado desde BD
@@ -113,21 +113,21 @@ public class ClienteController {
                 if (usuario.getFechaPremiumExpiracion().isBefore(hoy) ||
                         usuario.getFechaPremiumExpiracion().isEqual(hoy)) {
 
-                    System.out.println("⚠️ Suscripción vencida para usuario: " + usuario.getNombre());
+                    System.out.println(" Suscripción vencida para usuario: " + usuario.getNombre());
 
                     // Actualizar usuario a no premium
                     usuario.setEsPremium(false);
                     usuario.setFechaPremiumExpiracion(null);
                     usuarioService.actualizar(usuarioId, usuario);
 
-                    System.out.println("✅ Estado premium actualizado a FALSE");
+                    System.out.println(" Estado premium actualizado a FALSE");
                 }
             }
 
             return usuario;
 
         } catch (Exception e) {
-            System.err.println("❌ Error al verificar estado premium: " + e.getMessage());
+            System.err.println("rror al verificar estado premium: " + e.getMessage());
             return null;
         }
     }
@@ -151,8 +151,6 @@ public class ClienteController {
             return "redirect:/login";
         }
 
-        System.out.println("🔍 [DEBUG] Usuario ID: " + usuarioId);
-        System.out.println("🔍 [DEBUG] Filtros: estado=" + estado + ", prioridad=" + prioridad + ", categoria=" + categoria + ", q=" + q);
 
         // Obtener tareas con filtros
         List<Tarea> tareas = tareaService.listarConFiltros(usuarioId, estado, prioridad, categoria, q, sortBy, sortDir);

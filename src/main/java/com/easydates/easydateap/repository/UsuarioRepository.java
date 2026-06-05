@@ -1,5 +1,6 @@
 package com.easydates.easydateap.repository;
 
+import com.easydates.easydateap.dto.CustomerSuccessDTO;
 import com.easydates.easydateap.entity.Usuario;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +22,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
     boolean existsByEmail(String email);
 
-    // ✅ Buscar usuarios con filtros (AND) - PARA PAGINACIÓN DEL SERVIDOR
+    //  Buscar usuarios con filtros (AND) - PARA PAGINACIÓN DEL SERVIDOR
     @Query("SELECT u FROM Usuario u JOIN u.rol r WHERE " +
             "(:id IS NULL OR u.id = :id) AND " +
             "(:nombre IS NULL OR LOWER(u.nombre) LIKE LOWER(CONCAT('%', :nombre, '%'))) AND " +
@@ -38,7 +39,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
             Pageable pageable
     );
 
-    // ✅ Contar total de usuarios activos (para estadísticas)
+    //  Contar total de usuarios activos (para estadísticas)
     @Query("SELECT COUNT(u) FROM Usuario u WHERE u.estado != 'ELIMINADO'")
     Long contarActivos();
 
@@ -79,4 +80,28 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
      */
     @Query("SELECT COUNT(u) FROM Usuario u WHERE u.estado != 'ELIMINADO'")
     long countActivosNoEliminados();
+
+//  MÉTODOS PARA CUSTOMER SUCCESS 360°
+
+    @Query("SELECT new com.easydates.easydateap.dto.CustomerSuccessDTO(" +
+            "u.id, u.nombre, u.email, " +
+            "COALESCE(p.nombre, 'Gratuito'), " +
+            "s.fechaFin, " +
+            "COUNT(t.id), " +
+            "COALESCE(SUM(CASE WHEN t.estadoTarea = 'TERMINADO' THEN 1 ELSE 0 END), 0), " +
+            "COALESCE(SUM(CASE WHEN t.estadoTarea != 'TERMINADO' AND t.fechaLimite < CURRENT_DATE THEN 1 ELSE 0 END), 0), " +
+            "u.esPremium, " +
+            "CASE WHEN s.id IS NOT NULL THEN true ELSE false END) " +
+            "FROM Usuario u " +
+            "LEFT JOIN Suscripcion s ON s.usuario.id = u.id AND s.estado = 'ACTIVA' " +
+            "LEFT JOIN s.plan p " +
+            "LEFT JOIN Tarea t ON t.usuario.id = u.id " +
+            "WHERE u.estado != 'ELIMINADO' " +
+            "GROUP BY u.id, u.nombre, u.email, p.nombre, s.fechaFin, u.esPremium, s.id")
+    List<CustomerSuccessDTO> findAllCustomerSuccessData();
+
+    @Query("SELECT u FROM Usuario u WHERE u.id = :usuarioId")
+    Optional<Usuario> findByIdWithDetails(@Param("usuarioId") Integer usuarioId);
+
+
 }

@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Success 360° - NotyGo Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --admin-bg:#f0f2f5;--admin-sidebar:#1e3a8a;--admin-sidebar-hover:#1e40af;
+            --admin-primary:#3b82f6;--admin-primary-hover:#2563eb;--admin-success:#10b981;
+            --admin-warning:#f59e0b;--admin-danger:#ef4444;--admin-text:#1f2937;
+            --admin-text-muted:#6b7280;--admin-border:#e5e7eb;
+            --admin-card-shadow:0 4px 6px -1px rgba(0,0,0,0.07),0 2px 4px -1px rgba(0,0,0,0.04);
+            --admin-radius:14px;
+        }
+        *{box-sizing:border-box}
+        html,body{height:100%;overflow:hidden}
+        body{font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+            background:linear-gradient(135deg,#eef2ff 0%,#e0e7ff 50%,#f0f9ff 100%);color:var(--admin-text)}
+
+        /* NAVBAR */
+        .admin-navbar{background:linear-gradient(135deg,var(--admin-sidebar) 0%,#1d4ed8 100%);color:white;
+            padding:.875rem 2rem;box-shadow:0 4px 20px rgba(30,58,138,.25);position:sticky;top:0;z-index:1000}
+        .admin-navbar .navbar-brand{font-weight:800;font-size:1.3rem;color:white;display:flex;align-items:center;
+            gap:.75rem;transition:transform .3s;text-decoration:none;letter-spacing:-.02em}
+        .admin-navbar .navbar-brand:hover{transform:scale(1.04)}
+        .admin-navbar .brand-icon{width:36px;height:36px;background:rgba(255,255,255,.15);border-radius:10px;
+            display:flex;align-items:center;justify-content:center;font-size:1rem}
+        .admin-navbar .user-info{display:flex;align-items:center;gap:1.25rem}
+        .admin-navbar .user-chip{display:flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.12);
+            border-radius:50px;padding:.375rem .875rem;font-size:.85rem;font-weight:500}
+        .admin-navbar .btn-logout{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.25);
+            color:white;padding:.45rem 1.1rem;border-radius:50px;font-size:.82rem;font-weight:600;
+            transition:all .25s;cursor:pointer}
+        .admin-navbar .btn-logout:hover{background:rgba(255,255,255,.25);transform:translateY(-1px)}
+        .btn-toggle-sidebar{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.25);
+            color:white;font-size:1.1rem;padding:.45rem .7rem;cursor:pointer;border-radius:8px;
+            display:none;transition:all .25s}
+        .btn-toggle-sidebar:hover{background:rgba(255,255,255,.25)}
+
+        /* LAYOUT */
+        .admin-wrapper{display:flex;height:calc(100vh - 70px);overflow:hidden}
+
+        /* SIDEBAR */
+        .admin-sidebar{width:248px;background:white;padding:1.5rem .875rem;display:flex;
+            flex-direction:column;gap:.25rem;flex-shrink:0;box-shadow:2px 0 12px rgba(0,0,0,.04);
+            transition:transform .3s ease;overflow-y:auto;max-height:100%}
+        .admin-sidebar .nav-link{color:var(--admin-text-muted);padding:.75rem 1rem;border-radius:10px;
+            text-decoration:none;display:flex;align-items:center;gap:.75rem;font-weight:500;
+            font-size:.9rem;transition:all .25s}
+        .admin-sidebar .nav-link:hover,.admin-sidebar .nav-link.active{
+            background:linear-gradient(135deg,var(--admin-primary),var(--admin-primary-hover));
+            color:white;transform:translateX(4px);box-shadow:0 4px 14px rgba(59,130,246,.28)}
+        .admin-sidebar .nav-link i{width:20px;text-align:center;font-size:1rem;opacity:.85}
+        .admin-sidebar .divider{height:1px;background:var(--admin-border);margin:1rem .5rem;opacity:.6}
+
+        /* MAIN */
+        .admin-main{flex:1;padding:2rem;overflow-y:auto;overflow-x:hidden}
+
+        /* PAGE HEADER */
+        .page-header{background:white;border-radius:var(--admin-radius);padding:1.25rem 1.75rem;
+            margin-bottom:1.5rem;box-shadow:var(--admin-card-shadow);display:flex;
+            justify-content:space-between;align-items:center;animation:fadeInDown .5s ease;
+            border:1px solid rgba(0,0,0,.04)}
+        .page-header h2{font-weight:800;color:var(--admin-text);margin:0;font-size:1.35rem;
+            display:flex;align-items:center;gap:.75rem;letter-spacing:-.02em}
+        .page-header h2 .header-icon{width:40px;height:40px;
+            background:linear-gradient(135deg,#dbeafe,#bfdbfe);border-radius:10px;
+            display:flex;align-items:center;justify-content:center;color:var(--admin-primary);font-size:1rem}
+        .badge-admin{background:linear-gradient(135deg,var(--admin-danger),#dc2626);color:white;
+            padding:.4rem 1rem;border-radius:50px;font-weight:700;font-size:.75rem;
+            display:flex;align-items:center;gap:.4rem;letter-spacing:.04em;text-transform:uppercase}
+
+        /* FILTERS */
+        .filters-card{background:white;border-radius:var(--admin-radius);padding:1.375rem 1.75rem;
+            margin-bottom:1.5rem;box-shadow:var(--admin-card-shadow);
+            animation:fadeInUp .5s ease .1s both;border:1px solid rgba(0,0,0,.04)}
+        .filter-tabs{display:flex;gap:.5rem;flex-wrap:wrap}
+        .filter-tab{padding:.5rem 1.25rem;border-radius:50px;font-size:.85rem;font-weight:600;
+            border:1.5px solid var(--admin-border);background:white;color:var(--admin-text-muted);
+            cursor:pointer;transition:all .25s;text-decoration:none;display:inline-flex;
+            align-items:center;gap:.5rem}
+        .filter-tab:hover{border-color:var(--admin-primary);color:var(--admin-primary)}
+        .filter-tab.active{background:linear-gradient(135deg,var(--admin-primary),var(--admin-primary-hover));
+            color:white;border-color:var(--admin-primary);box-shadow:0 4px 12px rgba(59,130,246,.28)}
+
+        /* STATS GRID */
+        .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;margin-bottom:1.5rem}
+        .stat-card{border-radius:var(--admin-radius);padding:1.25rem;
+            box-shadow:var(--admin-card-shadow);position:relative;overflow:hidden;
+            border:1px solid rgba(0,0,0,.04);animation:fadeInUp .5s ease both;
+            cursor:default;transition:transform .25s,box-shadow .25s}
+        .stat-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.12)}
+        .stat-card:nth-child(1){animation-delay:.05s}
+        .stat-card:nth-child(2){animation-delay:.10s}
+        .stat-card:nth-child(3){animation-delay:.15s}
+        .stat-card:nth-child(4){animation-delay:.20s}
+        .stat-card.c-blue{background:linear-gradient(135deg,#1e3a8a 0%,#1d4ed8 100%);color:white}
+        .stat-card.c-green{background:linear-gradient(135deg,#065f46 0%,#059669 100%);color:white}
+        .stat-card.c-amber{background:linear-gradient(135deg,#92400e 0%,#d97706 100%);color:white}
+        .stat-card.c-red{background:linear-gradient(135deg,#991b1b 0%,#dc2626 100%);color:white}
+        .stat-card .sc-icon{width:44px;height:44px;border-radius:10px;background:rgba(255,255,255,.18);
+            display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:1rem}
+        .stat-card .sc-value{font-size:2.2rem;font-weight:800;line-height:1;margin-bottom:.25rem}
+        .stat-card .sc-label{font-size:.78rem;font-weight:600;opacity:.8;text-transform:uppercase;letter-spacing:.06em}
+        .stat-card .sc-trend{margin-top:.75rem;font-size:.72rem;font-weight:600;
+            background:rgba(255,255,255,.15);border-radius:50px;display:inline-flex;
+            align-items:center;gap:.3rem;padding:.2rem .6rem}
+
+        /* TABLE CARD */
+        .table-card{background:white;border-radius:var(--admin-radius);box-shadow:var(--admin-card-shadow);
+            overflow:hidden;animation:fadeInUp .3s ease .15s both;border:1px solid rgba(0,0,0,.04);
+            margin-bottom:1.5rem}
+        .table-card-header{padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;
+            border-bottom:1.5px solid var(--admin-border)}
+        .table-card-title{font-weight:700;font-size:.9rem;color:var(--admin-text);
+            display:flex;align-items:center;gap:.5rem}
+        .table-card .table{margin:0;border-collapse:separate;border-spacing:0}
+        .table-card thead tr{background:linear-gradient(135deg,#f8fafc,#f1f5f9)}
+        .table-card th{font-weight:700;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;
+            color:var(--admin-text-muted);padding:.75rem 1.25rem;
+            border-bottom:1.5px solid var(--admin-border);border-top:none;white-space:nowrap}
+        .table-card td{padding:.75rem 1.25rem;vertical-align:middle;font-size:.875rem;border-color:#f3f4f6}
+        .table-card tbody tr{transition:all .2s}
+        .table-card tbody tr:hover{background:linear-gradient(135deg,#f0f9ff,#eff6ff)}
+
+        /* HEALTH SCORE BAR */
+        .health-bar-container{width:120px;height:8px;background:#e5e7eb;border-radius:99px;overflow:hidden;
+            display:inline-block;vertical-align:middle;margin-right:.5rem}
+        .health-bar{height:100%;border-radius:99px;transition:width .5s ease}
+        .health-bar.excellent{background:linear-gradient(90deg,#10b981,#059669)}
+        .health-bar.good{background:linear-gradient(90deg,#3b82f6,#2563eb)}
+        .health-bar.warning{background:linear-gradient(90deg,#f59e0b,#d97706)}
+        .health-bar.danger{background:linear-gradient(90deg,#ef4444,#dc2626)}
+
+        /* RISK BADGES */
+        .badge-risk{padding:.3rem .75rem;border-radius:50px;font-size:.7rem;font-weight:700;
+            text-transform:uppercase;letter-spacing:.06em;display:inline-flex;align-items:center;gap:.3rem}
+        .badge-risk.bajo{background:#d1fae5;color:#065f46;border:1.5px solid #a7f3d0}
+        .badge-risk.medio{background:#fef3c7;color:#92400e;border:1.5px solid #fde68a}
+        .badge-risk.alto{background:#fed7aa;color:#9a3412;border:1.5px solid #fdba74}
+        .badge-risk.critico{background:#fee2e2;color:#991b1b;border:1.5px solid #fecaca}
+
+        /* PREMIUM BADGE */
+        .badge-premium{background:linear-gradient(135deg,#FFD700,#FFA500);color:white;
+            padding:.25rem .6rem;border-radius:50px;font-size:.65rem;font-weight:700;
+            display:inline-flex;align-items:center;gap:.3rem}
+        .badge-free{background:#e5e7eb;color:#6b7280;padding:.25rem .6rem;border-radius:50px;
+            font-size:.65rem;font-weight:700}
+
+        /* SUBSCRIPTION INFO */
+        .sub-info{font-size:.8rem;color:var(--admin-text-muted)}
+        .sub-info.expiring{color:#dc2626;font-weight:600}
+        .sub-info.active{color:#059669;font-weight:600}
+
+        /* RECOMMENDATION */
+        .recommendation{font-size:.75rem;color:var(--admin-text-muted);font-style:italic;
+            max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+        /* USER CELL */
+        .user-cell{display:flex;align-items:center;gap:.75rem}
+        .user-avatar{width:36px;height:36px;border-radius:50%;
+            background:linear-gradient(135deg,#dbeafe,#bfdbfe);display:flex;
+            align-items:center;justify-content:center;font-weight:700;font-size:.75rem;
+            color:#1d4ed8;flex-shrink:0}
+        .user-avatar.premium{background:linear-gradient(135deg,#FFD700,#FFA500);color:white}
+        .user-name{font-weight:600;color:var(--admin-text)}
+        .user-email{font-size:.75rem;color:var(--admin-text-muted)}
+
+        /* TASK STATS */
+        .task-stats{display:flex;gap:.75rem;font-size:.75rem}
+        .task-stat{display:flex;align-items:center;gap:.25rem}
+        .task-stat.completed{color:#059669}
+        .task-stat.overdue{color:#dc2626}
+        .task-stat.total{color:var(--admin-text-muted)}
+
+        /* ✅ BOTÓN DE MENSAJE */
+        .btn-message {
+            background: linear-gradient(135deg, var(--admin-primary), var(--admin-primary-hover));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: .4rem .85rem;
+            font-size: .78rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+            transition: all .25s;
+            font-family: inherit;
+            box-shadow: 0 2px 8px rgba(59,130,246,.25);
+        }
+        .btn-message:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(59,130,246,.4);
+            background: linear-gradient(135deg, var(--admin-primary-hover), #1d4ed8);
+        }
+        .btn-message i { font-size: .85rem; }
+
+        /* ✅ MODAL DE MENSAJE */
+        .modal-message-header {
+            background: linear-gradient(135deg, var(--admin-primary), var(--admin-primary-hover));
+            color: white;
+            padding: 1.375rem 1.75rem;
+            border: none;
+        }
+        .modal-message-header .modal-title {
+            font-weight: 800;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+        }
+        .modal-message-header .header-icon-sm {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: rgba(255,255,255,.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+        .modal-message-header .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+
+        .message-user-info {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border: 1.5px solid #bae6fd;
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: .85rem;
+        }
+        .message-user-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--admin-primary), var(--admin-primary-hover));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .message-user-avatar.premium {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+        }
+
+        /* Plantillas rápidas */
+        .quick-templates {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .5rem;
+            margin-bottom: 1rem;
+        }
+        .template-chip {
+            background: white;
+            border: 1.5px solid var(--admin-border);
+            border-radius: 50px;
+            padding: .35rem .85rem;
+            font-size: .75rem;
+            font-weight: 600;
+            color: var(--admin-text-muted);
+            cursor: pointer;
+            transition: all .2s;
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+        }
+        .template-chip:hover {
+            border-color: var(--admin-primary);
+            color: var(--admin-primary);
+            background: #eff6ff;
+            transform: translateY(-1px);
+        }
+        .template-chip i { font-size: .75rem; }
+
+        .form-control-message {
+            border: 1.5px solid var(--admin-border);
+            border-radius: 10px;
+            padding: .7rem 1rem;
+            font-family: inherit;
+            font-size: .9rem;
+            transition: all .2s;
+            width: 100%;
+        }
+        .form-control-message:focus {
+            outline: none;
+            border-color: var(--admin-primary);
+            box-shadow: 0 0 0 3px rgba(59,130,246,.12);
+        }
+
+        .btn-send-message {
+            background: linear-gradient(135deg, var(--admin-success), #059669);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: .65rem 1.5rem;
+            font-weight: 700;
+            font-size: .9rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            transition: all .25s;
+            font-family: inherit;
+            box-shadow: 0 4px 12px rgba(16,185,129,.3);
+        }
+        .btn-send-message:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(16,185,129,.4);
+        }
+        .btn-send-message:disabled {
+            opacity: .6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-cancel-message {
+            background: white;
+            color: var(--admin-text-muted);
+            border: 1.5px solid var(--admin-border);
+            border-radius: 50px;
+            padding: .65rem 1.5rem;
+            font-weight: 700;
+            font-size: .9rem;
+            cursor: pointer;
+            transition: all .2s;
+            font-family: inherit;
+        }
+        .btn-cancel-message:hover {
+            background: #f3f4f6;
+            color: var(--admin-text);
+        }
+
+        /* EMPTY STATE */
+        .empty-state{text-align:center;padding:3rem 1rem;color:var(--admin-text-muted)}
+        .empty-state i{font-size:3rem;opacity:.3;margin-bottom:1rem;display:block}
+
+        /* ANIMATIONS */
+        @keyframes fadeInDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes fadeInUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes pulseMessage{
+            0%, 100% { box-shadow: 0 2px 8px rgba(59,130,246,.25); }
+            50% { box-shadow: 0 2px 16px rgba(59,130,246,.5); }
+        }
+
+        /* RESPONSIVE */
+        @media(max-width:1200px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
+        @media(max-width:991.98px){
+            .admin-sidebar{position:fixed;left:-260px;top:70px;height:calc(100vh - 70px);z-index:999;
+                box-shadow:4px 0 16px rgba(0,0,0,.1)}
+            .admin-sidebar.show{transform:translateX(260px)}
+            .admin-main{padding:1rem}.btn-toggle-sidebar{display:block}
+            .page-header{flex-direction:column;gap:1rem;text-align:center}
+            .stats-grid{grid-template-columns:repeat(2,1fr)}
+        }
+        @media(max-width:576px){.stats-grid{grid-template-columns:1fr}}
+        @media(min-width:992px){.btn-toggle-sidebar{display:none!important}}
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="admin-navbar">
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-3">
+            <button class="btn-toggle-sidebar d-lg-none" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+            <a class="navbar-brand" th:href="@{/admin/dashboard}">
+                <span class="brand-icon"><i class="fas fa-shield-alt"></i></span><span>Admin NotyGo</span>
+            </a>
+        </div>
+        <div class="user-info">
+            <span class="user-chip d-none d-sm-flex"><i class="fas fa-user-circle"></i>
+                <span th:text="${session.usuarioLogueado}">Admin</span></span>
+            <form th:action="@{/logout}" method="post" style="display:inline;">
+                <button type="submit" class="btn-logout"><i class="fas fa-sign-out-alt me-1"></i>Salir</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div class="admin-wrapper">
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <nav class="nav flex-column">
+            <a th:href="@{/admin/dashboard}" class="nav-link"
+               th:classappend="${activePage == 'dashboard'} ? 'active' : ''">
+                <i class="fas fa-home"></i> <span>Dashboard</span>
+            </a>
+            <a th:href="@{/admin/usuarios}" class="nav-link"
+               th:classappend="${activePage == 'usuarios'} ? 'active' : ''">
+                <i class="fas fa-users"></i> <span>Usuarios</span>
+            </a>
+            <a th:href="@{/admin/tareas}" class="nav-link"
+               th:classappend="${activePage == 'tareas'} ? 'active' : ''">
+                <i class="fas fa-tasks"></i> <span>Tareas</span>
+            </a>
+            <a th:href="@{/admin/categorias}" class="nav-link"
+               th:classappend="${activePage == 'categorias'} ? 'active' : ''">
+                <i class="fas fa-folder me-2"></i> <span>Categorías</span>
+            </a>
+            <a th:href="@{/admin/suscripciones}" class="nav-link"
+               th:classappend="${activePage == 'suscripciones'} ? 'active' : ''">
+                <i class="fas fa-crown"></i> <span>Suscripciones</span>
+            </a>
+            <a th:href="@{/admin/suscripciones/reporte}" class="nav-link"
+               th:classappend="${activePage == 'reporte-suscripciones'} ? 'active' : ''">
+                <i class="fas fa-chart-line"></i> <span>Reporte Suscripciones</span>
+            </a>
+            <a th:href="@{/admin/customer-success}" class="nav-link active"
+               th:classappend="${activePage == 'customer-success'} ? 'active' : ''">
+                <i class="fas fa-heartbeat"></i> <span>Customer Success</span>
+            </a>
+            <a th:href="@{/admin/auditoria}" class="nav-link"
+               th:classappend="${activePage == 'auditoria'} ? 'active' : ''">
+                <i class="fas fa-history"></i> <span>Auditoría</span>
+            </a>
+            <div class="divider"></div>
+            <a th:href="@{/cliente/home}" class="nav-link">
+                <i class="fas fa-arrow-left"></i> <span>Volver al Cliente</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="admin-main">
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <h2>
+                <span class="header-icon"><i class="fas fa-heartbeat"></i></span>
+                Customer Success 360°
+            </h2>
+            <span class="badge-admin"><i class="fas fa-chart-pie"></i>Analytics</span>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card c-blue">
+                <div class="sc-icon"><i class="fas fa-users"></i></div>
+                <div class="sc-value" th:text="${metricas.totalUsuarios}">0</div>
+                <div class="sc-label">Total Usuarios</div>
+                <div class="sc-trend">
+                    <i class="fas fa-user-check"></i>
+                    <span th:text="${metricas.usuariosPremium} + ' Premium'">0 Premium</span>
+                </div>
+            </div>
+            <div class="stat-card c-green">
+                <div class="sc-icon"><i class="fas fa-heart"></i></div>
+                <div class="sc-value" th:text="${metricas.healthScorePromedio}">0</div>
+                <div class="sc-label">Health Score Promedio</div>
+                <div class="sc-trend">
+                    <i class="fas fa-chart-line"></i>
+                    <span th:text="${metricas.tasaRetencion} + '% retención'">0% retención</span>
+                </div>
+            </div>
+            <div class="stat-card c-amber">
+                <div class="sc-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                <div class="sc-value" th:text="${metricas.riesgoAlto + metricas.riesgoCritico}">0</div>
+                <div class="sc-label">Usuarios en Riesgo</div>
+                <div class="sc-trend">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>Requieren atención</span>
+                </div>
+            </div>
+            <div class="stat-card c-red">
+                <div class="sc-icon"><i class="fas fa-crown"></i></div>
+                <div class="sc-value" th:text="${metricas.usuariosPremium}">0</div>
+                <div class="sc-label">Usuarios Premium</div>
+                <div class="sc-trend">
+                    <i class="fas fa-dollar-sign"></i>
+                    <span th:text="${metricas.usuariosGratuitos} + ' gratuitos'">0 gratuitos</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0" style="font-weight:700;font-size:1rem;">
+                    <i class="fas fa-filter me-2" style="color:var(--admin-primary)"></i>Filtros de Vista
+                </h5>
+            </div>
+            <div class="filter-tabs">
+                <a th:href="@{/admin/customer-success(filtro='todos')}"
+                   class="filter-tab"
+                   th:classappend="${filtroActual == 'todos'} ? 'active' : ''">
+                    <i class="fas fa-users"></i> Todos los Usuarios
+                </a>
+                <a th:href="@{/admin/customer-success(filtro='riesgo')}"
+                   class="filter-tab"
+                   th:classappend="${filtroActual == 'riesgo'} ? 'active' : ''">
+                    <i class="fas fa-exclamation-triangle"></i> En Riesgo (Alto/Crítico)
+                </a>
+                <a th:href="@{/admin/customer-success(filtro='upsell')}"
+                   class="filter-tab"
+                   th:classappend="${filtroActual == 'upsell'} ? 'active' : ''">
+                    <i class="fas fa-arrow-up"></i> Oportunidades Upsell
+                </a>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-card">
+            <div class="table-card-header">
+                <span class="table-card-title">
+                    <i class="fas fa-user-chart" style="color:var(--admin-primary)"></i>
+                    Análisis de Usuarios
+                </span>
+                <span style="font-size:.8rem;color:var(--admin-text-muted);">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Mostrando <strong th:text="${#lists.size(usuarios)}">0</strong> usuarios
+                </span>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                    <tr>
+                        <th class="ps-4">Usuario</th>
+                        <th>Plan</th>
+                        <th>Health Score</th>
+                        <th>Nivel Riesgo</th>
+                        <th>Actividad</th>
+                        <th>Suscripción</th>
+                        <th>Tareas</th>
+                        <th>Recomendación</th>
+                        <th class="text-end pe-4">Acción</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="usuario : ${usuarios}">
+                        <!-- Usuario -->
+                        <td class="ps-4">
+                            <div class="user-cell">
+                                <div class="user-avatar"
+                                     th:classappend="${usuario.esPremium} ? 'premium' : ''"
+                                     th:text="${#strings.substring(usuario.nombre,0,1)}">U</div>
+                                <div>
+                                    <div class="user-name">
+                                        <span th:text="${usuario.nombre}">Usuario</span>
+                                        <span th:if="${usuario.esPremium}" class="badge-premium ms-1">
+                                                <i class="fas fa-crown"></i>
+                                            </span>
+                                    </div>
+                                    <div class="user-email" th:text="${usuario.email}">email@ejemplo.com</div>
+                                </div>
+                            </div>
+                        </td>
+
+                        <!-- Plan -->
+                        <td>
+                                <span th:if="${usuario.esPremium}" class="badge-premium">
+                                    <i class="fas fa-crown"></i>
+                                    <span th:text="${usuario.planActual}">Premium</span>
+                                </span>
+                            <span th:unless="${usuario.esPremium}" class="badge-free">
+                                    Gratuito
+                                </span>
+                        </td>
+
+                        <!-- Health Score -->
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="health-bar-container">
+                                    <div class="health-bar"
+                                         th:classappend="${usuario.healthScore >= 80} ? 'excellent' : (${usuario.healthScore >= 60} ? 'good' : (${usuario.healthScore >= 40} ? 'warning' : 'danger'))"
+                                         th:style="'width: ' + ${usuario.healthScore} + '%'"
+                                         th:title="${usuario.healthScore} + '/100'"></div>
+                                </div>
+                                <span style="font-weight:700;font-size:.85rem;"
+                                      th:text="${usuario.healthScore}">85</span>
+                            </div>
+                        </td>
+
+                        <!-- Nivel Riesgo -->
+                        <td>
+                                <span class="badge-risk"
+                                      th:classappend="${usuario.nivelRiesgo == 'BAJO'} ? 'bajo' : (${usuario.nivelRiesgo == 'MEDIO'} ? 'medio' : (${usuario.nivelRiesgo == 'ALTO'} ? 'alto' : 'critico'))">
+                                    <i th:if="${usuario.nivelRiesgo == 'BAJO'}" class="fas fa-check-circle"></i>
+                                    <i th:if="${usuario.nivelRiesgo == 'MEDIO'}" class="fas fa-exclamation-circle"></i>
+                                    <i th:if="${usuario.nivelRiesgo == 'ALTO'}" class="fas fa-exclamation-triangle"></i>
+                                    <i th:if="${usuario.nivelRiesgo == 'CRITICO'}" class="fas fa-times-circle"></i>
+                                    <span th:text="${usuario.nivelRiesgo}">BAJO</span>
+                                </span>
+                        </td>
+
+                        <!-- Actividad -->
+                        <td>
+                            <div th:if="${usuario.diasSinActividad != null and usuario.diasSinActividad < 999}">
+                                    <span th:if="${usuario.diasSinActividad <= 7}" class="text-success" style="font-size:.8rem;font-weight:600;">
+                                        <i class="fas fa-bolt"></i> Activo
+                                    </span>
+                                <span th:if="${usuario.diasSinActividad > 7 and usuario.diasSinActividad <= 30}" class="text-warning" style="font-size:.8rem;font-weight:600;">
+                                        <i class="fas fa-clock"></i> <span th:text="${usuario.diasSinActividad} + ' días'">0 días</span>
+                                    </span>
+                                <span th:if="${usuario.diasSinActividad > 30}" class="text-danger" style="font-size:.8rem;font-weight:600;">
+                                        <i class="fas fa-bed"></i> Inactivo
+                                    </span>
+                            </div>
+                            <div th:unless="${usuario.diasSinActividad != null and usuario.diasSinActividad < 999}">
+                                <span class="text-muted" style="font-size:.8rem;">Sin actividad</span>
+                            </div>
+                        </td>
+
+                        <!-- Suscripción -->
+                        <td>
+                            <div th:if="${usuario.fechaVencimiento != null}">
+                                <div th:if="${usuario.suscripcionActiva}" class="sub-info active">
+                                    <i class="fas fa-check-circle"></i> Activa
+                                </div>
+                                <div th:classappend="${usuario.fechaVencimiento.isBefore(T(java.time.LocalDate).now())} ? 'sub-info expiring' : 'sub-info'">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <span th:text="${#temporals.format(usuario.fechaVencimiento, 'dd/MM/yyyy')}">01/01/2026</span>
+                                </div>
+                            </div>
+                            <div th:unless="${usuario.fechaVencimiento != null}">
+                                <span class="text-muted" style="font-size:.8rem;">Sin suscripción</span>
+                            </div>
+                        </td>
+
+                        <!-- Tareas -->
+                        <td>
+                            <div class="task-stats">
+                                    <span class="task-stat total" title="Total">
+                                        <i class="fas fa-tasks"></i>
+                                        <span th:text="${usuario.tareasTotales}">0</span>
+                                    </span>
+                                <span class="task-stat completed" title="Completadas">
+                                        <i class="fas fa-check"></i>
+                                        <span th:text="${usuario.tareasCompletadas}">0</span>
+                                    </span>
+                                <span class="task-stat overdue" title="Vencidas">
+                                        <i class="fas fa-exclamation"></i>
+                                        <span th:text="${usuario.tareasVencidas}">0</span>
+                                    </span>
+                            </div>
+                        </td>
+
+                        <!-- Recomendación -->
+                        <td>
+                                <span class="recommendation" th:text="${usuario.recomendacion}"
+                                      th:title="${usuario.recomendacion}">
+                                    Recomendación
+                                </span>
+                        </td>
+
+                        <!-- ✅ NUEVA COLUMNA: Acción (Botón Mensaje) -->
+                        <td class="text-end pe-4">
+                            <button class="btn-message"
+                                    th:data-usuario-id="${usuario.usuarioId}"
+                                    th:data-usuario-nombre="${usuario.nombre}"
+                                    th:data-usuario-email="${usuario.email}"
+                                    th:data-usuario-premium="${usuario.esPremium}"
+                                    th:data-usuario-recomendacion="${usuario.recomendacion}"
+                                    th:data-usuario-riesgo="${usuario.nivelRiesgo}"
+                                    onclick="abrirModalMensaje(this)">
+                                <i class="fas fa-paper-plane"></i>
+                                <span class="d-none d-xl-inline">Enviar</span>
+                            </button>
+                        </td>
+                    </tr>
+
+                    <!-- Empty State -->
+                    <tr th:if="${#lists.isEmpty(usuarios)}">
+                        <td colspan="9">
+                            <div class="empty-state">
+                                <i class="fas fa-user-slash"></i>
+                                <p style="font-weight:600;margin-bottom:.5rem;">No se encontraron usuarios</p>
+                                <small>Intenta ajustar los filtros de búsqueda</small>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Info Cards -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div style="background:white;border-radius:var(--admin-radius);padding:1.25rem;box-shadow:var(--admin-card-shadow);border:1px solid rgba(0,0,0,.04);">
+                    <h6 style="font-weight:700;font-size:.9rem;margin-bottom:1rem;color:var(--admin-text);">
+                        <i class="fas fa-info-circle me-2" style="color:var(--admin-primary)"></i>¿Qué es el Health Score?
+                    </h6>
+                    <p style="font-size:.8rem;color:var(--admin-text-muted);margin:0;line-height:1.5;">
+                        El <strong>Health Score</strong> es una métrica de 0-100 que mide la salud del usuario basada en:
+                        <br>• Actividad reciente
+                        <br>• Tareas completadas vs vencidas
+                        <br>• Estado de suscripción
+                        <br>• Frecuencia de uso
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div style="background:white;border-radius:var(--admin-radius);padding:1.25rem;box-shadow:var(--admin-card-shadow);border:1px solid rgba(0,0,0,.04);">
+                    <h6 style="font-weight:700;font-size:.9rem;margin-bottom:1rem;color:var(--admin-text);">
+                        <i class="fas fa-shield-alt me-2" style="color:var(--admin-success)"></i>Niveles de Riesgo
+                    </h6>
+                    <div style="font-size:.8rem;line-height:1.8;">
+                        <div><span class="badge-risk bajo" style="margin-right:.5rem;">BAJO</span> Usuario saludable (80-100)</div>
+                        <div><span class="badge-risk medio" style="margin-right:.5rem;">MEDIO</span> Requiere monitoreo (60-79)</div>
+                        <div><span class="badge-risk alto" style="margin-right:.5rem;">ALTO</span> Riesgo de churn (40-59)</div>
+                        <div><span class="badge-risk critico" style="margin-right:.5rem;">CRÍTICO</span> Intervención urgente (0-39)</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div style="background:white;border-radius:var(--admin-radius);padding:1.25rem;box-shadow:var(--admin-card-shadow);border:1px solid rgba(0,0,0,.04);">
+                    <h6 style="font-weight:700;font-size:.9rem;margin-bottom:1rem;color:var(--admin-text);">
+                        <i class="fas fa-rocket me-2" style="color:var(--admin-warning)"></i>Oportunidades Upsell
+                    </h6>
+                    <p style="font-size:.8rem;color:var(--admin-text-muted);margin:0;line-height:1.5;">
+                        Los usuarios <strong>gratuitos con Health Score ≥ 70</strong> son candidatos ideales para ofrecerles el plan Premium.
+                        Usa el filtro "Oportunidades Upsell" para ver la lista completa.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<!-- ✅ MODAL ENVIAR MENSAJE -->
+<div class="modal fade" id="modalMensaje" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius:18px;overflow:hidden;">
+            <div class="modal-message-header">
+                <h5 class="modal-title">
+                    <span class="header-icon-sm"><i class="fas fa-paper-plane"></i></span>
+                    Enviar Mensaje al Usuario
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4" style="background:#fafbfc;">
+
+                <!-- Info del usuario destinatario -->
+                <div class="message-user-info">
+                    <div class="message-user-avatar" id="msgUserAvatar">U</div>
+                    <div class="flex-grow-1">
+                        <div style="font-weight:700;font-size:.95rem;color:var(--admin-text);" id="msgUserName">Usuario</div>
+                        <div style="font-size:.78rem;color:var(--admin-text-muted);" id="msgUserEmail">email@ejemplo.com</div>
+                    </div>
+                    <div id="msgUserBadge"></div>
+                </div>
+
+                <!-- Plantillas rápidas -->
+                <div class="mb-3">
+                    <label class="form-label" style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--admin-text-muted);">
+                        <i class="fas fa-magic me-1"></i>Plantillas Rápidas
+                    </label>
+                    <div class="quick-templates">
+                        <button type="button" class="template-chip" onclick="usarPlantilla('bienvenida')">
+                            <i class="fas fa-hand-wave"></i> Saludo
+                        </button>
+                        <button type="button" class="template-chip" onclick="usarPlantilla('riesgo')">
+                            <i class="fas fa-heart"></i> Preocupación
+                        </button>
+                        <button type="button" class="template-chip" onclick="usarPlantilla('upsell')">
+                            <i class="fas fa-crown"></i> Oferta Premium
+                        </button>
+                        <button type="button" class="template-chip" onclick="usarPlantilla('recordatorio')">
+                            <i class="fas fa-bell"></i> Recordatorio
+                        </button>
+                        <button type="button" class="template-chip" onclick="usarPlantilla('agradecimiento')">
+                            <i class="fas fa-heart"></i> Agradecimiento
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Formulario -->
+                <form id="formMensaje">
+                    <input type="hidden" id="msgUsuarioId">
+
+                    <div class="mb-3">
+                        <label class="form-label" style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--admin-text-muted);">
+                            Título del Mensaje *
+                        </label>
+                        <input type="text" class="form-control-message" id="msgTitulo"
+                               placeholder="Ej: ¡Hola! Tenemos una novedad para ti" required maxlength="200">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--admin-text-muted);">
+                            Mensaje *
+                        </label>
+                        <textarea class="form-control-message" id="msgMensaje" rows="4"
+                                  placeholder="Escribe tu mensaje personalizado..." required></textarea>
+                        <small class="text-muted" style="font-size:.72rem;">
+                            <i class="fas fa-info-circle me-1"></i>
+                            El usuario verá este mensaje en su buzón de notificaciones
+                        </small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--admin-text-muted);">
+                            <i class="fas fa-link me-1"></i>Link de Acción (Opcional)
+                        </label>
+                        <input type="text" class="form-control-message" id="msgLink"
+                               placeholder="Ej: /suscripciones/comprar">
+                        <small class="text-muted" style="font-size:.72rem;">
+                            Si lo agregas, el usuario podrá hacer clic para ir directamente
+                        </small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer" style="background:white;border-top:1.5px solid #f3f4f6;padding:1rem 1.75rem;">
+                <button type="button" class="btn-cancel-message" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancelar
+                </button>
+                <button type="button" class="btn-send-message" onclick="enviarMensaje()" id="btnEnviarMensaje">
+                    <i class="fas fa-paper-plane"></i>Enviar Mensaje
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast de notificación -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index:9999;">
+    <div id="toastNotificacion" class="toast align-items-center text-white border-0" role="alert">
+        <div class="d-flex">
+            <div class="toast-body" id="toastMensaje">
+                <i class="fas fa-check-circle me-2"></i>Mensaje enviado
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    /* ── Sidebar toggle ── */
+    function toggleSidebar(){document.getElementById('adminSidebar').classList.toggle('show')}
+    document.addEventListener('click',function(e){
+        const sb=document.getElementById('adminSidebar'),tb=document.querySelector('.btn-toggle-sidebar');
+        if(window.innerWidth<992&&sb.classList.contains('show')&&!sb.contains(e.target)&&!tb.contains(e.target))
+            sb.classList.remove('show');
+    });
+
+    /* ===== SISTEMA DE MENSAJERÍA ===== */
+
+    let modalMensajeInstance = null;
+
+    // Abrir modal con datos del usuario
+    function abrirModalMensaje(btn) {
+        const usuarioId = btn.getAttribute('data-usuario-id');
+        const nombre = btn.getAttribute('data-usuario-nombre');
+        const email = btn.getAttribute('data-usuario-email');
+        const esPremium = btn.getAttribute('data-usuario-premium') === 'true';
+        const recomendacion = btn.getAttribute('data-usuario-recomendacion');
+        const nivelRiesgo = btn.getAttribute('data-usuario-riesgo');
+
+        // Llenar info del usuario
+        document.getElementById('msgUsuarioId').value = usuarioId;
+        document.getElementById('msgUserName').textContent = nombre;
+        document.getElementById('msgUserEmail').textContent = email;
+
+        const avatar = document.getElementById('msgUserAvatar');
+        avatar.textContent = nombre.charAt(0).toUpperCase();
+        if (esPremium) {
+            avatar.classList.add('premium');
+        } else {
+            avatar.classList.remove('premium');
+        }
+
+        // Badge del usuario
+        const badgeContainer = document.getElementById('msgUserBadge');
+        if (esPremium) {
+            badgeContainer.innerHTML = '<span class="badge-premium"><i class="fas fa-crown"></i> Premium</span>';
+        } else {
+            badgeContainer.innerHTML = '<span class="badge-free">Gratuito</span>';
+        }
+
+        // Limpiar formulario
+        document.getElementById('msgTitulo').value = '';
+        document.getElementById('msgMensaje').value = '';
+        document.getElementById('msgLink').value = '';
+
+        // Sugerir mensaje basado en nivel de riesgo
+        if (nivelRiesgo === 'ALTO' || nivelRiesgo === 'CRITICO') {
+            document.getElementById('msgTitulo').value = '¡Hola ' + nombre.split(' ')[0] + '! Queremos ayudarte';
+            document.getElementById('msgMensaje').value = 'Hemos notado que no has estado muy activo últimamente en NotyGo. ¿Hay algo en lo que podamos ayudarte? Estamos aquí para mejorar tu experiencia.';
+        }
+
+        // Abrir modal
+        if (!modalMensajeInstance) {
+            modalMensajeInstance = new bootstrap.Modal(document.getElementById('modalMensaje'));
+        }
+        modalMensajeInstance.show();
+    }
+
+    // Usar plantillas predefinidas
+    function usarPlantilla(tipo) {
+        const nombre = document.getElementById('msgUserName').textContent.split(' ')[0];
+        const tituloEl = document.getElementById('msgTitulo');
+        const mensajeEl = document.getElementById('msgMensaje');
+        const linkEl = document.getElementById('msgLink');
+
+        const plantillas = {
+            bienvenida: {
+                titulo: '¡Bienvenido/a de vuelta, ' + nombre + '! 👋',
+                mensaje: 'Esperamos que estés teniendo un excelente día. Recuerda que en NotyGo puedes organizar todas tus tareas de manera eficiente. ¡Estamos aquí para ayudarte!',
+                link: '/cliente/home'
+            },
+            riesgo: {
+                titulo: '¡Hola ' + nombre + '! Te extrañamos en NotyGo 💙',
+                mensaje: 'Hemos notado que hace un tiempo no interactúas con la aplicación. ¿Hay algo en lo que podamos ayudarte? Tu opinión es muy importante para nosotros y queremos mejorar tu experiencia.',
+                link: '/cliente/home'
+            },
+            upsell: {
+                titulo: '🎁 Oferta especial para ti, ' + nombre,
+                mensaje: '¡Hola! Hemos visto que usas mucho NotyGo y nos encanta. Por eso queremos ofrecerte una oportunidad única: prueba Premium con beneficios exclusivos como categorías ilimitadas, reportes avanzados y soporte prioritario. ¡Aprovecha esta oferta!',
+                link: '/suscripciones/comprar'
+            },
+            recordatorio: {
+                titulo: '📅 Recordatorio importante, ' + nombre,
+                mensaje: 'Te recordamos que tienes tareas pendientes que podrían vencer pronto. Te recomendamos revisar tu tablero para mantener todo al día. ¡Tú puedes!',
+                link: '/cliente/tareas'
+            },
+            agradecimiento: {
+                titulo: '¡Gracias por ser parte de NotyGo, ' + nombre + '! 🎉',
+                mensaje: 'Queremos agradecerte por confiar en nosotros. Tu actividad y feedback nos ayudan a mejorar cada día. ¡Sigue organizando tus tareas con NotyGo!',
+                link: '/cliente/home'
+            }
+        };
+
+        const plantilla = plantillas[tipo];
+        if (plantilla) {
+            tituloEl.value = plantilla.titulo;
+            mensajeEl.value = plantilla.mensaje;
+            linkEl.value = plantilla.link;
+
+            // Animación visual
+            tituloEl.style.transition = 'background 0.3s';
+            mensajeEl.style.transition = 'background 0.3s';
+            tituloEl.style.background = '#eff6ff';
+            mensajeEl.style.background = '#eff6ff';
+            setTimeout(() => {
+                tituloEl.style.background = 'white';
+                mensajeEl.style.background = 'white';
+            }, 500);
+        }
+    }
+
+    // Enviar mensaje al backend
+    async function enviarMensaje() {
+        const usuarioId = document.getElementById('msgUsuarioId').value;
+        const titulo = document.getElementById('msgTitulo').value.trim();
+        const mensaje = document.getElementById('msgMensaje').value.trim();
+        const link = document.getElementById('msgLink').value.trim();
+
+        // Validaciones
+        if (!titulo) {
+            mostrarToast('❌ Ingresa un título para el mensaje', 'danger');
+            document.getElementById('msgTitulo').focus();
+            return;
+        }
+        if (!mensaje) {
+            mostrarToast('❌ Ingresa el mensaje', 'danger');
+            document.getElementById('msgMensaje').focus();
+            return;
+        }
+
+        // Deshabilitar botón
+        const btnEnviar = document.getElementById('btnEnviarMensaje');
+        const textoOriginal = btnEnviar.innerHTML;
+        btnEnviar.disabled = true;
+        btnEnviar.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Enviando...';
+
+        try {
+            // Construir FormData
+            const formData = new FormData();
+            formData.append('usuarioId', usuarioId);
+            formData.append('titulo', titulo);
+            formData.append('mensaje', mensaje);
+            if (link) formData.append('linkAccion', link);
+
+            const response = await fetch('/admin/notificaciones/enviar', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                mostrarToast('✅ Mensaje enviado correctamente', 'success');
+                modalMensajeInstance.hide();
+            } else {
+                const errorText = await response.text();
+                mostrarToast('❌ Error: ' + errorText, 'danger');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            mostrarToast('❌ Error de conexión: ' + error.message, 'danger');
+        } finally {
+            btnEnviar.disabled = false;
+            btnEnviar.innerHTML = textoOriginal;
+        }
+    }
+
+    // Mostrar toast
+    function mostrarToast(mensaje, tipo = 'success') {
+        const toast = document.getElementById('toastNotificacion');
+        const toastBody = document.getElementById('toastMensaje');
+
+        toast.className = `toast align-items-center text-white border-0 bg-${tipo}`;
+        toastBody.innerHTML = `<i class="fas ${tipo === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} me-2"></i>${mensaje}`;
+
+        const bsToast = new bootstrap.Toast(toast, { delay: 3500 });
+        bsToast.show();
+    }
+</script>
+
+</body>
+</html>

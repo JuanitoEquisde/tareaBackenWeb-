@@ -319,16 +319,27 @@
                th:classappend="${activePage == 'tareas'} ? 'active' : ''">
                 <i class="fas fa-tasks"></i> <span>Tareas</span>
             </a>
-            <!-- NUEVO: Enlace a Suscripciones Premium -->
+            <a th:href="@{/admin/categorias}" class="nav-link"
+               th:classappend="${activePage == 'categorias'} ? 'active' : ''">
+                <i class="fas fa-folder me-2"></i> <span>Categorías</span>
+            </a>
             <a th:href="@{/admin/suscripciones}" class="nav-link"
                th:classappend="${activePage == 'suscripciones'} ? 'active' : ''">
                 <i class="fas fa-crown"></i> <span>Suscripciones</span>
+            </a>
+            <a th:href="@{/admin/suscripciones/reporte}" class="nav-link"
+               th:classappend="${activePage == 'reporte-suscripciones'} ? 'active' : ''">
+                <i class="fas fa-chart-line"></i> <span>Reporte Suscripciones</span>
+            </a>
+            <!-- ✅ NUEVO: Customer Success 360° -->
+            <a th:href="@{/admin/customer-success}" class="nav-link"
+               th:classappend="${activePage == 'customer-success'} ? 'active' : ''">
+                <i class="fas fa-heartbeat"></i> <span>Customer Success</span>
             </a>
             <a th:href="@{/admin/auditoria}" class="nav-link"
                th:classappend="${activePage == 'auditoria'} ? 'active' : ''">
                 <i class="fas fa-history"></i> <span>Auditoría</span>
             </a>
-
         </nav>
     </aside>
 

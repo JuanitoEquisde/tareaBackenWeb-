@@ -400,14 +400,39 @@
 <div class="admin-wrapper">
     <aside class="admin-sidebar" id="adminSidebar">
         <nav class="nav flex-column">
-            <a th:href="@{/admin/dashboard}" class="nav-link"><i class="fas fa-home"></i> Dashboard</a>
-            <a th:href="@{/admin/usuarios}" class="nav-link active"><i class="fas fa-users"></i> Usuarios</a>
-            <a th:href="@{/admin/tareas}" class="nav-link"><i class="fas fa-tasks"></i> Tareas</a>
+            <a th:href="@{/admin/dashboard}" class="nav-link"
+               th:classappend="${activePage == 'dashboard'} ? 'active' : ''">
+                <i class="fas fa-home"></i> <span>Dashboard</span>
+            </a>
+            <a th:href="@{/admin/usuarios}" class="nav-link"
+               th:classappend="${activePage == 'usuarios'} ? 'active' : ''">
+                <i class="fas fa-users"></i> <span>Usuarios</span>
+            </a>
+            <a th:href="@{/admin/tareas}" class="nav-link"
+               th:classappend="${activePage == 'tareas'} ? 'active' : ''">
+                <i class="fas fa-tasks"></i> <span>Tareas</span>
+            </a>
+            <a th:href="@{/admin/categorias}" class="nav-link"
+               th:classappend="${activePage == 'categorias'} ? 'active' : ''">
+                <i class="fas fa-folder me-2"></i> <span>Categorías</span>
+            </a>
             <a th:href="@{/admin/suscripciones}" class="nav-link"
                th:classappend="${activePage == 'suscripciones'} ? 'active' : ''">
                 <i class="fas fa-crown"></i> <span>Suscripciones</span>
             </a>
-            <a th:href="@{/admin/auditoria}" class="nav-link"><i class="fas fa-history"></i> Auditoría</a>
+            <a th:href="@{/admin/suscripciones/reporte}" class="nav-link"
+               th:classappend="${activePage == 'reporte-suscripciones'} ? 'active' : ''">
+                <i class="fas fa-chart-line"></i> <span>Reporte Suscripciones</span>
+            </a>
+            <!-- ✅ NUEVO: Customer Success 360° -->
+            <a th:href="@{/admin/customer-success}" class="nav-link"
+               th:classappend="${activePage == 'customer-success'} ? 'active' : ''">
+                <i class="fas fa-heartbeat"></i> <span>Customer Success</span>
+            </a>
+            <a th:href="@{/admin/auditoria}" class="nav-link"
+               th:classappend="${activePage == 'auditoria'} ? 'active' : ''">
+                <i class="fas fa-history"></i> <span>Auditoría</span>
+            </a>
         </nav>
     </aside>
 
@@ -796,12 +821,12 @@
             const res = await fetch('/admin/api/usuarios/crear', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) });
             if(res.ok) {
                 bootstrap.Modal.getInstance(document.getElementById('modalCrearUsuario'))?.hide();
-                mostrarToast('✅ Usuario creado correctamente', 'success');
+                mostrarToast(' Usuario creado correctamente', 'success');
                 setTimeout(() => location.reload(), 1500);
             } else {
-                mostrarToast('❌ ' + await res.text(), 'danger');
+                mostrarToast(' ' + await res.text(), 'danger');
             }
-        } catch(err) { mostrarToast('❌ Error de conexión', 'danger'); }
+        } catch(err) { mostrarToast(' Error de conexión', 'danger'); }
     });
 
     document.getElementById('formEditarUsuario')?.addEventListener('submit', async function(e) {
@@ -818,17 +843,17 @@
             const res = await fetch(`/admin/api/usuarios/${id}/actualizar`, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) });
             if(res.ok) {
                 bootstrap.Modal.getInstance(document.getElementById('modalEditarUsuario'))?.hide();
-                mostrarToast('✅ Usuario actualizado correctamente', 'success');
+                mostrarToast('Usuario actualizado correctamente', 'success');
                 setTimeout(() => location.reload(), 1500);
             } else {
-                mostrarToast('❌ ' + await res.text(), 'danger');
+                mostrarToast(' ' + await res.text(), 'danger');
             }
-        } catch(err) { mostrarToast('❌ Error de conexión', 'danger'); }
+        } catch(err) { mostrarToast('Error de conexión', 'danger'); }
     });
 
     document.getElementById('btnConfirmarEliminarSistema')?.addEventListener('click', async function() {
         const id = this.getAttribute('data-id');
-        if(!id) return mostrarToast('❌ ID no encontrado', 'danger');
+        if(!id) return mostrarToast(' ID no encontrado', 'danger');
         try {
             const res = await fetch(`/admin/api/usuarios/${id}/eliminar-sistema`, { method: 'DELETE' });
             if(res.ok) {
@@ -836,15 +861,15 @@
                 mostrarToast('🔕 Usuario desactivado correctamente', 'warning');
                 setTimeout(() => location.reload(), 1500);
             } else {
-                mostrarToast('❌ ' + await res.text(), 'danger');
+                mostrarToast(' ' + await res.text(), 'danger');
             }
-        } catch(err) { mostrarToast('❌ Error de conexión', 'danger'); }
+        } catch(err) { mostrarToast(' Error de conexión', 'danger'); }
     });
 
-    // ✅ ELIMINAR PERMANENTE - CORREGIDO: method POST para coincidir con @PostMapping en controller
+    //  ELIMINAR PERMANENTE - CORREGIDO: method POST para coincidir con @PostMapping en controller
     document.getElementById('btnConfirmarEliminar')?.addEventListener('click', async function() {
         const id = this.getAttribute('data-id');
-        if(!id) return mostrarToast('❌ ID no encontrado', 'danger');
+        if(!id) return mostrarToast('ID no encontrado', 'danger');
         try {
             const res = await fetch(`/admin/api/usuarios/${id}/eliminar-permanente`, {
                 method: 'POST',  // ← CAMBIADO DE DELETE A POST
@@ -856,14 +881,14 @@
                 mostrarToast('🗑️ Usuario eliminado permanentemente', 'danger');
                 setTimeout(() => location.reload(), 1500);
             } else {
-                mostrarToast('❌ ' + (data.message || 'Error al eliminar'), 'danger');
+                mostrarToast(' ' + (data.message || 'Error al eliminar'), 'danger');
             }
         } catch(err) {
             console.error('Error:', err);
-            mostrarToast('❌ Error de conexión', 'danger');
+            mostrarToast('Error de conexión', 'danger');
         }
     });
-    // ✅ Función duplicada eliminada: confirmarEliminacionPermanente (no se usaba)
+    //  Función duplicada eliminada: confirmarEliminacionPermanente (no se usaba)
 </script>
 </body>
 </html>

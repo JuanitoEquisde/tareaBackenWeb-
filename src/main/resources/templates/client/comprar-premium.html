@@ -224,6 +224,37 @@
             box-shadow: 0 0 0 4px rgba(102,126,234,0.1);
         }
 
+        /* Payment Method Selector */
+        .payment-method-card {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .payment-method-card:hover {
+            border-color: #cbd5e1;
+            transform: translateY(-2px);
+        }
+
+        .payment-method-card.selected {
+            border-color: var(--primary);
+            background: #eff6ff;
+            box-shadow: 0 0 0 4px rgba(102,126,234,0.1);
+        }
+
+        .payment-method-card i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .payment-method-card .text-primary { color: var(--primary) !important; }
+        .payment-method-card .text-info { color: #0ea5e9 !important; }
+        .payment-method-card .text-success { color: var(--success) !important; }
+
         .btn-pay {
             width: 100%;
             padding: 1.25rem;
@@ -394,7 +425,38 @@
             <form id="formPago">
                 <input type="hidden" id="planId">
 
-                <!-- Número de Tarjeta -->
+                <!-- ✅ NUEVO: Selector de Método de Pago -->
+                <div class="mb-4">
+                    <label class="form-label">
+                        <i class="fas fa-wallet me-2"></i>Método de Pago
+                    </label>
+                    <div class="row g-3">
+                        <!-- Tarjeta -->
+                        <div class="col-md-4">
+                            <div class="payment-method-card" onclick="selectPaymentMethod('TARJETA')" id="card-tarjeta">
+                                <i class="fas fa-credit-card text-primary"></i>
+                                <div class="fw-bold small">Tarjeta</div>
+                            </div>
+                        </div>
+                        <!-- PayPal -->
+                        <div class="col-md-4">
+                            <div class="payment-method-card" onclick="selectPaymentMethod('PAYPAL')" id="card-paypal">
+                                <i class="fab fa-paypal text-info"></i>
+                                <div class="fw-bold small">PayPal</div>
+                            </div>
+                        </div>
+                        <!-- Transferencia -->
+                        <div class="col-md-4">
+                            <div class="payment-method-card" onclick="selectPaymentMethod('TRANSFERENCIA')" id="card-transferencia">
+                                <i class="fas fa-university text-success"></i>
+                                <div class="fw-bold small">Transferencia</div>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="metodoPagoSeleccionado" name="metodoPago" value="TARJETA">
+                </div>
+
+                <!-- Número de Tarjeta (se muestra siempre para simulación) -->
                 <div class="mb-3">
                     <label class="form-label">
                         <i class="fas fa-credit-card me-2"></i>Número de Tarjeta
@@ -415,7 +477,7 @@
                 </div>
 
                 <div class="row">
-                    <!-- Fecha de Expiración (Calendar) -->
+                    <!-- Fecha de Expiración -->
                     <div class="col-md-6 mb-3">
                         <label class="form-label">
                             <i class="far fa-calendar me-2"></i>Fecha Expiración
@@ -474,12 +536,38 @@
         document.getElementById('planNombre').textContent = planSeleccionado.nombre;
         document.getElementById('planMonto').textContent = planSeleccionado.precio;
 
+        // Resetear método de pago a Tarjeta por defecto
+        selectPaymentMethod('TARJETA');
+
         document.getElementById('paymentModal').classList.add('active');
     }
 
     function cerrarModalPago() {
         document.getElementById('paymentModal').classList.remove('active');
         document.getElementById('formPago').reset();
+        document.getElementById('formPago').style.display = 'block';
+        document.getElementById('successMessage').style.display = 'none';
+    }
+
+    // ✅ Función para seleccionar método de pago
+    function selectPaymentMethod(metodo) {
+        // Remover selección previa
+        document.querySelectorAll('.payment-method-card').forEach(card => {
+            card.classList.remove('selected');
+            card.style.borderColor = '#e5e7eb';
+            card.style.backgroundColor = 'white';
+        });
+
+        // Marcar seleccionado
+        const selectedCard = document.getElementById('card-' + metodo.toLowerCase());
+        if (selectedCard) {
+            selectedCard.classList.add('selected');
+            selectedCard.style.borderColor = '#667eea';
+            selectedCard.style.backgroundColor = '#eff6ff';
+        }
+
+        // Guardar valor en hidden input
+        document.getElementById('metodoPagoSeleccionado').value = metodo;
     }
 
     // Formato de tarjeta
@@ -510,7 +598,9 @@
             nombreTitular: document.getElementById('nombreTitular').value,
             fechaExpiracion: document.getElementById('fechaExpiracion').value,
             cvv: document.getElementById('cvv').value,
-            monto: parseFloat(document.getElementById('planMonto').textContent.replace('$', ''))
+            monto: parseFloat(document.getElementById('planMonto').textContent.replace('$', '')),
+            // ✅ NUEVO: Método de pago seleccionado
+            metodoPago: document.getElementById('metodoPagoSeleccionado').value
         };
 
         try {
@@ -550,6 +640,11 @@
         if (e.target === this) {
             cerrarModalPago();
         }
+    });
+
+    // Seleccionar Tarjeta por defecto al cargar la página
+    document.addEventListener('DOMContentLoaded', function() {
+        selectPaymentMethod('TARJETA');
     });
 </script>
 

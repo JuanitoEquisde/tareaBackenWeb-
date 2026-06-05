@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categorías - NotyGo Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --admin-bg:#f0f2f5;--admin-sidebar:#1e3a8a;--admin-sidebar-hover:#1e40af;
+            --admin-primary:#3b82f6;--admin-primary-hover:#2563eb;--admin-success:#10b981;
+            --admin-warning:#f59e0b;--admin-danger:#ef4444;--admin-text:#1f2937;
+            --admin-text-muted:#6b7280;--admin-border:#e5e7eb;
+            --admin-card-shadow:0 4px 6px -1px rgba(0,0,0,0.07),0 2px 4px -1px rgba(0,0,0,0.04);
+            --admin-radius:14px;
+        }
+        *{box-sizing:border-box}
+        html,body{height:100%;overflow:hidden}
+        body{font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+            background:linear-gradient(135deg,#eef2ff 0%,#e0e7ff 50%,#f0f9ff 100%);color:var(--admin-text)}
+
+        /* NAVBAR */
+        .admin-navbar{background:linear-gradient(135deg,var(--admin-sidebar) 0%,#1d4ed8 100%);color:white;
+            padding:.875rem 2rem;box-shadow:0 4px 20px rgba(30,58,138,.25);position:sticky;top:0;z-index:1000}
+        .admin-navbar .navbar-brand{font-weight:800;font-size:1.3rem;color:white;display:flex;align-items:center;
+            gap:.75rem;transition:transform .3s;text-decoration:none;letter-spacing:-.02em}
+        .admin-navbar .navbar-brand:hover{transform:scale(1.04)}
+        .admin-navbar .brand-icon{width:36px;height:36px;background:rgba(255,255,255,.15);border-radius:10px;
+            display:flex;align-items:center;justify-content:center;font-size:1rem}
+        .admin-navbar .user-info{display:flex;align-items:center;gap:1.25rem}
+        .admin-navbar .user-chip{display:flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.12);
+            border-radius:50px;padding:.375rem .875rem;font-size:.85rem;font-weight:500}
+        .admin-navbar .btn-logout{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.25);
+            color:white;padding:.45rem 1.1rem;border-radius:50px;font-size:.82rem;font-weight:600;
+            transition:all .25s;cursor:pointer}
+        .admin-navbar .btn-logout:hover{background:rgba(255,255,255,.25);transform:translateY(-1px)}
+        .btn-toggle-sidebar{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.25);
+            color:white;font-size:1.1rem;padding:.45rem .7rem;cursor:pointer;border-radius:8px;
+            display:none;transition:all .25s}
+        .btn-toggle-sidebar:hover{background:rgba(255,255,255,.25)}
+
+        /* LAYOUT */
+        .admin-wrapper{display:flex;height:calc(100vh - 70px);overflow:hidden}
+
+        /* SIDEBAR */
+        .admin-sidebar{width:248px;background:white;padding:1.5rem .875rem;display:flex;
+            flex-direction:column;gap:.25rem;flex-shrink:0;box-shadow:2px 0 12px rgba(0,0,0,.04);
+            transition:transform .3s ease;overflow-y:auto;max-height:100%}
+        .admin-sidebar .nav-link{color:var(--admin-text-muted);padding:.75rem 1rem;border-radius:10px;
+            text-decoration:none;display:flex;align-items:center;gap:.75rem;font-weight:500;
+            font-size:.9rem;transition:all .25s}
+        .admin-sidebar .nav-link:hover,.admin-sidebar .nav-link.active{
+            background:linear-gradient(135deg,var(--admin-primary),var(--admin-primary-hover));
+            color:white;transform:translateX(4px);box-shadow:0 4px 14px rgba(59,130,246,.28)}
+        .admin-sidebar .nav-link i{width:20px;text-align:center;font-size:1rem;opacity:.85}
+        .admin-sidebar .divider{height:1px;background:var(--admin-border);margin:1rem .5rem;opacity:.6}
+
+        /* MAIN */
+        .admin-main{flex:1;padding:2rem;overflow-y:auto;overflow-x:hidden}
+
+        /* PAGE HEADER */
+        .page-header{background:white;border-radius:var(--admin-radius);padding:1.25rem 1.75rem;
+            margin-bottom:1.5rem;box-shadow:var(--admin-card-shadow);display:flex;
+            justify-content:space-between;align-items:center;animation:fadeInDown .5s ease;
+            border:1px solid rgba(0,0,0,.04)}
+        .page-header h2{font-weight:800;color:var(--admin-text);margin:0;font-size:1.35rem;
+            display:flex;align-items:center;gap:.75rem;letter-spacing:-.02em}
+        .page-header h2 .header-icon{width:40px;height:40px;
+            background:linear-gradient(135deg,#dbeafe,#bfdbfe);border-radius:10px;
+            display:flex;align-items:center;justify-content:center;color:var(--admin-primary);font-size:1rem}
+        .badge-admin{background:linear-gradient(135deg,var(--admin-danger),#dc2626);color:white;
+            padding:.4rem 1rem;border-radius:50px;font-weight:700;font-size:.75rem;
+            display:flex;align-items:center;gap:.4rem;letter-spacing:.04em;text-transform:uppercase}
+
+        /* FILTERS CARD */
+        .filters-card{background:white;border-radius:var(--admin-radius);padding:1.375rem 1.75rem;
+            margin-bottom:1.5rem;box-shadow:var(--admin-card-shadow);
+            animation:fadeInUp .5s ease .1s both;border:1px solid rgba(0,0,0,.04)}
+        .filters-card .form-label{font-size:.72rem;font-weight:700;color:var(--admin-text-muted);
+            text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem}
+        .filters-card .form-control,.filters-card .form-select{border:1.5px solid var(--admin-border);
+            border-radius:9px;padding:.575rem .875rem;font-size:.875rem;font-family:inherit;
+            transition:all .25s;background:#fafbfc}
+        .filters-card .form-control:focus,.filters-card .form-select:focus{
+            border-color:var(--admin-primary);box-shadow:0 0 0 3px rgba(59,130,246,.12);background:white}
+        .filters-card .btn-primary{background:linear-gradient(135deg,var(--admin-primary),var(--admin-primary-hover));
+            border:none;padding:.575rem 1.375rem;border-radius:9px;font-weight:700;font-size:.875rem;
+            font-family:inherit;transition:all .25s;box-shadow:0 4px 12px rgba(59,130,246,.28)}
+        .filters-card .btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(59,130,246,.38)}
+        .filters-card .btn-outline-secondary{border:1.5px solid var(--admin-border);padding:.575rem 1.375rem;
+            border-radius:9px;font-weight:600;font-size:.875rem;font-family:inherit;
+            color:var(--admin-text-muted);background:white;transition:all .25s}
+        .filters-card .btn-outline-secondary:hover{background:#fee2e2;border-color:#fca5a5;
+            color:#dc2626;transform:translateY(-1px)}
+
+        /* TABLE CARD */
+        .table-card{background:white;border-radius:var(--admin-radius);box-shadow:var(--admin-card-shadow);
+            overflow:hidden;animation:fadeInUp .3s ease .15s both;border:1px solid rgba(0,0,0,.04);
+            margin-bottom:1.5rem}
+        .table-card .table{margin:0;border-collapse:separate;border-spacing:0}
+        .table-card thead tr{background:linear-gradient(135deg,#f8fafc,#f1f5f9)}
+        .table-card th{font-weight:700;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;
+            color:var(--admin-text-muted);padding:.75rem 1.25rem;
+            border-bottom:1.5px solid var(--admin-border);border-top:none;white-space:nowrap}
+        .table-card td{padding:.75rem 1.25rem;vertical-align:middle;font-size:.875rem;border-color:#f3f4f6}
+        .table-card tbody tr{transition:all .2s}
+        .table-card tbody tr:hover{background:linear-gradient(135deg,#f0f9ff,#eff6ff)}
+        .table-card tbody tr:last-child td{border-bottom:none}
+
+        /* BADGES */
+        .badge-estado{padding:.3rem .75rem;border-radius:50px;font-size:.65rem;font-weight:700;
+            text-transform:uppercase;letter-spacing:.06em;display:inline-flex;align-items:center;gap:.3rem}
+        .badge-estado.activo{background:#d1fae5;color:#065f46;border:1.5px solid #a7f3d0}
+        .badge-estado.inactivo{background:#fef3c7;color:#92400e;border:1.5px solid #fde68a}
+        .status-dot{width:6px;height:6px;border-radius:50%;display:inline-block}
+        .status-dot.activo{background:#059669}.status-dot.inactivo{background:#d97706}
+
+        .color-badge {
+            display:inline-block;
+            width:20px;
+            height:20px;
+            border-radius:50%;
+            border:2px solid white;
+            box-shadow:0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        /* BUTTONS */
+        .btn-action{padding:.35rem .65rem;border-radius:8px;border:1.5px solid;font-size:.8rem;
+            font-weight:600;transition:all .22s;display:inline-flex;align-items:center;gap:.3rem;
+            cursor:pointer;background:white;font-family:inherit}
+        .btn-action.edit{border-color:#bfdbfe;color:var(--admin-primary)}
+        .btn-action.edit:hover{background:var(--admin-primary);border-color:var(--admin-primary);
+            color:white;transform:translateY(-2px);box-shadow:0 4px 12px rgba(59,130,246,.28)}
+        .btn-action.delete{border-color:#fecaca;color:var(--admin-danger)}
+        .btn-action.delete:hover{background:var(--admin-danger);border-color:var(--admin-danger);
+            color:white;transform:translateY(-2px);box-shadow:0 4px 12px rgba(239,68,68,.28)}
+
+        /* PAGINATION */
+        .pagination-wrapper{margin-top:1.75rem;display:flex;flex-direction:column;
+            align-items:center;gap:.75rem;animation:fadeInUp .5s ease .3s both}
+        .google-pagination{display:flex;align-items:center;gap:.25rem;list-style:none;
+            padding:.5rem .75rem;margin:0;background:white;border-radius:50px;
+            box-shadow:0 2px 12px rgba(0,0,0,.08);border:1px solid rgba(0,0,0,.05)}
+        .google-pagination li{display:inline-flex}
+        .google-pagination a,.google-pagination span{display:flex;align-items:center;justify-content:center;
+            min-width:36px;height:36px;padding:0 .5rem;border-radius:50px;font-size:.85rem;
+            font-weight:600;font-family:inherit;color:var(--admin-text-muted);
+            text-decoration:none;transition:all .2s}
+        .google-pagination a:hover{background:#eff6ff;color:var(--admin-primary)}
+        .google-pagination .active span,.google-pagination .active a{
+            background:linear-gradient(135deg,var(--admin-primary),var(--admin-primary-hover));
+            color:white;font-weight:700;box-shadow:0 3px 10px rgba(59,130,246,.35);min-width:36px}
+        .google-pagination .disabled a,.google-pagination .disabled span{
+            color:#d1d5db;cursor:not-allowed;pointer-events:none}
+        .pagination-info{font-size:.8rem;color:var(--admin-text-muted);font-weight:500}
+        .pagination-info strong{color:var(--admin-text)}
+
+        /* MODAL */
+        .modal-content{border:none;border-radius:18px;box-shadow:0 24px 64px rgba(0,0,0,.18);overflow:hidden}
+        .modal-header-primary{display:flex;align-items:center;justify-content:space-between;
+            background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:white;
+            padding:1.375rem 1.75rem;border:none}
+        .modal-header-primary .modal-title{font-weight:700;font-size:1rem;
+            display:flex;align-items:center;gap:.6rem;margin:0}
+        .modal-header-primary .header-icon-sm{width:32px;height:32px;border-radius:8px;
+            background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:.9rem}
+        .btn-close-white{filter:invert(1) grayscale(100%) brightness(200%);opacity:.9;transition:opacity .2s}
+        .btn-close-white:hover{opacity:1}
+        .modal-body{padding:1.75rem;background:#fafbfc}
+        .modal-footer{padding:1rem 1.75rem;background:white;border-top:1.5px solid #f3f4f6;gap:.5rem}
+        .modal-body .form-label{font-size:.72rem;font-weight:700;text-transform:uppercase;
+            letter-spacing:.06em;color:var(--admin-text-muted);margin-bottom:.4rem}
+        .modal-body .form-control,.modal-body .form-select{border:1.5px solid var(--admin-border);
+            border-radius:9px;padding:.575rem .875rem;font-size:.875rem;font-family:inherit;
+            background:white;transition:all .22s}
+        .modal-body .form-control:focus,.modal-body .form-select:focus{
+            border-color:var(--admin-primary);box-shadow:0 0 0 3px rgba(59,130,246,.12)}
+        .btn-modal-cancel{border:1.5px solid var(--admin-border);background:white;
+            color:var(--admin-text-muted);padding:.55rem 1.25rem;border-radius:9px;font-weight:600;
+            font-size:.875rem;font-family:inherit;transition:all .22s;cursor:pointer}
+        .btn-modal-cancel:hover{background:#f3f4f6;color:var(--admin-text)}
+        .btn-modal-save{background:linear-gradient(135deg,var(--admin-primary),var(--admin-primary-hover));
+            border:none;color:white;padding:.55rem 1.375rem;border-radius:9px;font-weight:700;
+            font-size:.875rem;font-family:inherit;transition:all .22s;cursor:pointer;
+            display:inline-flex;align-items:center;gap:.4rem;
+            box-shadow:0 4px 12px rgba(59,130,246,.28)}
+        .btn-modal-save:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(59,130,246,.35)}
+
+        /* TOAST */
+        .toast-container{z-index:9999}
+        #toastNotificacion{min-width:300px;border-radius:12px!important;box-shadow:0 8px 32px rgba(0,0,0,.2)!important}
+        #toastNotificacion .toast-body{padding:.875rem 1.25rem;font-size:.9rem;font-weight:500;
+            display:flex;align-items:center;gap:.5rem}
+
+        /* ANIMATIONS */
+        @keyframes fadeInDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes fadeInUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+        /* RESPONSIVE */
+        @media(max-width:1200px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
+        @media(max-width:991.98px){
+            .admin-sidebar{position:fixed;left:-260px;top:70px;height:calc(100vh - 70px);z-index:999;
+                box-shadow:4px 0 16px rgba(0,0,0,.1)}
+            .admin-sidebar.show{transform:translateX(260px)}
+            .admin-main{padding:1rem}.btn-toggle-sidebar{display:block}
+            .page-header{flex-direction:column;gap:1rem;text-align:center}
+        }
+        @media(max-width:576px){.stats-grid{grid-template-columns:1fr}}
+        @media(min-width:992px){.btn-toggle-sidebar{display:none!important}}
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="admin-navbar">
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-3">
+            <button class="btn-toggle-sidebar d-lg-none" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+            <a class="navbar-brand" th:href="@{/admin/dashboard}">
+                <span class="brand-icon"><i class="fas fa-shield-alt"></i></span><span>Admin NotyGo</span>
+            </a>
+        </div>
+        <div class="user-info">
+            <span class="user-chip d-none d-sm-flex"><i class="fas fa-user-circle"></i>
+                <span th:text="${session.usuarioLogueado}">Admin</span></span>
+            <form th:action="@{/logout}" method="post" style="display:inline;">
+                <button type="submit" class="btn-logout"><i class="fas fa-sign-out-alt me-1"></i>Salir</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div class="admin-wrapper">
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <nav class="nav flex-column">
+            <a th:href="@{/admin/dashboard}" class="nav-link"
+               th:classappend="${activePage == 'dashboard'} ? 'active' : ''">
+                <i class="fas fa-home"></i> <span>Dashboard</span>
+            </a>
+            <a th:href="@{/admin/usuarios}" class="nav-link"
+               th:classappend="${activePage == 'usuarios'} ? 'active' : ''">
+                <i class="fas fa-users"></i> <span>Usuarios</span>
+            </a>
+            <a th:href="@{/admin/tareas}" class="nav-link"
+               th:classappend="${activePage == 'tareas'} ? 'active' : ''">
+                <i class="fas fa-tasks"></i> <span>Tareas</span>
+            </a>
+            <a th:href="@{/admin/categorias}" class="nav-link"
+               th:classappend="${activePage == 'categorias'} ? 'active' : ''">
+                <i class="fas fa-folder me-2"></i> <span>Categorías</span>
+            </a>
+            <a th:href="@{/admin/suscripciones}" class="nav-link"
+               th:classappend="${activePage == 'suscripciones'} ? 'active' : ''">
+                <i class="fas fa-crown"></i> <span>Suscripciones</span>
+            </a>
+            <a th:href="@{/admin/suscripciones/reporte}" class="nav-link"
+               th:classappend="${activePage == 'reporte-suscripciones'} ? 'active' : ''">
+                <i class="fas fa-chart-line"></i> <span>Reporte Suscripciones</span>
+            </a>
+            <!-- ✅ NUEVO: Customer Success 360° -->
+            <a th:href="@{/admin/customer-success}" class="nav-link"
+               th:classappend="${activePage == 'customer-success'} ? 'active' : ''">
+                <i class="fas fa-heartbeat"></i> <span>Customer Success</span>
+            </a>
+            <a th:href="@{/admin/auditoria}" class="nav-link"
+               th:classappend="${activePage == 'auditoria'} ? 'active' : ''">
+                <i class="fas fa-history"></i> <span>Auditoría</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="admin-main">
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <h2>
+                <span class="header-icon"><i class="fas fa-folder"></i></span>
+                Mantenimiento de Categorías
+            </h2>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCategoria" onclick="limpiarFormulario()">
+                <i class="fas fa-plus me-2"></i>Nueva Categoría
+            </button>
+        </div>
+
+        <!-- Mensajes -->
+        <div th:if="${mensaje}" class="alert alert-success alert-dismissible fade show" role="alert" th:text="${mensaje}">
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert" th:text="${error}">
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-card">
+            <form th:action="@{/admin/categorias}" method="get" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label">Buscar por nombre</label>
+                    <input type="text" class="form-control" name="nombre"
+                           placeholder="Ej: Trabajo, Personal..."
+                           th:value="${filtroNombre}">
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search me-2"></i>Filtrar
+                    </button>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <a th:href="@{/admin/categorias}" class="btn btn-outline-secondary w-100">
+                        <i class="fas fa-times me-2"></i>Limpiar
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Table -->
+        <div class="table-card">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                    <tr>
+                        <th class="ps-4">Nombre</th>
+                        <th>Color</th>
+                        <th>Descripción</th>
+                        <th>Estado</th>
+                        <th class="text-end pe-4">Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="cat : ${categorias}">
+                        <td class="ps-4 fw-semibold" th:text="${cat.nombre}">Categoría</td>
+                        <td>
+                            <span class="color-badge" th:style="'background-color: ' + ${cat.color}"></span>
+                            <small class="ms-2 text-muted" th:text="${cat.color}">#3b82f6</small>
+                        </td>
+                        <td class="text-muted small" th:text="${#strings.abbreviate(cat.descripcion, 40)}">...</td>
+                        <td>
+                                <span class="badge badge-estado"
+                                      th:classappend="${cat.estado == 'ACTIVO'} ? 'activo' : 'inactivo'">
+                                    <span class="status-dot"
+                                          th:classappend="${cat.estado == 'ACTIVO'} ? 'activo' : 'inactivo'"></span>
+                                    <span th:text="${cat.estado}">ACTIVO</span>
+                                </span>
+                        </td>
+                        <td class="text-end pe-4">
+                            <button class="btn-action edit"
+                                    th:onclick="'editarCategoria(' + ${cat.id} + ')'">
+                                <i class="fas fa-edit"></i> Editar
+                            </button>
+                            <button class="btn-action delete ms-1"
+                                    th:onclick="'eliminarCategoria(' + ${cat.id} + ')'">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </button>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(categorias)}">
+                        <td colspan="5" class="text-center py-5 text-muted">
+                            <i class="fas fa-folder-open fa-3x mb-3 d-block" style="opacity:0.2"></i>
+                            <p class="mb-0 fw-semibold">No hay categorías registradas</p>
+                            <small class="text-muted">Crea una nueva categoría para comenzar</small>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-wrapper" th:if="${totalPages > 1}">
+            <ul class="google-pagination">
+                <!-- Previous -->
+                <li th:classappend="${currentPage == 0} ? 'disabled' : ''">
+                    <a th:if="${currentPage > 0}"
+                       th:href="@{/admin/categorias(page=${currentPage - 1}, nombre=${filtroNombre})}">
+                        <i class="fas fa-chevron-left" style="font-size:0.75rem"></i>
+                    </a>
+                    <span th:if="${currentPage == 0}"><i class="fas fa-chevron-left" style="font-size:0.75rem"></i></span>
+                </li>
+
+                <!-- First page -->
+                <li th:classappend="${currentPage == 0} ? 'active' : ''">
+                    <a th:if="${currentPage != 0}"
+                       th:href="@{/admin/categorias(page=0, nombre=${filtroNombre})}">1</a>
+                    <span th:if="${currentPage == 0}">1</span>
+                </li>
+
+                <!-- Ellipsis left -->
+                <li class="ellipsis" th:if="${currentPage > 2}"><span>···</span></li>
+
+                <!-- Middle pages -->
+                <li th:each="i : ${#numbers.sequence(currentPage - 1, currentPage + 1)}"
+                    th:if="${i > 0 && i < totalPages - 1}"
+                    th:classappend="${i == currentPage} ? 'active' : ''">
+                    <a th:if="${i != currentPage}"
+                       th:href="@{/admin/categorias(page=${i}, nombre=${filtroNombre})}"
+                       th:text="${i + 1}">2</a>
+                    <span th:if="${i == currentPage}" th:text="${i + 1}">2</span>
+                </li>
+
+                <!-- Ellipsis right -->
+                <li class="ellipsis" th:if="${currentPage < totalPages - 3}"><span>···</span></li>
+
+                <!-- Last page -->
+                <li th:if="${totalPages > 1}" th:classappend="${currentPage == totalPages - 1} ? 'active' : ''">
+                    <a th:if="${currentPage != totalPages - 1}"
+                       th:href="@{/admin/categorias(page=${totalPages - 1}, nombre=${filtroNombre})}"
+                       th:text="${totalPages}">10</a>
+                    <span th:if="${currentPage == totalPages - 1}" th:text="${totalPages}">10</span>
+                </li>
+
+                <!-- Next -->
+                <li th:classappend="${currentPage == totalPages - 1} ? 'disabled' : ''">
+                    <a th:if="${currentPage < totalPages - 1}"
+                       th:href="@{/admin/categorias(page=${currentPage + 1}, nombre=${filtroNombre})}">
+                        <i class="fas fa-chevron-right" style="font-size:0.75rem"></i>
+                    </a>
+                    <span th:if="${currentPage == totalPages - 1}"><i class="fas fa-chevron-right" style="font-size:0.75rem"></i></span>
+                </li>
+            </ul>
+
+            <p class="pagination-info">
+                <span th:if="${totalElements > 0}">
+                    Mostrando <strong th:text="${(currentPage * 10) + 1}">1</strong> –
+                    <strong th:text="${(currentPage + 1) * 10 < totalElements ? (currentPage + 1) * 10 : totalElements}">10</strong>
+                    de <strong th:text="${totalElements}">100</strong> categorías
+                </span>
+                <span th:if="${totalElements == 0}">Mostrando <strong>0</strong> categorías</span>
+                <span th:if="${totalPages > 0}">
+                    · Página <strong th:text="${currentPage + 1}">1</strong> de <strong th:text="${totalPages}">10</strong>
+                </span>
+            </p>
+        </div>
+
+    </main>
+</div>
+
+<!-- Modal Categoria -->
+<div class="modal fade" id="modalCategoria" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content animate__animated animate__zoomIn">
+            <form th:action="@{/admin/categorias/guardar}" method="post">
+                <div class="modal-header-primary">
+                    <h5 class="modal-title">
+                        <span class="header-icon-sm"><i class="fas fa-folder-plus"></i></span>
+                        <span id="modalTitle">Nueva Categoría</span>
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="categoriaId">
+
+                    <div class="mb-3">
+                        <label class="form-label">Nombre *</label>
+                        <input type="text" class="form-control" name="nombre" id="categoriaNombre"
+                               required maxlength="50" placeholder="Ej: Trabajo, Estudios, Personal">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Color</label>
+                        <div class="input-group">
+                            <input type="color" class="form-control form-control-color"
+                                   name="color" id="categoriaColor" value="#1565C0"
+                                   style="width:60px; padding:0.375rem;">
+                            <input type="text" class="form-control" id="colorHex"
+                                   value="#1565C0" maxlength="7" pattern="#[0-9a-fA-F]{6}"
+                                   placeholder="#1565C0">
+                        </div>
+                        <small class="text-muted">Selecciona un color para identificar la categoría</small>
+                    </div>
+
+                    <div class="mb-0">
+                        <label class="form-label">Descripción</label>
+                        <textarea class="form-control" name="descripcion" id="categoriaDescripcion"
+                                  rows="3" maxlength="200" placeholder="Descripción opcional..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-modal-cancel" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn-modal-save">
+                        <i class="fas fa-save me-1"></i>Guardar Categoría
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="toastNotificacion" class="toast align-items-center text-white border-0 animate__animated animate__fadeInRight"
+         role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="fas fa-check-circle me-2"></i><span id="toastMensaje">Operación exitosa</span>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    /* ── Sidebar toggle ── */
+    function toggleSidebar(){document.getElementById('adminSidebar').classList.toggle('show')}
+    document.addEventListener('click',function(e){
+        const sb=document.getElementById('adminSidebar'),tb=document.querySelector('.btn-toggle-sidebar');
+        if(window.innerWidth<992&&sb.classList.contains('show')&&!sb.contains(e.target)&&!tb.contains(e.target))
+            sb.classList.remove('show');
+    });
+
+    /* ── Color picker sync ── */
+    document.getElementById('categoriaColor')?.addEventListener('input', function(e) {
+        document.getElementById('colorHex').value = e.target.value;
+    });
+    document.getElementById('colorHex')?.addEventListener('input', function(e) {
+        if(/^#[0-9a-fA-F]{6}$/.test(e.target.value)) {
+            document.getElementById('categoriaColor').value = e.target.value;
+        }
+    });
+
+    /* ── Limpiar formulario ── */
+    function limpiarFormulario() {
+        document.getElementById('modalTitle').textContent = 'Nueva Categoría';
+        document.getElementById('categoriaId').value = '';
+        document.getElementById('categoriaNombre').value = '';
+        document.getElementById('categoriaColor').value = '#1565C0';
+        document.getElementById('colorHex').value = '#1565C0';
+        document.getElementById('categoriaDescripcion').value = '';
+    }
+
+    /* ── Editar categoría ── */
+    async function editarCategoria(id) {
+        try {
+            const response = await fetch('/admin/categorias/' + id);
+            if (!response.ok) throw new Error('Error al cargar');
+            const data = await response.json();
+
+            document.getElementById('modalTitle').textContent = 'Editar Categoría';
+            document.getElementById('categoriaId').value = data.id;
+            document.getElementById('categoriaNombre').value = data.nombre || '';
+            document.getElementById('categoriaColor').value = data.color || '#1565C0';
+            document.getElementById('colorHex').value = data.color || '#1565C0';
+            document.getElementById('categoriaDescripcion').value = data.descripcion || '';
+
+            new bootstrap.Modal(document.getElementById('modalCategoria')).show();
+        } catch (error) {
+            mostrarToast('❌ Error al cargar la categoría: ' + error.message, 'danger');
+        }
+    }
+
+    /* ── Eliminar categoría ── */
+    async function eliminarCategoria(id) {
+        if (!confirm('¿Estás seguro de eliminar esta categoría?\n\nEsta acción no se puede deshacer.')) return;
+
+        try {
+            const response = await fetch('/admin/categorias/' + id + '/eliminar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            const result = await response.json();
+
+            if (result.success) {
+                mostrarToast('✅ ' + result.message, 'success');
+                setTimeout(() => location.reload(), 800);
+            } else {
+                mostrarToast('❌ ' + result.message, 'danger');
+            }
+        } catch (error) {
+            mostrarToast('❌ Error de conexión: ' + error.message, 'danger');
+        }
+    }
+
+    /* ── Toast notifications ── */
+    function mostrarToast(msg, tipo = 'success') {
+        const el = document.getElementById('toastNotificacion');
+        const body = el.querySelector('.toast-body');
+        el.className = `toast align-items-center text-white border-0 animate__animated animate__fadeInRight bg-${tipo === 'success' ? 'success' : 'danger'}`;
+        body.innerHTML = `<i class="fas ${tipo === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} me-2"></i><span>${msg}</span>`;
+        new bootstrap.Toast(el, { delay: 3000 }).show();
+    }
+
+    /* ── Auto-close alerts ── */
+    document.querySelectorAll('.alert').forEach(alert => {
+        setTimeout(() => {
+            const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
+            bsAlert?.close();
+        }, 4000);
+    });
+</script>
+
+</body>
+</html>

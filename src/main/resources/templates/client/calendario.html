@@ -11,31 +11,26 @@
 
     <style>
         :root {
-            --color-primary: #1565C0;
-            --color-primary-dark: #0D47A1;
-            --color-primary-light: #1976D2;
-            --color-secondary: #2196F3;
-            --color-gray-100: #F8F9FA;
-            --color-gray-200: #E9ECEF;
-            --color-gray-300: #DEE2E6;
-            --color-gray-500: #ADB5BD;
-            --color-gray-900: #212529;
-            --sidebar-width: 260px;
-            --navbar-height: 64px;
-            --border-radius-sm: 8px;
-            --border-radius-md: 12px;
-            --border-radius-lg: 16px;
-            --shadow-sm: 0 1px 4px rgba(0,0,0,0.08);
-            --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
-            --shadow-lg: 0 8px 32px rgba(0,0,0,0.14);
-            --transition-base: 0.25s cubic-bezier(0.4,0,0.2,1);
-            --transition-fast: 0.15s ease;
-            --space-sm: 0.75rem;
-            --space-md: 1.25rem;
-            --space-lg: 2rem;
-            --font-size-sm: 0.8125rem;
-            --font-size-lg: 1.125rem;
-        }
+    --color-primary: #1565C0;
+    --color-primary-dark: #0D47A1;
+    --color-primary-light: #1976D2;
+    --color-secondary: #2196F3;
+    --color-gray-100: #F8F9FA;
+    --color-gray-200: #E9ECEF;
+    --color-gray-300: #DEE2E6;
+    --color-gray-500: #ADB5BD;
+    --color-gray-900: #212529;
+    --sidebar-width: 260px;
+    --navbar-height: 64px;
+    --border-radius-sm: 8px;
+    --border-radius-md: 12px;
+    --border-radius-lg: 16px;
+    --shadow-sm: 0 1px 4px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.14);
+    --transition-base: 0.25s cubic-bezier(0.4,0,0.2,1);
+    --transition-fast: 0.15s ease;
+}
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -230,7 +225,12 @@
             margin-bottom: 1.25rem;
         }
 
-        .avatar-large-wrapper { display: flex; justify-content: center; }
+        .avatar-large-wrapper {
+            display: flex;
+            justify-content: center;
+            position: relative;
+        }
+
         .avatar-large {
             width: 64px;
             height: 64px;
@@ -245,6 +245,33 @@
             box-shadow: 0 4px 16px rgba(21,101,192,0.35);
             letter-spacing: 1px;
             margin-bottom: 0.75rem;
+            position: relative;
+        }
+
+        /* Avatar Premium - Dorado/Amarillo */
+        .avatar-large.premium {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            box-shadow: 0 4px 16px rgba(255,215,0,0.45);
+            border: 3px solid #FFD700;
+        }
+
+        /* Corona en el avatar */
+        .avatar-crown {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: white;
+            box-shadow: 0 2px 8px rgba(255,215,0,0.5);
+            border: 2px solid white;
+            animation: badgePop 0.4s cubic-bezier(0.4,0,0.2,1) 0.3s both;
         }
 
         .user-info-section h6 {
@@ -253,6 +280,7 @@
             color: var(--color-gray-900);
             margin-bottom: 0.2rem;
         }
+
         .user-info-section small {
             font-size: 0.72rem;
             font-weight: 600;
@@ -261,6 +289,29 @@
             background: var(--color-gray-100);
             padding: 2px 10px;
             border-radius: 99px;
+        }
+
+        /* Badge Premium - Dorado/Amarillo */
+        .premium-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: white;
+            padding: 0.3rem 0.75rem;
+            border-radius: 99px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            margin-top: 0.5rem;
+            box-shadow: 0 2px 8px rgba(255,215,0,0.35);
+            animation: badgePop 0.4s cubic-bezier(0.4,0,0.2,1) both;
+        }
+
+        @keyframes badgePop {
+            0% { transform: scale(0.7); opacity: 0; }
+            80% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
         }
 
         /* Main menu */
@@ -732,12 +783,7 @@
 <!-- ========== NAVBAR ========== -->
 <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
     <div class="container-fluid px-3 px-md-4 d-flex align-items-center gap-2">
-
-        <!-- Botón hamburguesa -->
-        <button class="btn btn-link menu-toggle d-lg-none"
-                id="menuToggle"
-                aria-label="Abrir menú lateral"
-                aria-expanded="false">
+        <button class="btn btn-link menu-toggle d-lg-none" id="menuToggle">
             <i class="fas fa-bars" id="menuToggleIcon"></i>
         </button>
 
@@ -746,17 +792,15 @@
             <span class="brand-text">NotyGo</span>
         </a>
 
-        <!-- Barra de búsqueda -->
         <div class="search-bar d-none d-lg-block ms-3 flex-grow-1" style="max-width:380px;">
-            <form class="d-flex search-form" role="search" th:action="@{/cliente/tareas/buscar}" method="get">
+            <form class="d-flex search-form" role="search">
                 <div class="input-group">
                     <span class="input-group-text"><i class="fas fa-search"></i></span>
-                    <input class="form-control" type="search" name="q" placeholder="Buscar tareas...">
+                    <input class="form-control" type="search" placeholder="Buscar...">
                 </div>
             </form>
         </div>
 
-        <!-- Acciones derecha -->
         <div class="nav-actions ms-auto">
             <button class="btn-create-task" data-bs-toggle="modal" data-bs-target="#modalNuevaTarea">
                 <i class="fas fa-plus"></i>
@@ -777,7 +821,7 @@
             <!-- Perfil -->
             <div class="dropdown">
                 <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown">
-                    <div class="avatar">
+                    <div class="avatar" th:classappend="${usuario.esPremium} ? 'premium' : ''">
                         <span th:text="${usuario != null and usuario.nombre != null and #strings.length(usuario.nombre) >= 2 ? #strings.toUpperCase(usuario.nombre.substring(0,2)) : 'US'}">US</span>
                     </div>
                     <span class="d-none d-md-inline fw-600" style="font-size:0.875rem;"
@@ -820,12 +864,22 @@
             <!-- Info Usuario -->
             <div class="user-info-section mb-4">
                 <div class="avatar-large-wrapper mb-2">
-                    <div class="avatar-large">
+                    <div class="avatar-large" th:classappend="${usuario.esPremium} ? 'premium' : ''">
                         <span th:text="${usuario != null and usuario.nombre != null and #strings.length(usuario.nombre) >= 2 ? #strings.toUpperCase(usuario.nombre.substring(0,2)) : 'US'}">US</span>
+                        <i class="fas fa-crown avatar-crown" th:if="${usuario.esPremium}" title="Usuario Premium"></i>
                     </div>
                 </div>
                 <h6 th:text="${usuario != null ? usuario.nombre : 'Usuario'}">Usuario</h6>
-                <small th:text="${usuario != null and usuario.rol != null ? #strings.toUpperCase(usuario.rol.nombre) : 'ROL'}">ROL</small>
+
+                <!-- Badge Premium (SOLO si es premium) -->
+                <div th:if="${usuario.esPremium}" class="premium-badge">
+                    <i class="fas fa-crown"></i>
+                    <span>PREMIUM</span>
+                </div>
+
+                <!-- Texto del rol (SOLO si NO es premium) -->
+                <small th:unless="${usuario.esPremium}"
+                       th:text="${usuario != null and usuario.rol != null ? #strings.toUpperCase(usuario.rol.nombre) : 'ROL'}">ROL</small>
             </div>
 
             <!-- Menú Principal -->
