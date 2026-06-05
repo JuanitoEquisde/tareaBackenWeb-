@@ -17,7 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.HashMap;
 import java.util.Map;
-
+//ho
 @Controller
 @RequestMapping("/admin/categorias")
 @PreAuthorize("hasRole('ADMINISTRADOR')")
