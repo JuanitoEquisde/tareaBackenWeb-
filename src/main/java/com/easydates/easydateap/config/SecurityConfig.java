@@ -10,7 +10,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-//jelouuuuuu
+//hol
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
