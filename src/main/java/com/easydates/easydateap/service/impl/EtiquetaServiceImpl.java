@@ -1,6 +1,6 @@
 package com.easydates.easydateap.service.impl;
 
-import com.easydates.easydateap.entity.Etiqueta;
+import com.easydates.easydateap.model.Etiqueta;
 import com.easydates.easydateap.repository.EtiquetaRepository;
 import com.easydates.easydateap.service.IEtiquetaService;
 import org.springframework.beans.factory.annotation.Autowired;

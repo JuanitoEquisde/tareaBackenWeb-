@@ -1,6 +1,6 @@
 package com.easydates.easydateap.controller;
 
-import com.easydates.easydateap.entity.Tarea;
+import com.easydates.easydateap.model.Tarea;
 import com.easydates.easydateap.service.ITareaService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;

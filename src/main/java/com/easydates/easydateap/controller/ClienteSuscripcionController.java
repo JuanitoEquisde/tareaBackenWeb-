@@ -1,7 +1,7 @@
 package com.easydates.easydateap.controller;
 
 import com.easydates.easydateap.dto.SuscripcionDTO;
-import com.easydates.easydateap.entity.*;
+import com.easydates.easydateap.model.*;
 import com.easydates.easydateap.repository.RolRepository;
 import com.easydates.easydateap.service.ISuscripcionService;
 import com.easydates.easydateap.service.IUsuarioService;
@@ -12,8 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

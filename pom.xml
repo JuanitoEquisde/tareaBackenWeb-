@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.5</version>  <!-- ✅ VERSIÓN VÁLIDA -->
+        <version>3.2.5</version>
         <relativePath/>
     </parent>
 
@@ -24,7 +24,7 @@
     </properties>
 
     <dependencies>
-        <!-- ✅ Spring Boot Starters correctos -->
+        <!-- Spring Boot Starters correctos -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -35,7 +35,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>  <!-- ✅ web, NO webmvc -->
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -47,7 +47,7 @@
             <version>5.2.5</version>
         </dependency>
 
-        <!-- ✅ MySQL Connector -->
+        <!-- MySQL Connector -->
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
@@ -55,7 +55,6 @@
         </dependency>
         
 
-        <!-- ✅ Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -63,19 +62,16 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- ✅ Spring Security Crypto (opcional, ya incluido en spring-security) -->
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-crypto</artifactId>
         </dependency>
 
-        <!-- ✅ Thymeleaf + Spring Security (opcional pero útil) -->
         <dependency>
             <groupId>org.thymeleaf.extras</groupId>
             <artifactId>thymeleaf-extras-springsecurity6</artifactId>
         </dependency>
 
-        <!-- ✅ Testing (correcto) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>

@@ -1,7 +1,7 @@
 package com.easydates.easydateap.controller;
 
-import com.easydates.easydateap.entity.Notificacion;
-import com.easydates.easydateap.entity.Usuario;
+import com.easydates.easydateap.model.Notificacion;
+import com.easydates.easydateap.model.Usuario;
 import com.easydates.easydateap.service.INotificacionService;
 import com.easydates.easydateap.service.IUsuarioService;
 import jakarta.servlet.http.HttpSession;
@@ -10,9 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/admin/notificaciones")

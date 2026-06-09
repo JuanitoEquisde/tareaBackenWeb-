@@ -1,6 +1,6 @@
 package com.easydates.easydateap.repository;
 
-import com.easydates.easydateap.entity.Tarea;
+import com.easydates.easydateap.model.Tarea;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,7 +14,6 @@ import java.util.List;
 
 @Repository
 public interface TareaRepository extends JpaRepository<Tarea, Integer> {
-
 
     List<Tarea> findByUsuarioId(Integer usuarioId);
 
@@ -50,14 +49,8 @@ public interface TareaRepository extends JpaRepository<Tarea, Integer> {
             @Param("fechaFin") LocalDate fechaFin
     );
 
-    // =====================================================
-    // 🔹 NUEVOS MÉTODOS PARA ADMINISTRADOR
-    // =====================================================
-
-    // ✅ Listar tareas por estado (sin filtrar por usuario)
     List<Tarea> findByEstado(String estado);
 
-    // ✅ Contadores globales para estadísticas admin
     @Query("SELECT COUNT(t) FROM Tarea t WHERE t.estado = :estado")
     long countByEstado(@Param("estado") String estado);
 
@@ -67,7 +60,6 @@ public interface TareaRepository extends JpaRepository<Tarea, Integer> {
     @Query("SELECT COUNT(t) FROM Tarea t WHERE t.estado = :estado AND t.prioridad = :prioridad")
     long countByEstadoAndPrioridad(@Param("estado") String estado, @Param("prioridad") String prioridad);
 
-    // ✅ Búsqueda avanzada para admin (con joins para filtrar por usuario)
     @Query("SELECT t FROM Tarea t WHERE t.estado = 'ACTIVO' " +
             "AND (:titulo IS NULL OR LOWER(t.titulo) LIKE LOWER(CONCAT('%', :titulo, '%'))) " +
             "AND (:prioridad IS NULL OR t.prioridad = :prioridad) " +
@@ -98,4 +90,19 @@ public interface TareaRepository extends JpaRepository<Tarea, Integer> {
             Pageable pageable
     );
 
+    @Query("SELECT t FROM Tarea t LEFT JOIN t.categoria c " +
+            "WHERE t.usuario.id = :usuarioId AND t.estado = 'ACTIVO' " +
+            "AND (:buscar IS NULL OR LOWER(t.titulo) LIKE LOWER(CONCAT('%', :buscar, '%')) " +
+            "     OR LOWER(t.descripcion) LIKE LOWER(CONCAT('%', :buscar, '%'))) " +
+            "AND (:prioridad IS NULL OR t.prioridad = :prioridad) " +
+            "AND (:estadoTarea IS NULL OR t.estadoTarea = :estadoTarea) " +
+            "AND (:categoriaId IS NULL OR c.id = :categoriaId)")
+    Page<Tarea> buscarTareasClientePaginadas(
+            @Param("usuarioId") Integer usuarioId,
+            @Param("buscar") String buscar,
+            @Param("prioridad") String prioridad,
+            @Param("estadoTarea") String estadoTarea,
+            @Param("categoriaId") Integer categoriaId,
+            Pageable pageable
+    );
 }

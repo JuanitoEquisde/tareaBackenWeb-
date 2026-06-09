@@ -1,7 +1,7 @@
 package com.easydates.easydateap.service.impl;
 
-import com.easydates.easydateap.entity.Notificacion;
-import com.easydates.easydateap.entity.Usuario;
+import com.easydates.easydateap.model.Notificacion;
+import com.easydates.easydateap.model.Usuario;
 import com.easydates.easydateap.repository.NotificacionRepository;
 import com.easydates.easydateap.service.INotificacionService;
 import com.easydates.easydateap.service.IUsuarioService;

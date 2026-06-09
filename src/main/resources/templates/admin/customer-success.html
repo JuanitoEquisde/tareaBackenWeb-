@@ -178,171 +178,58 @@
         .task-stat.overdue{color:#dc2626}
         .task-stat.total{color:var(--admin-text-muted)}
 
-        /* ✅ BOTÓN DE MENSAJE */
-        .btn-message {
-            background: linear-gradient(135deg, var(--admin-primary), var(--admin-primary-hover));
-            color: white;
-            border: none;
-            border-radius: 50px;
-            padding: .4rem .85rem;
-            font-size: .78rem;
-            font-weight: 700;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: .35rem;
-            transition: all .25s;
-            font-family: inherit;
-            box-shadow: 0 2px 8px rgba(59,130,246,.25);
-        }
-        .btn-message:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(59,130,246,.4);
-            background: linear-gradient(135deg, var(--admin-primary-hover), #1d4ed8);
-        }
-        .btn-message i { font-size: .85rem; }
+        /* BOTÓN DE MENSAJE */
+        .btn-message{background:linear-gradient(135deg,var(--admin-primary),var(--admin-primary-hover));
+            color:white;border:none;border-radius:50px;padding:.4rem .85rem;font-size:.78rem;
+            font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:.35rem;
+            transition:all .25s;font-family:inherit;box-shadow:0 2px 8px rgba(59,130,246,.25)}
+        .btn-message:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(59,130,246,.4);
+            background:linear-gradient(135deg,var(--admin-primary-hover),#1d4ed8)}
+        .btn-message i{font-size:.85rem}
 
-        /* ✅ MODAL DE MENSAJE */
-        .modal-message-header {
-            background: linear-gradient(135deg, var(--admin-primary), var(--admin-primary-hover));
-            color: white;
-            padding: 1.375rem 1.75rem;
-            border: none;
-        }
-        .modal-message-header .modal-title {
-            font-weight: 800;
-            font-size: 1.05rem;
-            display: flex;
-            align-items: center;
-            gap: .6rem;
-        }
-        .modal-message-header .header-icon-sm {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            background: rgba(255,255,255,.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-        }
-        .modal-message-header .btn-close {
-            filter: invert(1) grayscale(100%) brightness(200%);
-        }
+        /* MODAL DE MENSAJE */
+        .modal-message-header{background:linear-gradient(135deg,var(--admin-primary),var(--admin-primary-hover));
+            color:white;padding:1.375rem 1.75rem;border:none}
+        .modal-message-header .modal-title{font-weight:800;font-size:1.05rem;
+            display:flex;align-items:center;gap:.6rem}
+        .modal-message-header .header-icon-sm{width:36px;height:36px;border-radius:10px;
+            background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:1rem}
+        .modal-message-header .btn-close{filter:invert(1) grayscale(100%) brightness(200%)}
 
-        .message-user-info {
-            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
-            border: 1.5px solid #bae6fd;
-            border-radius: 12px;
-            padding: 1rem 1.25rem;
-            margin-bottom: 1.25rem;
-            display: flex;
-            align-items: center;
-            gap: .85rem;
-        }
-        .message-user-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--admin-primary), var(--admin-primary-hover));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 800;
-            font-size: 1.1rem;
-            flex-shrink: 0;
-        }
-        .message-user-avatar.premium {
-            background: linear-gradient(135deg, #FFD700, #FFA500);
-        }
+        .message-user-info{background:linear-gradient(135deg,#f0f9ff,#e0f2fe);
+            border:1.5px solid #bae6fd;border-radius:12px;padding:1rem 1.25rem;
+            margin-bottom:1.25rem;display:flex;align-items:center;gap:.85rem}
+        .message-user-avatar{width:48px;height:48px;border-radius:50%;
+            background:linear-gradient(135deg,var(--admin-primary),var(--admin-primary-hover));
+            display:flex;align-items:center;justify-content:center;color:white;
+            font-weight:800;font-size:1.1rem;flex-shrink:0}
+        .message-user-avatar.premium{background:linear-gradient(135deg,#FFD700,#FFA500)}
 
-        /* Plantillas rápidas */
-        .quick-templates {
-            display: flex;
-            flex-wrap: wrap;
-            gap: .5rem;
-            margin-bottom: 1rem;
-        }
-        .template-chip {
-            background: white;
-            border: 1.5px solid var(--admin-border);
-            border-radius: 50px;
-            padding: .35rem .85rem;
-            font-size: .75rem;
-            font-weight: 600;
-            color: var(--admin-text-muted);
-            cursor: pointer;
-            transition: all .2s;
-            display: inline-flex;
-            align-items: center;
-            gap: .35rem;
-        }
-        .template-chip:hover {
-            border-color: var(--admin-primary);
-            color: var(--admin-primary);
-            background: #eff6ff;
-            transform: translateY(-1px);
-        }
-        .template-chip i { font-size: .75rem; }
+        /* PLANTILLAS RÁPIDAS */
+        .quick-templates{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem}
+        .template-chip{background:white;border:1.5px solid var(--admin-border);border-radius:50px;
+            padding:.35rem .85rem;font-size:.75rem;font-weight:600;color:var(--admin-text-muted);
+            cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:.35rem}
+        .template-chip:hover{border-color:var(--admin-primary);color:var(--admin-primary);
+            background:#eff6ff;transform:translateY(-1px)}
+        .template-chip i{font-size:.75rem}
 
-        .form-control-message {
-            border: 1.5px solid var(--admin-border);
-            border-radius: 10px;
-            padding: .7rem 1rem;
-            font-family: inherit;
-            font-size: .9rem;
-            transition: all .2s;
-            width: 100%;
-        }
-        .form-control-message:focus {
-            outline: none;
-            border-color: var(--admin-primary);
-            box-shadow: 0 0 0 3px rgba(59,130,246,.12);
-        }
+        .form-control-message{border:1.5px solid var(--admin-border);border-radius:10px;
+            padding:.7rem 1rem;font-family:inherit;font-size:.9rem;transition:all .2s;width:100%}
+        .form-control-message:focus{outline:none;border-color:var(--admin-primary);
+            box-shadow:0 0 0 3px rgba(59,130,246,.12)}
 
-        .btn-send-message {
-            background: linear-gradient(135deg, var(--admin-success), #059669);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            padding: .65rem 1.5rem;
-            font-weight: 700;
-            font-size: .9rem;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: .5rem;
-            transition: all .25s;
-            font-family: inherit;
-            box-shadow: 0 4px 12px rgba(16,185,129,.3);
-        }
-        .btn-send-message:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(16,185,129,.4);
-        }
-        .btn-send-message:disabled {
-            opacity: .6;
-            cursor: not-allowed;
-            transform: none;
-        }
+        .btn-send-message{background:linear-gradient(135deg,var(--admin-success),#059669);
+            color:white;border:none;border-radius:50px;padding:.65rem 1.5rem;font-weight:700;
+            font-size:.9rem;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem;
+            transition:all .25s;font-family:inherit;box-shadow:0 4px 12px rgba(16,185,129,.3)}
+        .btn-send-message:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(16,185,129,.4)}
+        .btn-send-message:disabled{opacity:.6;cursor:not-allowed;transform:none}
 
-        .btn-cancel-message {
-            background: white;
-            color: var(--admin-text-muted);
-            border: 1.5px solid var(--admin-border);
-            border-radius: 50px;
-            padding: .65rem 1.5rem;
-            font-weight: 700;
-            font-size: .9rem;
-            cursor: pointer;
-            transition: all .2s;
-            font-family: inherit;
-        }
-        .btn-cancel-message:hover {
-            background: #f3f4f6;
-            color: var(--admin-text);
-        }
+        .btn-cancel-message{background:white;color:var(--admin-text-muted);
+            border:1.5px solid var(--admin-border);border-radius:50px;padding:.65rem 1.5rem;
+            font-weight:700;font-size:.9rem;cursor:pointer;transition:all .2s;font-family:inherit}
+        .btn-cancel-message:hover{background:#f3f4f6;color:var(--admin-text)}
 
         /* EMPTY STATE */
         .empty-state{text-align:center;padding:3rem 1rem;color:var(--admin-text-muted)}
@@ -351,10 +238,6 @@
         /* ANIMATIONS */
         @keyframes fadeInDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
         @keyframes fadeInUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-        @keyframes pulseMessage{
-            0%, 100% { box-shadow: 0 2px 8px rgba(59,130,246,.25); }
-            50% { box-shadow: 0 2px 16px rgba(59,130,246,.5); }
-        }
 
         /* RESPONSIVE */
         @media(max-width:1200px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
@@ -468,7 +351,7 @@
             </div>
             <div class="stat-card c-amber">
                 <div class="sc-icon"><i class="fas fa-exclamation-triangle"></i></div>
-                <div class="sc-value" th:text="${metricas.riesgoAlto + metricas.riesgoCritico}">0</div>
+                <div class="sc-value" th:text="${(metricas.riesgoAlto != null ? metricas.riesgoAlto : 0) + (metricas.riesgoCritico != null ? metricas.riesgoCritico : 0)}">0</div>
                 <div class="sc-label">Usuarios en Riesgo</div>
                 <div class="sc-trend">
                     <i class="fas fa-arrow-up"></i>
@@ -546,13 +429,13 @@
                             <div class="user-cell">
                                 <div class="user-avatar"
                                      th:classappend="${usuario.esPremium} ? 'premium' : ''"
-                                     th:text="${#strings.substring(usuario.nombre,0,1)}">U</div>
+                                     th:text="${usuario.nombre != null and usuario.nombre.length() > 0 ? #strings.substring(usuario.nombre,0,1) : 'U'}">U</div>
                                 <div>
                                     <div class="user-name">
                                         <span th:text="${usuario.nombre}">Usuario</span>
                                         <span th:if="${usuario.esPremium}" class="badge-premium ms-1">
-                                                <i class="fas fa-crown"></i>
-                                            </span>
+                                            <i class="fas fa-crown"></i>
+                                        </span>
                                     </div>
                                     <div class="user-email" th:text="${usuario.email}">email@ejemplo.com</div>
                                 </div>
@@ -561,18 +444,18 @@
 
                         <!-- Plan -->
                         <td>
-                                <span th:if="${usuario.esPremium}" class="badge-premium">
-                                    <i class="fas fa-crown"></i>
-                                    <span th:text="${usuario.planActual}">Premium</span>
-                                </span>
+                            <span th:if="${usuario.esPremium}" class="badge-premium">
+                                <i class="fas fa-crown"></i>
+                                <span th:text="${usuario.planActual}">Premium</span>
+                            </span>
                             <span th:unless="${usuario.esPremium}" class="badge-free">
-                                    Gratuito
-                                </span>
+                                Gratuito
+                            </span>
                         </td>
 
                         <!-- Health Score -->
                         <td>
-                            <div class="d-flex align-items-center">
+                            <div class="d-flex align-items-center" th:if="${usuario.healthScore != null}">
                                 <div class="health-bar-container">
                                     <div class="health-bar"
                                          th:classappend="${usuario.healthScore >= 80} ? 'excellent' : (${usuario.healthScore >= 60} ? 'good' : (${usuario.healthScore >= 40} ? 'warning' : 'danger'))"
@@ -582,32 +465,34 @@
                                 <span style="font-weight:700;font-size:.85rem;"
                                       th:text="${usuario.healthScore}">85</span>
                             </div>
+                            <span th:unless="${usuario.healthScore != null}" class="text-muted">N/A</span>
                         </td>
 
                         <!-- Nivel Riesgo -->
                         <td>
-                                <span class="badge-risk"
-                                      th:classappend="${usuario.nivelRiesgo == 'BAJO'} ? 'bajo' : (${usuario.nivelRiesgo == 'MEDIO'} ? 'medio' : (${usuario.nivelRiesgo == 'ALTO'} ? 'alto' : 'critico'))">
-                                    <i th:if="${usuario.nivelRiesgo == 'BAJO'}" class="fas fa-check-circle"></i>
-                                    <i th:if="${usuario.nivelRiesgo == 'MEDIO'}" class="fas fa-exclamation-circle"></i>
-                                    <i th:if="${usuario.nivelRiesgo == 'ALTO'}" class="fas fa-exclamation-triangle"></i>
-                                    <i th:if="${usuario.nivelRiesgo == 'CRITICO'}" class="fas fa-times-circle"></i>
-                                    <span th:text="${usuario.nivelRiesgo}">BAJO</span>
-                                </span>
+                            <span th:if="${usuario.nivelRiesgo != null}" class="badge-risk"
+                                  th:classappend="${usuario.nivelRiesgo == 'BAJO'} ? 'bajo' : (${usuario.nivelRiesgo == 'MEDIO'} ? 'medio' : (${usuario.nivelRiesgo == 'ALTO'} ? 'alto' : 'critico'))">
+                                <i th:if="${usuario.nivelRiesgo == 'BAJO'}" class="fas fa-check-circle"></i>
+                                <i th:if="${usuario.nivelRiesgo == 'MEDIO'}" class="fas fa-exclamation-circle"></i>
+                                <i th:if="${usuario.nivelRiesgo == 'ALTO'}" class="fas fa-exclamation-triangle"></i>
+                                <i th:if="${usuario.nivelRiesgo == 'CRITICO'}" class="fas fa-times-circle"></i>
+                                <span th:text="${usuario.nivelRiesgo}">BAJO</span>
+                            </span>
+                            <span th:unless="${usuario.nivelRiesgo != null}" class="text-muted">N/A</span>
                         </td>
 
                         <!-- Actividad -->
                         <td>
                             <div th:if="${usuario.diasSinActividad != null and usuario.diasSinActividad < 999}">
-                                    <span th:if="${usuario.diasSinActividad <= 7}" class="text-success" style="font-size:.8rem;font-weight:600;">
-                                        <i class="fas fa-bolt"></i> Activo
-                                    </span>
+                                <span th:if="${usuario.diasSinActividad <= 7}" class="text-success" style="font-size:.8rem;font-weight:600;">
+                                    <i class="fas fa-bolt"></i> Activo
+                                </span>
                                 <span th:if="${usuario.diasSinActividad > 7 and usuario.diasSinActividad <= 30}" class="text-warning" style="font-size:.8rem;font-weight:600;">
-                                        <i class="fas fa-clock"></i> <span th:text="${usuario.diasSinActividad} + ' días'">0 días</span>
-                                    </span>
+                                    <i class="fas fa-clock"></i> <span th:text="${usuario.diasSinActividad} + ' días'">0 días</span>
+                                </span>
                                 <span th:if="${usuario.diasSinActividad > 30}" class="text-danger" style="font-size:.8rem;font-weight:600;">
-                                        <i class="fas fa-bed"></i> Inactivo
-                                    </span>
+                                    <i class="fas fa-bed"></i> Inactivo
+                                </span>
                             </div>
                             <div th:unless="${usuario.diasSinActividad != null and usuario.diasSinActividad < 999}">
                                 <span class="text-muted" style="font-size:.8rem;">Sin actividad</span>
@@ -633,30 +518,32 @@
                         <!-- Tareas -->
                         <td>
                             <div class="task-stats">
-                                    <span class="task-stat total" title="Total">
-                                        <i class="fas fa-tasks"></i>
-                                        <span th:text="${usuario.tareasTotales}">0</span>
-                                    </span>
+                                <span class="task-stat total" title="Total">
+                                    <i class="fas fa-tasks"></i>
+                                    <span th:text="${usuario.tareasTotales}">0</span>
+                                </span>
                                 <span class="task-stat completed" title="Completadas">
-                                        <i class="fas fa-check"></i>
-                                        <span th:text="${usuario.tareasCompletadas}">0</span>
-                                    </span>
+                                    <i class="fas fa-check"></i>
+                                    <span th:text="${usuario.tareasCompletadas}">0</span>
+                                </span>
                                 <span class="task-stat overdue" title="Vencidas">
-                                        <i class="fas fa-exclamation"></i>
-                                        <span th:text="${usuario.tareasVencidas}">0</span>
-                                    </span>
+                                    <i class="fas fa-exclamation"></i>
+                                    <span th:text="${usuario.tareasVencidas}">0</span>
+                                </span>
                             </div>
                         </td>
 
                         <!-- Recomendación -->
                         <td>
-                                <span class="recommendation" th:text="${usuario.recomendacion}"
-                                      th:title="${usuario.recomendacion}">
-                                    Recomendación
-                                </span>
+                            <span th:if="${usuario.recomendacion != null}" class="recommendation"
+                                  th:text="${usuario.recomendacion}"
+                                  th:title="${usuario.recomendacion}">
+                                Recomendación
+                            </span>
+                            <span th:unless="${usuario.recomendacion != null}" class="text-muted">-</span>
                         </td>
 
-                        <!-- ✅ NUEVA COLUMNA: Acción (Botón Mensaje) -->
+                        <!-- Acción: Botón Enviar Mensaje -->
                         <td class="text-end pe-4">
                             <button class="btn-message"
                                     th:data-usuario-id="${usuario.usuarioId}"
@@ -673,7 +560,7 @@
                     </tr>
 
                     <!-- Empty State -->
-                    <tr th:if="${#lists.isEmpty(usuarios)}">
+                    <tr th:if="${usuarios == null or #lists.isEmpty(usuarios)}">
                         <td colspan="9">
                             <div class="empty-state">
                                 <i class="fas fa-user-slash"></i>
@@ -732,7 +619,7 @@
     </main>
 </div>
 
-<!-- ✅ MODAL ENVIAR MENSAJE -->
+<!-- MODAL ENVIAR MENSAJE -->
 <div class="modal fade" id="modalMensaje" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg" style="border-radius:18px;overflow:hidden;">
@@ -744,7 +631,6 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4" style="background:#fafbfc;">
-
                 <!-- Info del usuario destinatario -->
                 <div class="message-user-info">
                     <div class="message-user-avatar" id="msgUserAvatar">U</div>
@@ -782,7 +668,6 @@
                 <!-- Formulario -->
                 <form id="formMensaje">
                     <input type="hidden" id="msgUsuarioId">
-
                     <div class="mb-3">
                         <label class="form-label" style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--admin-text-muted);">
                             Título del Mensaje *
@@ -790,7 +675,6 @@
                         <input type="text" class="form-control-message" id="msgTitulo"
                                placeholder="Ej: ¡Hola! Tenemos una novedad para ti" required maxlength="200">
                     </div>
-
                     <div class="mb-3">
                         <label class="form-label" style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--admin-text-muted);">
                             Mensaje *
@@ -802,7 +686,6 @@
                             El usuario verá este mensaje en su buzón de notificaciones
                         </small>
                     </div>
-
                     <div class="mb-3">
                         <label class="form-label" style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--admin-text-muted);">
                             <i class="fas fa-link me-1"></i>Link de Acción (Opcional)
@@ -841,16 +724,20 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    /* ── Sidebar toggle ── */
-    function toggleSidebar(){document.getElementById('adminSidebar').classList.toggle('show')}
-    document.addEventListener('click',function(e){
-        const sb=document.getElementById('adminSidebar'),tb=document.querySelector('.btn-toggle-sidebar');
-        if(window.innerWidth<992&&sb.classList.contains('show')&&!sb.contains(e.target)&&!tb.contains(e.target))
+    // Sidebar toggle
+    function toggleSidebar(){
+        document.getElementById('adminSidebar').classList.toggle('show');
+    }
+
+    document.addEventListener('click', function(e){
+        const sb = document.getElementById('adminSidebar');
+        const tb = document.querySelector('.btn-toggle-sidebar');
+        if(window.innerWidth < 992 && sb.classList.contains('show') && !sb.contains(e.target) && !tb.contains(e.target)){
             sb.classList.remove('show');
+        }
     });
 
-    /* ===== SISTEMA DE MENSAJERÍA ===== */
-
+    // Variables globales
     let modalMensajeInstance = null;
 
     // Abrir modal con datos del usuario
@@ -987,21 +874,22 @@
             formData.append('mensaje', mensaje);
             if (link) formData.append('linkAccion', link);
 
-            const response = await fetch('/admin/notificaciones/enviar', {
+            // URL CORREGIDA: apunta al endpoint correcto
+            const response = await fetch('/admin/customer-success/enviar-mensaje', {
                 method: 'POST',
                 body: formData
             });
 
             if (response.ok) {
-                mostrarToast('✅ Mensaje enviado correctamente', 'success');
+                mostrarToast(' Mensaje enviado correctamente', 'success');
                 modalMensajeInstance.hide();
             } else {
                 const errorText = await response.text();
-                mostrarToast('❌ Error: ' + errorText, 'danger');
+                mostrarToast('Error: ' + errorText, 'danger');
             }
         } catch (error) {
             console.error('Error:', error);
-            mostrarToast('❌ Error de conexión: ' + error.message, 'danger');
+            mostrarToast(' Error de conexión: ' + error.message, 'danger');
         } finally {
             btnEnviar.disabled = false;
             btnEnviar.innerHTML = textoOriginal;
@@ -1013,13 +901,12 @@
         const toast = document.getElementById('toastNotificacion');
         const toastBody = document.getElementById('toastMensaje');
 
-        toast.className = `toast align-items-center text-white border-0 bg-${tipo}`;
-        toastBody.innerHTML = `<i class="fas ${tipo === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} me-2"></i>${mensaje}`;
+        toast.className = 'toast align-items-center text-white border-0 bg-' + (tipo === 'success' ? 'success' : 'danger');
+        toastBody.innerHTML = '<i class="fas ' + (tipo === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle') + ' me-2"></i>' + mensaje;
 
         const bsToast = new bootstrap.Toast(toast, { delay: 3500 });
         bsToast.show();
     }
 </script>
-
 </body>
 </html>

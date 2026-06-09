@@ -2,9 +2,8 @@ package com.easydates.easydateap.controller;
 
 import com.easydates.easydateap.dto.CambioPasswordDTO;
 import com.easydates.easydateap.dto.PerfilDTO;
-import com.easydates.easydateap.entity.Categoria;
-import com.easydates.easydateap.entity.Etiqueta;
-import com.easydates.easydateap.entity.Usuario;
+import com.easydates.easydateap.model.Etiqueta;
+import com.easydates.easydateap.model.Usuario;
 import com.easydates.easydateap.service.ICategoriaService;
 import com.easydates.easydateap.service.IEtiquetaService;
 import com.easydates.easydateap.service.IUsuarioService;

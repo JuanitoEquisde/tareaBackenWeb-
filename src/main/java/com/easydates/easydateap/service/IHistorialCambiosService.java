@@ -1,6 +1,6 @@
 package com.easydates.easydateap.service;
 
-import com.easydates.easydateap.entity.HistorialCambios;
+import com.easydates.easydateap.model.HistorialCambios;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.util.List;

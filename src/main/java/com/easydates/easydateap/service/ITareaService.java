@@ -1,7 +1,7 @@
 package com.easydates.easydateap.service;
 
 import com.easydates.easydateap.dto.TareaDTO;
-import com.easydates.easydateap.entity.Tarea;
+import com.easydates.easydateap.model.Tarea;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -54,10 +54,10 @@ public interface ITareaService {
     // 🔹 NUEVOS MÉTODOS PARA ADMINISTRADOR
     // =====================================================
 
-    // ✅ Listar TODAS las tareas del sistema (sin filtrar por usuario)
+    //  Listar TODAS las tareas del sistema (sin filtrar por usuario)
     List<Tarea> listarTodasLasTareas();
 
-    // ✅ Buscar tareas con filtros globales (para panel admin)
+    // Buscar tareas con filtros globales (para panel admin)
     List<Tarea> buscarTareasAdmin(String titulo, String prioridad, String estado, String nombreUsuario);
 
     // Estadísticas globales para dashboard admin
@@ -70,12 +70,19 @@ public interface ITareaService {
 
     // Eliminar tarea permanentemente (solo admin)
     boolean eliminarPermanente(Integer id);
-
     Page<Tarea> buscarTareasPaginadas(
             String titulo,
             String prioridad,
             String estado,
             String usuario,
+            Pageable pageable
+    );
+    Page<Tarea> buscarTareasClientePaginadas(
+            Integer usuarioId,
+            String buscar,
+            String prioridad,
+            String estadoTarea,
+            Integer categoriaId,
             Pageable pageable
     );
 }

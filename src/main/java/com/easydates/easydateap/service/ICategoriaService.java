@@ -1,6 +1,6 @@
 package com.easydates.easydateap.service;
 
-import com.easydates.easydateap.entity.Categoria;
+import com.easydates.easydateap.model.Categoria;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

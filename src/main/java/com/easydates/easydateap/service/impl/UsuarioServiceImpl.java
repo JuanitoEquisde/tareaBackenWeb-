@@ -1,7 +1,7 @@
 package com.easydates.easydateap.service.impl;
 
 import com.easydates.easydateap.dto.DashboardStats;
-import com.easydates.easydateap.entity.Usuario;
+import com.easydates.easydateap.model.Usuario;
 import com.easydates.easydateap.repository.*;
 import com.easydates.easydateap.service.IUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;

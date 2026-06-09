@@ -1,7 +1,7 @@
 package com.easydates.easydateap.controller;
 
-import com.easydates.easydateap.entity.Categoria;
-import com.easydates.easydateap.entity.Usuario;
+import com.easydates.easydateap.model.Categoria;
+import com.easydates.easydateap.model.Usuario;
 import com.easydates.easydateap.service.ICategoriaService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.HashMap;
 import java.util.Map;
-//ho
 
 @Controller
 @RequestMapping("/admin/categorias")
@@ -25,7 +24,7 @@ public class AdminCategoriaController {
     @Autowired
     private ICategoriaService categoriaService;
 
-    // ✅ LISTAR TODAS LAS CATEGORÍAS (ADMIN)
+    // LISTAR TODAS LAS CATEGORÍAS
     @GetMapping
     public String listarCategorias(
             @RequestParam(defaultValue = "0") int page,
@@ -41,7 +40,7 @@ public class AdminCategoriaController {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("nombre").ascending());
 
-        // Para admin: listar categorías de todos los usuarios (o filtrar por usuario si se desea)
+        // listar categorías de todos los usuarios
         // Aquí listamos las del admin actual, pero puedes modificar para listar todas
         Page<Categoria> categoriasPage = categoriaService.listarConPaginacion(admin.getId(), pageable);
 
@@ -55,7 +54,7 @@ public class AdminCategoriaController {
         return "admin/categorias";
     }
 
-    // ✅ GUARDAR CATEGORÍA (CREAR O EDITAR)
+    // GUARDAR CATEGORÍA
     @PostMapping("/guardar")
     public String guardarCategoria(
             @ModelAttribute Categoria categoria,
@@ -98,7 +97,7 @@ public class AdminCategoriaController {
         return "redirect:/admin/categorias";
     }
 
-    // ✅ ELIMINAR CATEGORÍA (Soft delete)
+    // ELIMINAR CATEGORÍA (Soft delete)
     @PostMapping("/{id}/eliminar")
     @ResponseBody
     public Map<String, Object> eliminarCategoria(@PathVariable Integer id, HttpSession session) {
@@ -127,7 +126,7 @@ public class AdminCategoriaController {
         return response;
     }
 
-    // ✅ OBTENER CATEGORÍA POR ID (para editar en modal)
+    // OBTENER CATEGORÍA POR ID
     @GetMapping("/{id}")
     @ResponseBody
     public Map<String, Object> obtenerCategoria(@PathVariable Integer id) {

@@ -1,8 +1,8 @@
 package com.easydates.easydateap.service;
 
 import com.easydates.easydateap.dto.SuscripcionDTO;
-import com.easydates.easydateap.entity.Plan;
-import com.easydates.easydateap.entity.Suscripcion;
+import com.easydates.easydateap.model.Plan;
+import com.easydates.easydateap.model.Suscripcion;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

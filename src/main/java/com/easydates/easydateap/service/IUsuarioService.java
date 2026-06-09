@@ -1,7 +1,7 @@
 package com.easydates.easydateap.service;
 
 import com.easydates.easydateap.dto.DashboardStats;
-import com.easydates.easydateap.entity.Usuario;
+import com.easydates.easydateap.model.Usuario;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

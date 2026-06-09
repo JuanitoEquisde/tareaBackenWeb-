@@ -1,7 +1,7 @@
 package com.easydates.easydateap.repository;
 
-import com.easydates.easydateap.entity.Plan;
-import com.easydates.easydateap.entity.EstadoPlan;
+import com.easydates.easydateap.model.Plan;
+import com.easydates.easydateap.model.EstadoPlan;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

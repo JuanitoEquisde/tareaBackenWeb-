@@ -1,6 +1,6 @@
 package com.easydates.easydateap.service.impl;
 
-import com.easydates.easydateap.entity.HistorialCambios;
+import com.easydates.easydateap.model.HistorialCambios;
 import com.easydates.easydateap.repository.HistorialCambiosRepository;
 import com.easydates.easydateap.service.IHistorialCambiosService;
 import org.springframework.beans.factory.annotation.Autowired;

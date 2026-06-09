@@ -1,6 +1,6 @@
 package com.easydates.easydateap.repository;
 
-import com.easydates.easydateap.entity.Rol;
+import com.easydates.easydateap.model.Rol;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

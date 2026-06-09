@@ -1,4 +1,4 @@
-package com.easydates.easydateap.entity;
+package com.easydates.easydateap.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;

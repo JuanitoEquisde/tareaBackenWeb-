@@ -1,4 +1,4 @@
-package com.easydates.easydateap.entity;
+package com.easydates.easydateap.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;

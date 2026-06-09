@@ -330,36 +330,36 @@
             <span class="badge-admin"><i class="fas fa-crown"></i>Premium</span>
         </div>
 
-        <div class="stats-grid">
-            <div class="stat-card c-blue">
-                <div class="sc-glow"></div><div class="sc-glow2"></div>
-                <div class="sc-icon"><i class="fas fa-users"></i></div>
-                <div class="sc-value" th:text="${stats?.total ?: 0}">0</div>
-                <div class="sc-label">Total Suscripciones</div>
-                <div class="sc-trend"><i class="fas fa-layer-group"></i> Registradas</div>
-            </div>
-            <div class="stat-card c-green">
-                <div class="sc-glow"></div><div class="sc-glow2"></div>
-                <div class="sc-icon"><i class="fas fa-check-circle"></i></div>
-                <div class="sc-value" th:text="${stats?.activas ?: 0}">0</div>
-                <div class="sc-label">Activas</div>
-                <div class="sc-trend"><i class="fas fa-circle" style="font-size:.5rem"></i> En curso</div>
-            </div>
-            <div class="stat-card c-amber">
-                <div class="sc-glow"></div><div class="sc-glow2"></div>
-                <div class="sc-icon"><i class="fas fa-clock"></i></div>
-                <div class="sc-value" th:text="${stats?.expiradas ?: 0}">0</div>
-                <div class="sc-label">Expiradas</div>
-                <div class="sc-trend"><i class="fas fa-hourglass-end"></i> Vencidas</div>
-            </div>
-            <div class="stat-card c-purple">
-                <div class="sc-glow"></div><div class="sc-glow2"></div>
-                <div class="sc-icon"><i class="fas fa-dollar-sign"></i></div>
-                <div class="sc-value">$<span th:text="${stats?.ingresosTotales ?: 0}">0</span></div>
-                <div class="sc-label">Ingresos Totales</div>
-                <div class="sc-trend"><i class="fas fa-arrow-up"></i> Recaudado</div>
-            </div>
+        <<div class="stats-grid">
+        <div class="stat-card c-blue">
+            <div class="sc-glow"></div><div class="sc-glow2"></div>
+            <div class="sc-icon"><i class="fas fa-users"></i></div>
+            <div class="sc-value" th:text="${stats != null ? stats['total'] : 0}">0</div>
+            <div class="sc-label">Total Suscripciones</div>
+            <div class="sc-trend"><i class="fas fa-layer-group"></i> Registradas</div>
         </div>
+        <div class="stat-card c-green">
+            <div class="sc-glow"></div><div class="sc-glow2"></div>
+            <div class="sc-icon"><i class="fas fa-check-circle"></i></div>
+            <div class="sc-value" th:text="${stats != null ? stats['activas'] : 0}">0</div>
+            <div class="sc-label">Activas</div>
+            <div class="sc-trend"><i class="fas fa-circle" style="font-size:.5rem"></i> En curso</div>
+        </div>
+        <div class="stat-card c-amber">
+            <div class="sc-glow"></div><div class="sc-glow2"></div>
+            <div class="sc-icon"><i class="fas fa-clock"></i></div>
+            <div class="sc-value" th:text="${stats != null ? stats['expiradas'] : 0}">0</div>
+            <div class="sc-label">Expiradas</div>
+            <div class="sc-trend"><i class="fas fa-hourglass-end"></i> Vencidas</div>
+        </div>
+        <div class="stat-card c-purple">
+            <div class="sc-glow"></div><div class="sc-glow2"></div>
+            <div class="sc-icon"><i class="fas fa-dollar-sign"></i></div>
+            <div class="sc-value">$<span th:text="${stats != null ? stats['ingresosTotales'] : 0}">0</span></div>
+            <div class="sc-label">Ingresos Totales</div>
+            <div class="sc-trend"><i class="fas fa-arrow-up"></i> Recaudado</div>
+        </div>
+    </div>
 
         <div class="filters-card">
             <div class="filter-title">

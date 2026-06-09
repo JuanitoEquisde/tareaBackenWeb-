@@ -1,7 +1,7 @@
 package com.easydates.easydateap.controller;
 
 import com.easydates.easydateap.dto.NotificacionDTO;
-import com.easydates.easydateap.entity.Notificacion;
+import com.easydates.easydateap.model.Notificacion;
 import com.easydates.easydateap.service.INotificacionService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;

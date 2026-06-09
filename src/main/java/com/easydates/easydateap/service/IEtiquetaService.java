@@ -1,6 +1,6 @@
 package com.easydates.easydateap.service;
 
-import com.easydates.easydateap.entity.Etiqueta;
+import com.easydates.easydateap.model.Etiqueta;
 import java.util.List;
 
 public interface IEtiquetaService {

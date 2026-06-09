@@ -1,7 +1,7 @@
 package com.easydates.easydateap.controller;
 
-import com.easydates.easydateap.entity.Suscripcion;
-import com.easydates.easydateap.entity.Usuario;
+import com.easydates.easydateap.model.Suscripcion;
+import com.easydates.easydateap.model.Usuario;
 import com.easydates.easydateap.repository.SuscripcionRepository;
 import com.easydates.easydateap.service.ISuscripcionService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,11 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.data.domain.PageRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

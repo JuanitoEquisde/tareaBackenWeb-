@@ -1,7 +1,7 @@
 package com.easydates.easydateap.controller;
 
 import jakarta.servlet.http.HttpSession;
-import com.easydates.easydateap.entity.Usuario;
+import com.easydates.easydateap.model.Usuario;
 import com.easydates.easydateap.service.IUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

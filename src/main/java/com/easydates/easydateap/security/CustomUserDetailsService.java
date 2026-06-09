@@ -1,6 +1,6 @@
 package com.easydates.easydateap.security;
 
-import com.easydates.easydateap.entity.Usuario;
+import com.easydates.easydateap.model.Usuario;
 import com.easydates.easydateap.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.*;
@@ -19,7 +19,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         Usuario usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + email));
 
-        // Convertir tu entidad Usuario a UserDetails de Spring Security
+        // Convertir entidad Usuario a UserDetails de Spring Security
         return User.builder()
                 .username(usuario.getEmail())  // Spring Security espera "username", pero usamos email
                 .password(usuario.getPassword())  // Debe estar encriptada con BCrypt

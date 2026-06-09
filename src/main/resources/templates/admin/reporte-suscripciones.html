@@ -68,8 +68,18 @@
         .page-header h2{font-weight:800;color:var(--admin-text);margin:0;font-size:1.35rem;
             display:flex;align-items:center;gap:.75rem;letter-spacing:-.02em}
         .page-header h2 .header-icon{width:40px;height:40px;
-            background:linear-gradient(135deg,#dbeafe,#bfdbfe);border-radius:10px;
-            display:flex;align-items:center;justify-content:center;color:var(--admin-primary);font-size:1rem}
+            background:linear-gradient(135deg,#fef3c7,#fde68a);border-radius:10px;
+            display:flex;align-items:center;justify-content:center;color:#d97706;font-size:1rem}
+        .badge-admin{background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:white;
+            padding:.4rem 1rem;border-radius:50px;font-weight:700;font-size:.75rem;
+            display:flex;align-items:center;gap:.4rem;letter-spacing:.04em;text-transform:uppercase}
+        .page-header-actions{display:flex;gap:.5rem;align-items:center}
+
+        .btn-export-excel{background:linear-gradient(135deg,#059669,#065f46);color:white;border:none;
+            padding:.575rem 1.375rem;border-radius:9px;font-weight:700;font-size:.875rem;
+            text-decoration:none;display:inline-flex;align-items:center;gap:.5rem;
+            box-shadow:0 4px 12px rgba(5,150,105,.28);transition:all .25s;cursor:pointer;font-family:inherit}
+        .btn-export-excel:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(5,150,105,.38);color:white}
 
         /* STAT CARDS */
         .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;margin-bottom:1.5rem}
@@ -86,38 +96,51 @@
         .stat-card.c-red{background:linear-gradient(135deg,#991b1b 0%,#dc2626 100%);color:white}
         .stat-card .sc-glow{position:absolute;right:-20px;top:-20px;width:100px;height:100px;
             border-radius:50%;background:rgba(255,255,255,.08);pointer-events:none}
+        .stat-card .sc-glow2{position:absolute;right:20px;bottom:-30px;width:70px;height:70px;
+            border-radius:50%;background:rgba(255,255,255,.05);pointer-events:none}
         .stat-card .sc-icon{width:44px;height:44px;border-radius:10px;background:rgba(255,255,255,.18);
             display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:1rem}
         .stat-card .sc-value{font-size:2rem;font-weight:800;line-height:1;
             margin-bottom:.25rem;letter-spacing:-.03em}
         .stat-card .sc-label{font-size:.78rem;font-weight:600;opacity:.8;
-            text-transform:uppercase;letter-spacing:.06em}
+            text-transform:uppercase;letter-spacing:.06em;line-height:1.3}
+        .stat-card .sc-trend{margin-top:.5rem;font-size:.7rem;font-weight:600;
+            background:rgba(255,255,255,.15);border-radius:50px;
+            display:inline-flex;align-items:center;gap:.3rem;padding:.18rem .6rem}
 
         /* FILTERS */
         .filters-card{background:white;border-radius:var(--admin-radius);padding:1.375rem 1.75rem;
             margin-bottom:1.5rem;box-shadow:var(--admin-card-shadow);
             animation:fadeInUp .5s ease .1s both;border:1px solid rgba(0,0,0,.04)}
-        .filters-card .form-label{font-size:.72rem;font-weight:700;color:var(--admin-text-muted);
-            text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem}
+        .filter-title{font-size:.75rem;font-weight:700;color:var(--admin-text-muted);
+            text-transform:uppercase;letter-spacing:.07em;margin-bottom:1rem;
+            display:flex;align-items:center;gap:.5rem}
+        .filters-card .form-label{font-size:.68rem;font-weight:700;color:var(--admin-text-muted);
+            text-transform:uppercase;letter-spacing:.06em;margin-bottom:.35rem}
         .filters-card .form-control,.filters-card .form-select{border:1.5px solid var(--admin-border);
-            border-radius:9px;padding:.575rem .875rem;font-size:.875rem;font-family:inherit;
-            transition:all .25s;background:#fafbfc}
+            border-radius:9px;padding:.5rem .8rem;font-size:.85rem;font-family:inherit;
+            transition:all .25s;background:#fafbfc;height:42px}
         .filters-card .form-control:focus,.filters-card .form-select:focus{
             border-color:var(--admin-primary);box-shadow:0 0 0 3px rgba(59,130,246,.12);background:white}
-        .filters-card .btn-primary{background:linear-gradient(135deg,var(--admin-primary),var(--admin-primary-hover));
-            border:none;padding:.575rem 1.375rem;border-radius:9px;font-weight:700;font-size:.875rem;
-            font-family:inherit;transition:all .25s;box-shadow:0 4px 12px rgba(59,130,246,.28)}
-        .filters-card .btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(59,130,246,.38)}
-        .filters-card .btn-outline-secondary{border:1.5px solid var(--admin-border);padding:.575rem 1.375rem;
-            border-radius:9px;font-weight:600;font-size:.875rem;font-family:inherit;
-            color:var(--admin-text-muted);background:white;transition:all .25s}
-        .filters-card .btn-outline-secondary:hover{background:#fee2e2;border-color:#fca5a5;
-            color:#dc2626;transform:translateY(-1px)}
+        .btn-filter-search{background:linear-gradient(135deg,var(--admin-primary),var(--admin-primary-hover));
+            border:none;color:white;height:42px;width:42px;border-radius:9px;font-weight:700;
+            font-size:.82rem;font-family:inherit;transition:all .22s;
+            box-shadow:0 4px 12px rgba(59,130,246,.25);display:inline-flex;align-items:center;justify-content:center}
+        .btn-filter-search:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(59,130,246,.35)}
+        .btn-filter-reset{background:white;border:1.5px solid var(--admin-border);
+            color:var(--admin-text-muted);height:42px;width:42px;border-radius:9px;
+            transition:all .22s;display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
+        .btn-filter-reset:hover{background:#fef2f2;border-color:#fca5a5;color:#dc2626}
 
         /* TABLE */
         .table-card{background:white;border-radius:var(--admin-radius);box-shadow:var(--admin-card-shadow);
             overflow:hidden;animation:fadeInUp .5s ease .15s both;border:1px solid rgba(0,0,0,.04);
             margin-bottom:1.5rem}
+        .table-card-header{padding:1rem 1.25rem .25rem;display:flex;align-items:center;justify-content:space-between}
+        .table-card-title{font-weight:700;font-size:.9rem;color:var(--admin-text);
+            display:flex;align-items:center;gap:.5rem}
+        .table-count-badge{background:#f5f3ff;color:#7c3aed;border:1.5px solid #ddd6fe;
+            font-size:.7rem;font-weight:700;padding:.35rem .8rem;border-radius:50px}
         .table-card .table{margin:0;border-collapse:separate;border-spacing:0}
         .table-card thead tr{background:linear-gradient(135deg,#f8fafc,#f1f5f9)}
         .table-card th{font-weight:700;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;
@@ -126,6 +149,16 @@
         .table-card td{padding:.75rem 1.25rem;vertical-align:middle;font-size:.875rem;border-color:#f3f4f6}
         .table-card tbody tr{transition:all .2s}
         .table-card tbody tr:hover{background:linear-gradient(135deg,#f0f9ff,#eff6ff)}
+        .table-card tbody tr:last-child td{border-bottom:none}
+
+        /* USER CELL */
+        .user-cell{display:flex;align-items:center;gap:.6rem}
+        .user-avatar{width:32px;height:32px;border-radius:8px;
+            background:linear-gradient(135deg,#dbeafe,#bfdbfe);display:inline-flex;
+            align-items:center;justify-content:center;font-weight:700;font-size:.72rem;
+            color:#1d4ed8;flex-shrink:0}
+        .user-avatar.premium{background:linear-gradient(135deg,#FFD700,#FFA500);color:white}
+        .user-name{font-weight:600;font-size:.85rem;color:var(--admin-text)}
 
         /* BADGES */
         .badge-estado{padding:.35rem .75rem;border-radius:50px;font-size:.7rem;font-weight:700;
@@ -134,24 +167,41 @@
         .badge-estado.vencida{background:#fee2e2;color:#991b1b;border:1.5px solid #fecaca}
         .badge-estado.cancelada{background:#fef3c7;color:#92400e;border:1.5px solid #fde68a}
         .badge-estado.expirada{background:#f3f4f6;color:#4b5563;border:1.5px solid #e5e7eb}
+        .status-dot{width:6px;height:6px;border-radius:50%;display:inline-block}
+        .status-dot.activa{background:#059669}
+        .status-dot.vencida{background:#dc2626}
+        .status-dot.cancelada{background:#d97706}
+        .status-dot.expirada{background:#9ca3af}
 
         .badge-plan{padding:.3rem .7rem;border-radius:50px;font-size:.68rem;font-weight:700;
-            background:linear-gradient(135deg,#dbeafe,#bfdbfe);color:#1d4ed8;border:1.5px solid #bfdbfe}
+            background:linear-gradient(135deg,#f5f3ff,#ede9fe);
+            color:#7c3aed;border:1.5px solid #ddd6fe;text-transform:uppercase;letter-spacing:.04em}
 
-        /* METODO PAGO - CORREGIDO */
-        .metodo-pago-cell {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-weight: 600;
-        }
-        .metodo-pago-cell i {
-            font-size: 1.1rem;
-        }
+        /* METODO PAGO */
+        .metodo-pago-cell{display:flex;align-items:center;gap:.5rem;font-weight:600;font-size:.82rem}
+        .metodo-pago-cell i{font-size:1rem}
+        .metodo-pago-cell.tarjeta{color:#1d4ed8}
+        .metodo-pago-cell.paypal{color:#0070ba}
+        .metodo-pago-cell.transferencia{color:#059669}
+        .metodo-pago-cell.default{color:var(--admin-text-muted)}
+
+        /* MONTO */
+        .monto-cell{font-weight:800;color:var(--admin-text);font-size:.95rem;letter-spacing:-.02em}
+
+        /* TRANSACCIÓN */
+        .transaccion-cell{font-family:'SF Mono',Consolas,monospace;font-size:.75rem;
+            color:var(--admin-text-muted);background:#f8fafc;padding:.2rem .5rem;
+            border-radius:4px;border:1px solid var(--admin-border);display:inline-block}
+
+        /* EMPTY STATE */
+        .empty-state{text-align:center;padding:3.5rem 2rem;color:var(--admin-text-muted)}
+        .empty-state i{font-size:3rem;opacity:.2;margin-bottom:1rem;display:block}
+        .empty-state h5{font-weight:700;color:#374151;margin-bottom:.25rem}
+        .empty-state p{margin:0}
 
         /* PAGINATION */
         .pagination-wrapper{margin-top:1.75rem;display:flex;flex-direction:column;
-            align-items:center;gap:.75rem;animation:fadeInUp .5s ease .3s both}
+            align-items:center;gap:.75rem;animation:fadeInUp .5s ease .3s both;margin-bottom:1rem}
         .google-pagination{display:flex;align-items:center;gap:.25rem;list-style:none;
             padding:.5rem .75rem;margin:0;background:white;border-radius:50px;
             box-shadow:0 2px 12px rgba(0,0,0,.08);border:1px solid rgba(0,0,0,.05)}
@@ -166,8 +216,21 @@
             color:white;font-weight:700;box-shadow:0 3px 10px rgba(59,130,246,.35);min-width:36px}
         .google-pagination .disabled a,.google-pagination .disabled span{
             color:#d1d5db;cursor:not-allowed;pointer-events:none}
+        .google-pagination .pg-nav a,.google-pagination .pg-nav span{
+            background:#f8fafc;border:1.5px solid var(--admin-border);color:var(--admin-text-muted)}
+        .google-pagination .pg-nav:not(.disabled) a:hover{
+            background:var(--admin-primary);border-color:var(--admin-primary);color:white}
         .pagination-info{font-size:.8rem;color:var(--admin-text-muted);font-weight:500}
         .pagination-info strong{color:var(--admin-text)}
+
+        /* BACK BUTTON */
+        .btn-back{background:white;border:1.5px solid var(--admin-border);padding:.55rem 1.5rem;
+            border-radius:50px;font-weight:600;font-size:.82rem;font-family:inherit;
+            transition:all .25s;box-shadow:var(--admin-card-shadow);
+            color:var(--admin-text-muted);text-decoration:none;
+            display:inline-flex;align-items:center;gap:.5rem}
+        .btn-back:hover{background:var(--admin-text);border-color:var(--admin-text);
+            color:white;transform:translateY(-2px)}
 
         /* ANIMATIONS */
         @keyframes fadeInDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
@@ -231,11 +294,10 @@
                th:classappend="${activePage == 'suscripciones'} ? 'active' : ''">
                 <i class="fas fa-crown"></i> <span>Suscripciones</span>
             </a>
-            <a th:href="@{/admin/suscripciones/reporte}" class="nav-link"
+            <a th:href="@{/admin/suscripciones/reporte}" class="nav-link active"
                th:classappend="${activePage == 'reporte-suscripciones'} ? 'active' : ''">
                 <i class="fas fa-chart-line"></i> <span>Reporte Suscripciones</span>
             </a>
-            <!-- ✅ NUEVO: Customer Success 360° -->
             <a th:href="@{/admin/customer-success}" class="nav-link"
                th:classappend="${activePage == 'customer-success'} ? 'active' : ''">
                 <i class="fas fa-heartbeat"></i> <span>Customer Success</span>
@@ -243,6 +305,10 @@
             <a th:href="@{/admin/auditoria}" class="nav-link"
                th:classappend="${activePage == 'auditoria'} ? 'active' : ''">
                 <i class="fas fa-history"></i> <span>Auditoría</span>
+            </a>
+            <div class="divider"></div>
+            <a th:href="@{/cliente/home}" class="nav-link">
+                <i class="fas fa-arrow-left"></i> <span>Volver al Cliente</span>
             </a>
         </nav>
     </aside>
@@ -254,91 +320,108 @@
         <div class="page-header">
             <h2>
                 <span class="header-icon"><i class="fas fa-chart-line"></i></span>
-                Reporte de Seguimiento de Suscripciones
+                Reporte de Suscripciones
             </h2>
-            <a id="btnExportarExcel" href="#"
-               onclick="exportarExcel()"
-               style="background:linear-gradient(135deg,#059669,#065f46);color:white;border:none;
-              padding:.575rem 1.375rem;border-radius:9px;font-weight:700;font-size:.875rem;
-              text-decoration:none;display:inline-flex;align-items:center;gap:.5rem;
-              box-shadow:0 4px 12px rgba(5,150,105,.28);transition:all .25s">
-                <i class="fas fa-file-excel"></i> Exportar Excel
-            </a>
+            <div class="page-header-actions">
+                <span class="badge-admin"><i class="fas fa-analytics"></i>Analytics</span>
+                <button id="btnExportarExcel" type="button" onclick="exportarExcel()" class="btn-export-excel">
+                    <i class="fas fa-file-excel"></i> Exportar Excel
+                </button>
+            </div>
         </div>
 
         <!-- Stats Grid -->
         <div class="stats-grid">
             <div class="stat-card c-blue">
-                <div class="sc-glow"></div>
+                <div class="sc-glow"></div><div class="sc-glow2"></div>
                 <div class="sc-icon"><i class="fas fa-receipt"></i></div>
                 <div class="sc-value" th:text="${reporteStats.totalSuscripciones}">0</div>
                 <div class="sc-label">Total Suscripciones</div>
+                <div class="sc-trend"><i class="fas fa-layer-group"></i> Registradas</div>
             </div>
             <div class="stat-card c-green">
-                <div class="sc-glow"></div>
+                <div class="sc-glow"></div><div class="sc-glow2"></div>
                 <div class="sc-icon"><i class="fas fa-check-circle"></i></div>
                 <div class="sc-value" th:text="${reporteStats.suscripcionesActivas}">0</div>
                 <div class="sc-label">Suscripciones Activas</div>
+                <div class="sc-trend"><i class="fas fa-circle" style="font-size:.5rem"></i> En curso</div>
             </div>
             <div class="stat-card c-red">
-                <div class="sc-glow"></div>
+                <div class="sc-glow"></div><div class="sc-glow2"></div>
                 <div class="sc-icon"><i class="fas fa-exclamation-triangle"></i></div>
                 <div class="sc-value" th:text="${reporteStats.suscripcionesVencidas}">0</div>
                 <div class="sc-label">Suscripciones Vencidas</div>
+                <div class="sc-trend"><i class="fas fa-hourglass-end"></i> Requieren atención</div>
             </div>
             <div class="stat-card c-amber">
-                <div class="sc-glow"></div>
+                <div class="sc-glow"></div><div class="sc-glow2"></div>
                 <div class="sc-icon"><i class="fas fa-dollar-sign"></i></div>
                 <div class="sc-value" th:text="'$' + ${reporteStats.ingresosTotales}">0</div>
                 <div class="sc-label">Ingresos Totales</div>
+                <div class="sc-trend"><i class="fas fa-arrow-up"></i> Recaudado</div>
             </div>
         </div>
 
         <!-- Filters -->
         <div class="filters-card">
-            <form th:action="@{/admin/suscripciones/reporte}" method="get" class="row g-3 align-items-end">
-                <div class="col-md-3">
-                    <label class="form-label">Usuario</label>
-                    <input type="text" class="form-control" name="usuario"
-                           placeholder="Buscar por nombre o email..."
-                           th:value="${filtroUsuario}">
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">Plan</label>
-                    <input type="text" class="form-control" name="plan"
-                           placeholder="Nombre del plan..."
-                           th:value="${filtroPlan}">
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">Estado</label>
-                    <select class="form-select" name="estado">
-                        <option value="">Todos</option>
-                        <option value="ACTIVA" th:selected="${filtroEstado == 'ACTIVA'}">Activa</option>
-                        <option value="VENCIDA" th:selected="${filtroEstado == 'VENCIDA'}">Vencida</option>
-                        <option value="CANCELADA" th:selected="${filtroEstado == 'CANCELADA'}">Cancelada</option>
-                        <option value="EXPIRADA" th:selected="${filtroEstado == 'EXPIRADA'}">Expirada</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">Fecha Inicio</label>
-                    <input type="date" class="form-control" name="fechaInicio"
-                           th:value="${filtroFechaInicio}">
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">Fecha Fin</label>
-                    <input type="date" class="form-control" name="fechaFin"
-                           th:value="${filtroFechaFin}">
-                </div>
-                <div class="col-md-1 d-flex">
-                    <button type="submit" class="btn btn-primary w-100">
-                        <i class="fas fa-search me-2"></i>Filtrar
-                    </button>
+            <div class="filter-title">
+                <i class="fas fa-filter" style="color:var(--admin-primary)"></i> Filtros de búsqueda
+            </div>
+            <form th:action="@{/admin/suscripciones/reporte}" method="get">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-3">
+                        <label class="form-label">Usuario</label>
+                        <input type="text" class="form-control" name="usuario"
+                               placeholder="Nombre o email..."
+                               th:value="${filtroUsuario}">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Plan</label>
+                        <input type="text" class="form-control" name="plan"
+                               placeholder="Nombre del plan..."
+                               th:value="${filtroPlan}">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Estado</label>
+                        <select class="form-select" name="estado">
+                            <option value="">Todos</option>
+                            <option value="ACTIVA" th:selected="${filtroEstado == 'ACTIVA'}">Activa</option>
+                            <option value="VENCIDA" th:selected="${filtroEstado == 'VENCIDA'}">Vencida</option>
+                            <option value="CANCELADA" th:selected="${filtroEstado == 'CANCELADA'}">Cancelada</option>
+                            <option value="EXPIRADA" th:selected="${filtroEstado == 'EXPIRADA'}">Expirada</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Desde</label>
+                        <input type="date" class="form-control" name="fechaInicio"
+                               th:value="${filtroFechaInicio}">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Hasta</label>
+                        <input type="date" class="form-control" name="fechaFin"
+                               th:value="${filtroFechaFin}">
+                    </div>
+                    <div class="col-md-1 d-flex gap-2">
+                        <button type="submit" class="btn-filter-search" title="Filtrar">
+                            <i class="fas fa-search"></i>
+                        </button>
+                        <a th:href="@{/admin/suscripciones/reporte}" class="btn-filter-reset" title="Limpiar filtros">
+                            <i class="fas fa-redo"></i>
+                        </a>
+                    </div>
                 </div>
             </form>
         </div>
 
         <!-- Table -->
         <div class="table-card">
+            <div class="table-card-header mb-2">
+                <span class="table-card-title">
+                    <i class="fas fa-crown" style="color:#7c3aed"></i> Detalle de Suscripciones
+                </span>
+                <span class="table-count-badge"
+                      th:text="${totalElements != null ? totalElements + ' registros' : '0 registros'}">0 registros</span>
+            </div>
             <div class="table-responsive">
                 <table class="table table-hover mb-0">
                     <thead>
@@ -348,45 +431,55 @@
                         <th>Plan</th>
                         <th>Fecha Inicio</th>
                         <th>Fecha Fin</th>
-                        <th>Monto Pagado</th>
+                        <th>Monto</th>
                         <th>Método Pago</th>
                         <th>Estado</th>
-                        <th>Transacción</th>
+                        <th class="pe-4">Transacción</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:each="suscripcion : ${suscripciones}">
+                        <!-- Usuario con avatar -->
                         <td class="ps-4">
-                            <div class="d-flex align-items-center">
-                                <div class="user-avatar me-2"
-                                     th:text="${#strings.substring(suscripcion.usuario.nombre, 0, 1)}">
-                                    U
-                                </div>
-                                <span class="fw-semibold" th:text="${suscripcion.usuario.nombre}">Usuario</span>
+                            <div class="user-cell">
+                                <div class="user-avatar"
+                                     th:classappend="${suscripcion.usuario.esPremium} ? 'premium' : ''"
+                                     th:text="${suscripcion.usuario.nombre != null ? #strings.substring(suscripcion.usuario.nombre, 0, 1) : 'U'}">U</div>
+                                <span class="user-name" th:text="${suscripcion.usuario.nombre}">Usuario</span>
                             </div>
                         </td>
-                        <td class="text-muted" th:text="${suscripcion.usuario.email}">email@ejemplo.com</td>
+                        <td>
+                            <span style="font-size:.82rem;color:var(--admin-text-muted)"
+                                  th:text="${suscripcion.usuario.email}">email@ejemplo.com</span>
+                        </td>
                         <td>
                             <span class="badge-plan" th:text="${suscripcion.plan.nombre}">Premium</span>
                         </td>
-                        <td th:text="${#temporals.format(suscripcion.fechaInicio, 'dd/MM/yyyy')}">01/01/2026</td>
-                        <td th:text="${#temporals.format(suscripcion.fechaFin, 'dd/MM/yyyy')}">01/02/2026</td>
-                        <td class="fw-bold" th:text="'$' + ${suscripcion.precioPagado}">$9.99</td>
-
-                        <!-- ✅ METODO DE PAGO - CORREGIDO CON TH:SWITCH -->
+                        <td style="font-size:.82rem;color:var(--admin-text-muted)"
+                            th:text="${suscripcion.fechaInicio != null ? #temporals.format(suscripcion.fechaInicio,'dd/MM/yyyy') : '-'}">01/01/2026</td>
+                        <td style="font-size:.82rem;color:var(--admin-text-muted)"
+                            th:text="${suscripcion.fechaFin != null ? #temporals.format(suscripcion.fechaFin,'dd/MM/yyyy') : '-'}">01/02/2026</td>
                         <td>
-                            <div class="metodo-pago-cell">
+                            <span class="monto-cell" th:text="'$' + ${suscripcion.precioPagado}">$9.99</span>
+                        </td>
+
+                        <!-- Método de Pago -->
+                        <td>
+                            <div class="metodo-pago-cell"
+                                 th:classappend="${suscripcion.metodoPago?.name() == 'TARJETA'} ? 'tarjeta' :
+                                                  (${suscripcion.metodoPago?.name() == 'PAYPAL'} ? 'paypal' :
+                                                  (${suscripcion.metodoPago?.name() == 'TRANSFERENCIA'} ? 'transferencia' : 'default'))">
                                 <span th:switch="${suscripcion.metodoPago?.name()}">
-                                    <span th:case="'TARJETA'" class="text-primary" title="Pago con tarjeta">
+                                    <span th:case="'TARJETA'" title="Pago con tarjeta">
                                         <i class="fas fa-credit-card"></i> Tarjeta
                                     </span>
-                                    <span th:case="'PAYPAL'" class="text-info" title="Pago con PayPal">
+                                    <span th:case="'PAYPAL'" title="Pago con PayPal">
                                         <i class="fab fa-paypal"></i> PayPal
                                     </span>
-                                    <span th:case="'TRANSFERENCIA'" class="text-success" title="Transferencia bancaria">
+                                    <span th:case="'TRANSFERENCIA'" title="Transferencia bancaria">
                                         <i class="fas fa-university"></i> Transferencia
                                     </span>
-                                    <span th:case="*" class="text-muted" title="Método no especificado">
+                                    <span th:case="*" title="Método no especificado">
                                         <i class="fas fa-question-circle"></i>
                                         <span th:text="${suscripcion.metodoPago?.name() ?: 'N/A'}">-</span>
                                     </span>
@@ -394,19 +487,32 @@
                             </div>
                         </td>
 
+                        <!-- Estado -->
                         <td>
-                            <span class="badge badge-estado"
+                            <span class="badge-estado"
                                   th:classappend="${suscripcion.estado.name() == 'ACTIVA'} ? 'activa' :
                                                  (${suscripcion.estado.name() == 'VENCIDA'} ? 'vencida' :
-                                                 (${suscripcion.estado.name() == 'CANCELADA'} ? 'cancelada' : 'expirada'))"
-                                  th:text="${suscripcion.estado.name()}">ACTIVA</span>
+                                                 (${suscripcion.estado.name() == 'CANCELADA'} ? 'cancelada' : 'expirada'))">
+                                <span class="status-dot"
+                                      th:classappend="${suscripcion.estado.name() == 'ACTIVA'} ? 'activa' :
+                                                     (${suscripcion.estado.name() == 'VENCIDA'} ? 'vencida' :
+                                                     (${suscripcion.estado.name() == 'CANCELADA'} ? 'cancelada' : 'expirada'))"></span>
+                                <span th:text="${suscripcion.estado.name()}">ACTIVA</span>
+                            </span>
                         </td>
-                        <td class="text-muted small" th:text="${suscripcion.numeroTransaccion}">TXN-123456</td>
+
+                        <!-- Transacción -->
+                        <td class="pe-4">
+                            <span class="transaccion-cell" th:text="${suscripcion.numeroTransaccion ?: 'N/A'}">TXN-123456</span>
+                        </td>
                     </tr>
-                    <tr th:if="${#lists.isEmpty(suscripciones)}">
-                        <td colspan="9" class="text-center py-5 text-muted">
-                            <i class="fas fa-inbox fa-3x mb-3 d-block" style="opacity:0.2"></i>
-                            <p class="mb-0 fw-semibold">No hay suscripciones registradas</p>
+                    <tr th:if="${suscripciones == null or #lists.isEmpty(suscripciones)}">
+                        <td colspan="9">
+                            <div class="empty-state">
+                                <i class="fas fa-inbox"></i>
+                                <h5>No se encontraron suscripciones</h5>
+                                <p class="text-muted small">Intenta ajustar los filtros de búsqueda</p>
+                            </div>
                         </td>
                     </tr>
                     </tbody>
@@ -414,25 +520,19 @@
             </div>
         </div>
 
-        <!-- ✅ PAGINACIÓN CORREGIDA - Comienza desde página 1 -->
+        <!-- PAGINACIÓN -->
         <div class="pagination-wrapper" th:if="${totalPages > 0}">
             <ul class="google-pagination">
 
-                <!-- ===== ANTERIOR ===== -->
+                <!-- ANTERIOR -->
                 <li class="pg-nav" th:classappend="${currentPage == 0} ? 'disabled' : ''">
                     <a th:if="${currentPage > 0}"
                        th:href="@{/admin/suscripciones/reporte(
-                           page=${currentPage - 1},
-                           size=${pageSize},
-                           estado=${filtroEstado},
-                           plan=${filtroPlan},
-                           usuario=${filtroUsuario},
-                           fechaInicio=${filtroFechaInicio},
-                           fechaFin=${filtroFechaFin},
-                           sortBy=${sortBy},
-                           sortDir=${sortDir}
-                       )}"
-                       title="Página anterior">
+                           page=${currentPage - 1}, size=${pageSize},
+                           estado=${filtroEstado}, plan=${filtroPlan}, usuario=${filtroUsuario},
+                           fechaInicio=${filtroFechaInicio}, fechaFin=${filtroFechaFin},
+                           sortBy=${sortBy}, sortDir=${sortDir}
+                       )}" title="Página anterior">
                         <i class="fas fa-chevron-left" style="font-size:0.75rem"></i>
                     </a>
                     <span th:if="${currentPage == 0}">
@@ -440,29 +540,24 @@
                     </span>
                 </li>
 
-                <!-- ===== PRIMERA PÁGINA (siempre visible) ===== -->
+                <!-- PRIMERA PÁGINA -->
                 <li th:classappend="${currentPage == 0} ? 'active' : ''">
                     <a th:if="${currentPage != 0}"
                        th:href="@{/admin/suscripciones/reporte(
-                           page=0,
-                           size=${pageSize},
-                           estado=${filtroEstado},
-                           plan=${filtroPlan},
-                           usuario=${filtroUsuario},
-                           fechaInicio=${filtroFechaInicio},
-                           fechaFin=${filtroFechaFin},
-                           sortBy=${sortBy},
-                           sortDir=${sortDir}
+                           page=0, size=${pageSize},
+                           estado=${filtroEstado}, plan=${filtroPlan}, usuario=${filtroUsuario},
+                           fechaInicio=${filtroFechaInicio}, fechaFin=${filtroFechaFin},
+                           sortBy=${sortBy}, sortDir=${sortDir}
                        )}">1</a>
                     <span th:if="${currentPage == 0}">1</span>
                 </li>
 
-                <!-- ===== ELLIPSIS IZQUIERDO ===== -->
+                <!-- ELLIPSIS IZQUIERDO -->
                 <li class="ellipsis" th:if="${currentPage > 2}">
                     <span>···</span>
                 </li>
 
-                <!-- ===== PÁGINAS CENTRALES (dinámicas) ===== -->
+                <!-- PÁGINAS CENTRALES -->
                 <li th:each="i : ${#numbers.sequence(
                         currentPage > 1 ? currentPage - 1 : 1,
                         currentPage < totalPages - 2 ? currentPage + 1 : totalPages - 2
@@ -471,58 +566,40 @@
                     th:classappend="${i == currentPage} ? 'active' : ''">
                     <a th:if="${i != currentPage}"
                        th:href="@{/admin/suscripciones/reporte(
-                           page=${i},
-                           size=${pageSize},
-                           estado=${filtroEstado},
-                           plan=${filtroPlan},
-                           usuario=${filtroUsuario},
-                           fechaInicio=${filtroFechaInicio},
-                           fechaFin=${filtroFechaFin},
-                           sortBy=${sortBy},
-                           sortDir=${sortDir}
-                       )}"
-                       th:text="${i + 1}">2</a>
+                           page=${i}, size=${pageSize},
+                           estado=${filtroEstado}, plan=${filtroPlan}, usuario=${filtroUsuario},
+                           fechaInicio=${filtroFechaInicio}, fechaFin=${filtroFechaFin},
+                           sortBy=${sortBy}, sortDir=${sortDir}
+                       )}" th:text="${i + 1}">2</a>
                     <span th:if="${i == currentPage}" th:text="${i + 1}">2</span>
                 </li>
 
-                <!-- ===== ELLIPSIS DERECHO ===== -->
+                <!-- ELLIPSIS DERECHO -->
                 <li class="ellipsis" th:if="${currentPage < totalPages - 3 and totalPages > 4}">
                     <span>···</span>
                 </li>
 
-                <!-- ===== ÚLTIMA PÁGINA (si hay más de 1 página) ===== -->
+                <!-- ÚLTIMA PÁGINA -->
                 <li th:if="${totalPages > 1}" th:classappend="${currentPage == totalPages - 1} ? 'active' : ''">
                     <a th:if="${currentPage != totalPages - 1}"
                        th:href="@{/admin/suscripciones/reporte(
-                           page=${totalPages - 1},
-                           size=${pageSize},
-                           estado=${filtroEstado},
-                           plan=${filtroPlan},
-                           usuario=${filtroUsuario},
-                           fechaInicio=${filtroFechaInicio},
-                           fechaFin=${filtroFechaFin},
-                           sortBy=${sortBy},
-                           sortDir=${sortDir}
-                       )}"
-                       th:text="${totalPages}">10</a>
+                           page=${totalPages - 1}, size=${pageSize},
+                           estado=${filtroEstado}, plan=${filtroPlan}, usuario=${filtroUsuario},
+                           fechaInicio=${filtroFechaInicio}, fechaFin=${filtroFechaFin},
+                           sortBy=${sortBy}, sortDir=${sortDir}
+                       )}" th:text="${totalPages}">10</a>
                     <span th:if="${currentPage == totalPages - 1}" th:text="${totalPages}">10</span>
                 </li>
 
-                <!-- ===== SIGUIENTE ===== -->
+                <!-- SIGUIENTE -->
                 <li class="pg-nav" th:classappend="${currentPage == totalPages - 1} ? 'disabled' : ''">
                     <a th:if="${currentPage < totalPages - 1}"
                        th:href="@{/admin/suscripciones/reporte(
-                           page=${currentPage + 1},
-                           size=${pageSize},
-                           estado=${filtroEstado},
-                           plan=${filtroPlan},
-                           usuario=${filtroUsuario},
-                           fechaInicio=${filtroFechaInicio},
-                           fechaFin=${filtroFechaFin},
-                           sortBy=${sortBy},
-                           sortDir=${sortDir}
-                       )}"
-                       title="Página siguiente">
+                           page=${currentPage + 1}, size=${pageSize},
+                           estado=${filtroEstado}, plan=${filtroPlan}, usuario=${filtroUsuario},
+                           fechaInicio=${filtroFechaInicio}, fechaFin=${filtroFechaFin},
+                           sortBy=${sortBy}, sortDir=${sortDir}
+                       )}" title="Página siguiente">
                         <i class="fas fa-chevron-right" style="font-size:0.75rem"></i>
                     </a>
                     <span th:if="${currentPage == totalPages - 1}">
@@ -532,20 +609,28 @@
 
             </ul>
 
-            <!-- ===== INFO DE PAGINACIÓN ===== -->
+            <!-- INFO DE PAGINACIÓN -->
             <p class="pagination-info">
                 <span th:if="${totalElements > 0}">
                     Mostrando
                     <strong th:text="${(currentPage * pageSize) + 1}">1</strong> –
-<strong th:text="${(currentPage + 1) * pageSize < totalElements ? (currentPage + 1) * pageSize : totalElements}">15</strong>                    de <strong th:text="${totalElements}">100</strong> suscripciones
+                    <strong th:text="${(currentPage + 1) * pageSize < totalElements ? (currentPage + 1) * pageSize : totalElements}">15</strong>
+                    de <strong th:text="${totalElements}">100</strong> suscripciones
                 </span>
                 <span th:if="${totalElements == 0}">
                     Mostrando <strong>0</strong> suscripciones
                 </span>
                 <span th:if="${totalPages > 0}">
-                     · Página <strong th:text="${currentPage + 1}">1</strong> de <strong th:text="${totalPages}">10</strong>
+                    · Página <strong th:text="${currentPage + 1}">1</strong> de <strong th:text="${totalPages}">10</strong>
                 </span>
             </p>
+        </div>
+
+        <!-- Botón volver -->
+        <div class="text-center mb-3">
+            <a th:href="@{/admin/dashboard}" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Volver al Dashboard
+            </a>
         </div>
 
     </main>
@@ -553,7 +638,7 @@
 
 <!-- Toast -->
 <div class="toast-container position-fixed bottom-0 end-0 p-3">
-    <div id="toastNotificacion" class="toast align-items-center text-white border-0 animate__animated animate__fadeInRight"
+    <div id="toastNotificacion" class="toast align-items-center text-white border-0"
          role="alert" aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
             <div class="toast-body">
@@ -566,16 +651,13 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Sidebar toggle
     function toggleSidebar(){document.getElementById('adminSidebar').classList.toggle('show')}
     document.addEventListener('click',function(e){
         const sb=document.getElementById('adminSidebar'),tb=document.querySelector('.btn-toggle-sidebar');
         if(window.innerWidth<992&&sb.classList.contains('show')&&!sb.contains(e.target)&&!tb.contains(e.target))
             sb.classList.remove('show');
     });
-</script>
-<script>
-    // Construye la URL de exportación reutilizando los filtros activos de la página actual
+
     function exportarExcel() {
         const params = new URLSearchParams(window.location.search);
         params.delete('page');

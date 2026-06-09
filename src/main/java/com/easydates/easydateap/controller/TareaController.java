@@ -1,12 +1,16 @@
 package com.easydates.easydateap.controller;
 
 import com.easydates.easydateap.dto.TareaDTO;
-import com.easydates.easydateap.entity.Tarea;
+import com.easydates.easydateap.model.Tarea;
 import com.easydates.easydateap.service.ICategoriaService;
 import com.easydates.easydateap.service.IEtiquetaService;
 import com.easydates.easydateap.service.ITareaService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,7 +35,55 @@ public class TareaController {
     @Autowired
     private IEtiquetaService etiquetaService;
 
-    // Guardar tarea (desde el modal)
+    @GetMapping
+    public String listarTareas(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String buscar,
+            @RequestParam(required = false) String prioridad,
+            @RequestParam(required = false) String estadoTarea,
+            @RequestParam(required = false) Integer categoriaId,
+            HttpSession session,
+            Model model) {
+
+        Integer usuarioId = (Integer) session.getAttribute("usuarioId");
+        if (usuarioId == null) {
+            return "redirect:/login";
+        }
+
+        int page0 = Math.max(0, page - 1);
+        Pageable pageable = PageRequest.of(
+                page0, size,
+                Sort.by("fechaLimite").ascending()
+        );
+
+        Page<Tarea> tareasPage = tareaService.buscarTareasClientePaginadas(
+                usuarioId, buscar, prioridad, estadoTarea, categoriaId, pageable
+        );
+
+        model.addAttribute("tareas", tareasPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", tareasPage.getTotalPages());
+        model.addAttribute("totalElements", tareasPage.getTotalElements());
+        model.addAttribute("pageSize", size);
+
+        model.addAttribute("buscar", buscar);
+        model.addAttribute("prioridad", prioridad);
+        model.addAttribute("estadoTarea", estadoTarea);
+        model.addAttribute("categoriaId", categoriaId);
+
+        model.addAttribute("categorias", categoriaService.listarPorUsuario(usuarioId));
+        model.addAttribute("etiquetas", etiquetaService.listarTodas());
+        model.addAttribute("usuario", session.getAttribute("usuario"));
+
+        model.addAttribute("totalTareas", tareaService.contarTotal(usuarioId));
+        model.addAttribute("tareasPendientes", tareaService.contarPendientes(usuarioId));
+        model.addAttribute("tareasCompletadas", tareaService.contarCompletadas(usuarioId));
+        model.addAttribute("tareasUrgentes", tareaService.contarUrgentes(usuarioId));
+
+        return "client/tareas";
+    }
+
     @PostMapping("/guardar")
     public String guardarTarea(@ModelAttribute TareaDTO dto,
                                HttpSession session,
@@ -44,11 +96,9 @@ public class TareaController {
 
         try {
             if (dto.getId() != null && dto.getId() > 0) {
-                // Actualizar existente
                 tareaService.actualizarTarea(dto.getId(), dto);
                 redirectAttributes.addFlashAttribute("mensaje", "✅ Tarea actualizada correctamente");
             } else {
-                // Crear nueva
                 tareaService.crearTarea(dto, usuarioId);
                 redirectAttributes.addFlashAttribute("mensaje", "✅ Tarea creada correctamente");
             }
@@ -59,7 +109,6 @@ public class TareaController {
         return "redirect:/cliente/home";
     }
 
-    // Eliminar tarea
     @PostMapping("/{id}/eliminar")
     public String eliminarTarea(@PathVariable Integer id,
                                 HttpSession session,
@@ -79,7 +128,6 @@ public class TareaController {
         return "redirect:/cliente/tareas";
     }
 
-    // Cambiar estado de tarea (drag & drop - AJAX)
     @PutMapping("/{id}/estado")
     @ResponseBody
     public ResponseEntity<?> cambiarEstado(@PathVariable Integer id,
@@ -99,7 +147,6 @@ public class TareaController {
         return ResponseEntity.badRequest().body(response);
     }
 
-    // Obtener tarea por ID (para editar - AJAX)
     @GetMapping("/{id}")
     @ResponseBody
     public ResponseEntity<?> obtenerTarea(@PathVariable Integer id) {
@@ -123,7 +170,6 @@ public class TareaController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Buscar tareas
     @GetMapping("/buscar")
     public String buscarTareas(@RequestParam String q,
                                HttpSession session,
@@ -141,7 +187,6 @@ public class TareaController {
         return "client/resultados-busqueda";
     }
 
-    // ✅ MOSTRAR FORMULARIO DE EDICIÓN
     @GetMapping("/{id}/editar")
     public String mostrarEditarTarea(@PathVariable Integer id,
                                      HttpSession session,
@@ -176,7 +221,6 @@ public class TareaController {
         return "redirect:/cliente/tareas";
     }
 
-    // ✅ ACTUALIZAR TAREA - FORMULARIO TRADICIONAL (usa @ModelAttribute)
     @PostMapping("/{id}/actualizar")
     public String actualizarTarea(@PathVariable Integer id,
                                   @ModelAttribute TareaDTO dto,
@@ -198,7 +242,6 @@ public class TareaController {
         return "redirect:/cliente/tareas";
     }
 
-    // ✅ ACTUALIZAR TAREA - AJAX (usa @RequestBody para JSON)
     @PostMapping("/{id}/actualizar-ajax")
     @ResponseBody
     public ResponseEntity<?> actualizarTareaAjax(@PathVariable Integer id,
@@ -224,7 +267,6 @@ public class TareaController {
         }
     }
 
-    // ✅ CAMBIAR ESTADO (versión POST para formularios)
     @PostMapping("/{id}/cambiar-estado")
     public String cambiarEstadoForm(@PathVariable Integer id,
                                     @RequestParam String nuevoEstado,

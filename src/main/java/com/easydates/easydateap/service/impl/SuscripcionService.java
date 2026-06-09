@@ -1,10 +1,10 @@
 package com.easydates.easydateap.service.impl;
 
 import com.easydates.easydateap.dto.SuscripcionDTO;
-import com.easydates.easydateap.entity.Plan;
-import com.easydates.easydateap.entity.Rol;
-import com.easydates.easydateap.entity.Suscripcion;
-import com.easydates.easydateap.entity.Usuario;
+import com.easydates.easydateap.model.Plan;
+import com.easydates.easydateap.model.Rol;
+import com.easydates.easydateap.model.Suscripcion;
+import com.easydates.easydateap.model.Usuario;
 import com.easydates.easydateap.repository.PlanRepository;
 import com.easydates.easydateap.repository.RolRepository;
 import com.easydates.easydateap.repository.SuscripcionRepository;

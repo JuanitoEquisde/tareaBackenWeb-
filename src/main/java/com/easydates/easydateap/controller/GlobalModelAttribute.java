@@ -1,6 +1,6 @@
 package com.easydates.easydateap.controller;
 
-import com.easydates.easydateap.entity.Usuario;
+import com.easydates.easydateap.model.Usuario;
 import com.easydates.easydateap.service.ICategoriaService;
 import com.easydates.easydateap.service.IEtiquetaService;
 import jakarta.servlet.http.HttpSession;

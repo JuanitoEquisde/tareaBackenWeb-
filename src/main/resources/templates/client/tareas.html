@@ -10,7 +10,6 @@
     <link rel="stylesheet" th:href="@{/css/client-home.css}">
 
     <style>
-        /* ====== VARIABLES ====== */
         :root {
             --color-primary:      #1565C0;
             --color-primary-dark: #0D47A1;
@@ -42,7 +41,6 @@
             min-height: 100vh;
         }
 
-        /* ====== NAVBAR ====== */
         .navbar {
             height: var(--navbar-height);
             background: linear-gradient(90deg, var(--color-primary-dark) 0%, var(--color-primary) 100%);
@@ -149,7 +147,6 @@
         .menu-toggle:hover { background: rgba(255,255,255,.28) !important; }
         .menu-toggle.active { background: rgba(255,255,255,.3) !important; }
 
-        /* ====== 🔔 NUEVO DISEÑO DE NOTIFICACIONES ====== */
         .notif-dropdown{width:380px;max-height:500px;padding:0;overflow:hidden;border:none;box-shadow:0 10px 40px rgba(0,0,0,0.15);border-radius:16px;}
         .notif-header{padding:16px 20px;background:linear-gradient(135deg,#1565C0,#0D47A1);color:white;display:flex;justify-content:space-between;align-items:center;}
         .notif-header h6{margin:0;font-weight:800;font-size:0.95rem;}
@@ -181,10 +178,8 @@
         .notif-badge{position:absolute;top:-4px;right:-4px;width:18px;height:18px;background:#E53935;color:white;font-size:0.65rem;font-weight:800;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid white;box-shadow:0 2px 6px rgba(229,57,53,0.4);animation:pulse 2s infinite;}
         @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(229,57,53,0.4);}70%{box-shadow:0 0 0 8px rgba(229,57,53,0);}100%{box-shadow:0 0 0 0 rgba(229,57,53,0);}}
 
-        /* ====== LAYOUT ====== */
         .main-wrapper { display: flex; min-height: calc(100vh - var(--navbar-height)); }
 
-        /* ====== SIDEBAR ====== */
         .sidebar-container {
             width: var(--sidebar-width); min-width: var(--sidebar-width);
             background: white;
@@ -326,7 +321,6 @@
         }
         .badge-etiqueta:hover { opacity: .8; transform: scale(1.05); }
 
-        /* ====== OVERLAY ====== */
         .sidebar-overlay {
             display: none; position: fixed; inset: 0;
             background: rgba(0,0,0,.45); z-index: 1040;
@@ -335,7 +329,6 @@
         }
         .sidebar-overlay.show { display: block; opacity: 1; }
 
-        /* ====== MAIN CONTENT ====== */
         .main-content-wrapper {
             margin-left: var(--sidebar-width);
             flex: 1; min-width: 0;
@@ -343,7 +336,6 @@
         @media (max-width: 991px) { .main-content-wrapper { margin-left: 0; } }
         .main-content-inner { padding: 1.75rem 1.5rem; }
 
-        /* ====== PAGE TITLE ====== */
         .page-header {
             display: flex; align-items: center; gap: 1rem;
             margin-bottom: 1.5rem;
@@ -365,7 +357,6 @@
             font-size: .8rem; font-weight: 600; color: var(--color-gray-500);
         }
 
-        /* ====== FILTERS CARD ====== */
         .filters-card {
             background: white; border-radius: var(--br-lg);
             padding: 1.1rem 1.25rem; margin-bottom: 1.25rem;
@@ -378,7 +369,7 @@
         }
         .filter-group {
             display: flex; flex-direction: column; gap: .3rem;
-            flex: 1; min-width: 160px;
+            flex: 1; min-width: 140px;
         }
         .filter-group.search-group { flex: 2; min-width: 220px; }
         .filter-label {
@@ -430,10 +421,10 @@
             display: flex; align-items: center; justify-content: center;
             color: var(--color-gray-500); font-size: .95rem; flex-shrink: 0;
             transition: all var(--tr-f);
+            text-decoration: none;
         }
         .btn-clear:hover { background: #FFEBEE; color: #C62828; border-color: #C62828; }
 
-        /* ====== TABLE CARD ====== */
         .table-card {
             background: white; border-radius: var(--br-lg);
             box-shadow: var(--sh-md); overflow: visible;
@@ -491,7 +482,6 @@
             font-size: .775rem; color: var(--color-gray-500); line-height: 1.4;
         }
 
-        /* Priority badges */
         .badge-priority {
             display: inline-flex; align-items: center; gap: .3rem;
             padding: .28rem .75rem;
@@ -503,7 +493,6 @@
         .badge-media    { background: #FFF8E1; color: #E65100; }
         .badge-baja     { background: #E8F5E9; color: #2E7D32; }
 
-        /* Status badges */
         .badge-status {
             display: inline-flex; align-items: center; gap: .3rem;
             padding: .28rem .75rem;
@@ -514,7 +503,6 @@
         .badge-progreso   { background: #CCE5FF; color: #004085; }
         .badge-terminado  { background: #D4EDDA; color: #155724; }
 
-        /* Category chip */
         .category-chip {
             display: inline-flex; align-items: center; gap: .35rem;
             padding: .28rem .7rem;
@@ -524,7 +512,6 @@
             white-space: nowrap;
         }
 
-        /* Actions dropdown */
         .actions-wrapper { position: relative; display: inline-block; }
 
         .btn-actions {
@@ -560,11 +547,9 @@
         .dropdown-actions .d-item.danger { color: #C62828; }
         .dropdown-actions .d-item.danger:hover { background: #FFF5F5; }
 
-        /* Date overdue */
         .date-overdue { color: #C62828; font-weight: 700; }
         .date-ok       { color: #444; font-weight: 600; }
 
-        /* Empty state */
         .empty-state {
             text-align: center; padding: 3.5rem 1rem;
             color: var(--color-gray-500);
@@ -572,7 +557,6 @@
         .empty-state i { font-size: 2.8rem; opacity: .25; display: block; margin-bottom: .75rem; }
         .empty-state p { margin: 0; font-size: .9rem; font-weight: 600; }
 
-        /* ====== ROW ANIMATIONS ====== */
         .fade-row {
             animation: fadeInUp .35s cubic-bezier(.4,0,.2,1) both;
         }
@@ -585,7 +569,6 @@
             to   { opacity: 1; transform: translateY(0); }
         }
 
-        /* ====== MOBILE CARDS ====== */
         .mobile-task-list { display: none; flex-direction: column; gap: .75rem; }
 
         .m-task-card {
@@ -617,7 +600,6 @@
             color: var(--color-gray-500); text-transform: uppercase; letter-spacing: .8px;
         }
 
-        /* ====== CONFIRM MODAL ====== */
         .modal-overlay {
             display: none; position: fixed; inset: 0;
             background: rgba(0,0,0,.45); z-index: 2000;
@@ -665,7 +647,6 @@
         }
         .btn-delete-modal:hover { background: #B71C1C; transform: translateY(-1px); }
 
-        /* ====== BOOTSTRAP MODAL (Nueva Tarea) ====== */
         .modal-content {
             border: none !important; border-radius: var(--br-lg) !important;
             box-shadow: var(--sh-lg) !important; font-family: 'Nunito', sans-serif !important;
@@ -681,7 +662,55 @@
             font-weight: 700 !important; font-family: 'Nunito', sans-serif !important;
         }
 
-        /* ====== RESPONSIVE ====== */
+        .pagination-custom {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1.5rem;
+            flex-wrap: wrap;
+            border-top: 1.5px solid var(--color-gray-200);
+        }
+        .page-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 38px;
+            height: 38px;
+            padding: 0 0.75rem;
+            border-radius: 8px;
+            background: white;
+            color: var(--color-primary);
+            border: 1.5px solid #E3F2FD;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        .page-btn:hover:not(.disabled):not(.active) {
+            background: #F0F9FF;
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+            transform: translateY(-2px);
+        }
+        .page-btn.active {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(21,101,192,0.4);
+        }
+        .page-btn.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        .page-info {
+            color: var(--color-gray-500);
+            font-size: 0.85rem;
+            margin-left: 1rem;
+            font-weight: 600;
+        }
+
         @media (max-width: 991px) {
             .main-content-inner { padding: 1.25rem 1rem; }
             .table-card { display: none; }
@@ -698,7 +727,6 @@
 </head>
 <body>
 
-<!-- ========== NAVBAR ========== -->
 <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
     <div class="container-fluid px-3 px-md-4 d-flex align-items-center gap-2">
 
@@ -727,7 +755,6 @@
                 <span class="d-none d-sm-inline">Nueva Tarea</span>
             </button>
 
-            <!-- 🔔 NOTIFICACIONES - NUEVO DISEÑO -->
             <div class="dropdown">
                 <a class="nav-link position-relative p-2" href="#" role="button"
                    data-bs-toggle="dropdown" id="btnNotificaciones" onclick="cargarNotificaciones()">
@@ -751,7 +778,7 @@
             <div class="dropdown">
                 <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#"
                    role="button" data-bs-toggle="dropdown">
-                    <div class="avatar" th:classappend="${usuario.esPremium} ? 'premium' : ''">
+                    <div class="avatar" th:classappend="${usuario != null and usuario.esPremium} ? 'premium' : ''">
                         <span th:text="${usuario != null and usuario.nombre != null and #strings.length(usuario.nombre) >= 2 ? #strings.toUpperCase(usuario.nombre.substring(0,2)) : 'US'}">US</span>
                     </div>
                     <span class="d-none d-md-inline" style="font-size:.875rem;font-weight:700;"
@@ -782,32 +809,28 @@
     </div>
 </nav>
 
-<!-- Overlay -->
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
 <div class="main-wrapper">
 
-    <!-- ========== SIDEBAR ========== -->
     <nav id="sidebar" class="sidebar-container">
         <div class="sidebar-inner">
 
             <div class="user-info-section mb-4">
                 <div class="avatar-large-wrapper mb-2">
-                    <div class="avatar-large" th:classappend="${usuario.esPremium} ? 'premium' : ''">
+                    <div class="avatar-large" th:classappend="${usuario != null and usuario.esPremium} ? 'premium' : ''">
                         <span th:text="${usuario != null and usuario.nombre != null and #strings.length(usuario.nombre) >= 2 ? #strings.toUpperCase(usuario.nombre.substring(0,2)) : 'US'}">US</span>
-                        <i class="fas fa-crown avatar-crown" th:if="${usuario.esPremium}" title="Usuario Premium"></i>
+                        <i class="fas fa-crown avatar-crown" th:if="${usuario != null and usuario.esPremium}" title="Usuario Premium"></i>
                     </div>
                 </div>
                 <h6 th:text="${usuario != null ? usuario.nombre : 'Usuario'}">Usuario</h6>
 
-                <!-- Badge Premium (SOLO si es premium) -->
-                <div th:if="${usuario.esPremium}" class="premium-badge">
+                <div th:if="${usuario != null and usuario.esPremium}" class="premium-badge">
                     <i class="fas fa-crown"></i>
                     <span>PREMIUM</span>
                 </div>
 
-                <!-- Texto del rol (SOLO si NO es premium) -->
-                <small th:unless="${usuario.esPremium}"
+                <small th:unless="${usuario != null and usuario.esPremium}"
                        th:text="${usuario != null and usuario.rol != null ? #strings.toUpperCase(usuario.rol.nombre) : 'ROL'}">ROL</small>
             </div>
 
@@ -859,11 +882,9 @@
         </div>
     </nav>
 
-    <!-- ========== MAIN CONTENT ========== -->
     <main class="main-content-wrapper">
         <div class="main-content-inner">
 
-            <!-- Page header -->
             <div class="page-header">
                 <div class="page-header-icon">
                     <i class="fas fa-tasks"></i>
@@ -874,7 +895,6 @@
                 </div>
             </div>
 
-            <!-- FILTERS -->
             <div class="filters-card">
                 <form th:action="@{/cliente/tareas}" method="get" id="filterForm">
                     <div class="filters-inner">
@@ -891,26 +911,35 @@
                             <label class="filter-label">Prioridad</label>
                             <select name="prioridad" class="filter-control">
                                 <option value="">Todas</option>
-                                <option value="ALTA"  th:selected="${prioridad == 'ALTA'}">🔴 Alta</option>
-                                <option value="MEDIA" th:selected="${prioridad == 'MEDIA'}">🟡 Media</option>
-                                <option value="BAJA"  th:selected="${prioridad == 'BAJA'}">🟢 Baja</option>
+                                <option value="ALTA"  th:selected="${prioridad == 'ALTA'}">Alta</option>
+                                <option value="MEDIA" th:selected="${prioridad == 'MEDIA'}">Media</option>
+                                <option value="BAJA"  th:selected="${prioridad == 'BAJA'}">Baja</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Estado</label>
+                            <select name="estadoTarea" class="filter-control">
+                                <option value="">Todos</option>
+                                <option value="PENDIENTE"   th:selected="${estadoTarea == 'PENDIENTE'}">Pendiente</option>
+                                <option value="EN_PROGRESO" th:selected="${estadoTarea == 'EN_PROGRESO'}">En Progreso</option>
+                                <option value="TERMINADO"   th:selected="${estadoTarea == 'TERMINADO'}">Terminado</option>
                             </select>
                         </div>
                         <div class="filter-group">
                             <label class="filter-label">Categoría</label>
-                            <select name="categoria" class="filter-control">
+                            <select name="categoriaId" class="filter-control">
                                 <option value="">Todas</option>
                                 <option th:each="cat : ${categorias != null ? categorias : {}}"
                                         th:value="${cat.id}"
                                         th:text="${cat.nombre}"
-                                        th:selected="${categoriaId == cat.id}"></option>
+                                        th:selected="${categoriaId != null and categoriaId == cat.id}"></option>
                             </select>
                         </div>
                         <div class="btn-filter-row" style="flex-shrink:0; display:flex; gap:.5rem; align-items:flex-end;">
                             <button type="submit" class="btn-filter-submit">
                                 <i class="fas fa-filter"></i> Filtrar
                             </button>
-                            <a href="/cliente/tareas" class="btn-clear" title="Limpiar filtros">
+                            <a th:href="@{/cliente/tareas}" class="btn-clear" title="Limpiar filtros">
                                 <i class="fas fa-times"></i>
                             </a>
                         </div>
@@ -918,12 +947,11 @@
                 </form>
             </div>
 
-            <!-- ====== DESKTOP TABLE ====== -->
             <div class="table-card">
                 <div class="table-header-bar">
                     <h6><i class="fas fa-list me-2"></i>Listado de Tareas</h6>
                     <span class="table-count-badge"
-                          th:text="${tareas != null ? #lists.size(tareas) : 0} + ' tareas'">0 tareas</span>
+                          th:text="${totalElements != null ? totalElements : 0} + ' tareas'">0 tareas</span>
                 </div>
                 <div style="overflow-x:auto;">
                     <table class="tasks-table">
@@ -954,22 +982,19 @@
                             class="fade-row"
                             th:style="'animation-delay:' + ${iter.index * 35} + 'ms'">
 
-                            <!-- Tarea -->
                             <td>
                                 <div class="task-name" th:text="${tarea.titulo}">Título</div>
                                 <div class="task-desc" th:text="${#strings.abbreviate(tarea.descripcion, 65)}">Desc</div>
                             </td>
 
-                            <!-- Categoría -->
                             <td>
                                 <span class="category-chip" th:if="${tarea.categoria != null}">
                                     <i class="fas fa-folder" style="font-size:.7rem; color:var(--color-gray-500);"></i>
                                     <span th:text="${tarea.categoria.nombre}">Trabajo</span>
                                 </span>
-                                <span style="color:var(--color-gray-500); font-size:.8rem;" th:if="${tarea.categoria == null}">—</span>
+                                <span style="color:var(--color-gray-500); font-size:.8rem;" th:if="${tarea.categoria == null}">Sin categoría</span>
                             </td>
 
-                            <!-- Prioridad -->
                             <td>
                                 <span class="badge-priority"
                                       th:classappend="${tarea.prioridad == 'ALTA'} ? 'badge-alta' : (${tarea.prioridad == 'MEDIA'} ? 'badge-media' : 'badge-baja')">
@@ -980,7 +1005,6 @@
                                 </span>
                             </td>
 
-                            <!-- Estado -->
                             <td>
                                 <span class="badge-status"
                                       th:classappend="${tarea.estadoTarea == 'PENDIENTE'} ? 'badge-pendiente' : (${tarea.estadoTarea == 'EN_PROGRESO'} ? 'badge-progreso' : 'badge-terminado')">
@@ -991,7 +1015,6 @@
                                 </span>
                             </td>
 
-                            <!-- Fecha -->
                             <td style="white-space:nowrap; font-size:.85rem;">
                                 <span th:if="${tarea.fechaLimite != null and tarea.fechaLimite.isBefore(T(java.time.LocalDate).now()) and tarea.estadoTarea != 'TERMINADO'}"
                                       class="date-overdue">
@@ -1003,7 +1026,6 @@
                                       th:text="${tarea.fechaLimite != null ? #temporals.format(tarea.fechaLimite, 'dd/MM/yyyy') : 'Sin fecha'}">29/05/2026</span>
                             </td>
 
-                            <!-- Acciones -->
                             <td style="text-align:right; padding-right:1.1rem;">
                                 <div class="actions-wrapper">
                                     <button class="btn-actions" onclick="toggleActions(this)" type="button">
@@ -1025,9 +1047,53 @@
                         </tbody>
                     </table>
                 </div>
+
+                <nav th:if="${totalPages > 0}" class="pagination-custom">
+                    <a th:if="${currentPage > 1}"
+                       th:href="@{/cliente/tareas(page=${currentPage - 1}, size=${pageSize}, buscar=${buscar}, prioridad=${prioridad}, estadoTarea=${estadoTarea}, categoriaId=${categoriaId})}"
+                       class="page-btn" title="Página anterior">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                    <span th:if="${currentPage <= 1}" class="page-btn disabled">
+                        <i class="fas fa-chevron-left"></i>
+                    </span>
+
+                    <a th:if="${currentPage > 3}"
+                       th:href="@{/cliente/tareas(page=1, size=${pageSize}, buscar=${buscar}, prioridad=${prioridad}, estadoTarea=${estadoTarea}, categoriaId=${categoriaId})}"
+                       class="page-btn">1</a>
+                    <span th:if="${currentPage > 3}" class="text-muted">...</span>
+
+                    <th:block th:each="i : ${#numbers.sequence(
+                            (currentPage - 2 < 1 ? 1 : (currentPage + 2 > totalPages ? totalPages - 4 : currentPage - 2)),
+                            (currentPage + 2 > totalPages ? totalPages : (currentPage - 2 < 1 ? 5 : currentPage + 2))
+                        )}">
+                        <a th:if="${i >= 1 and i <= totalPages and i != currentPage}"
+                           th:href="@{/cliente/tareas(page=${i}, size=${pageSize}, buscar=${buscar}, prioridad=${prioridad}, estadoTarea=${estadoTarea}, categoriaId=${categoriaId})}"
+                           class="page-btn" th:text="${i}">1</a>
+                        <span th:if="${i == currentPage}" class="page-btn active" th:text="${i}">1</span>
+                    </th:block>
+
+                    <span th:if="${currentPage < totalPages - 2}" class="text-muted">...</span>
+                    <a th:if="${currentPage < totalPages - 2}"
+                       th:href="@{/cliente/tareas(page=${totalPages}, size=${pageSize}, buscar=${buscar}, prioridad=${prioridad}, estadoTarea=${estadoTarea}, categoriaId=${categoriaId})}"
+                       class="page-btn" th:text="${totalPages}">10</a>
+
+                    <a th:if="${currentPage < totalPages}"
+                       th:href="@{/cliente/tareas(page=${currentPage + 1}, size=${pageSize}, buscar=${buscar}, prioridad=${prioridad}, estadoTarea=${estadoTarea}, categoriaId=${categoriaId})}"
+                       class="page-btn" title="Página siguiente">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                    <span th:if="${currentPage >= totalPages}" class="page-btn disabled">
+                        <i class="fas fa-chevron-right"></i>
+                    </span>
+
+                    <span class="page-info">
+                        Página <strong th:text="${currentPage}">1</strong> de <strong th:text="${totalPages}">1</strong>
+                        (<strong th:text="${totalElements}">0</strong> tareas)
+                    </span>
+                </nav>
             </div>
 
-            <!-- ====== MOBILE CARDS ====== -->
             <div class="mobile-task-list">
 
                 <div th:if="${tareas == null or #lists.isEmpty(tareas)}" class="m-task-card">
@@ -1094,13 +1160,39 @@
                         </div>
                     </div>
                 </div>
+
+                <nav th:if="${totalPages > 0}" class="pagination-custom" style="margin-top:1rem;">
+                    <a th:if="${currentPage > 1}"
+                       th:href="@{/cliente/tareas(page=${currentPage - 1}, size=${pageSize}, buscar=${buscar}, prioridad=${prioridad}, estadoTarea=${estadoTarea}, categoriaId=${categoriaId})}"
+                       class="page-btn">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                    <span th:if="${currentPage <= 1}" class="page-btn disabled">
+                        <i class="fas fa-chevron-left"></i>
+                    </span>
+
+                    <th:block th:each="i : ${#numbers.sequence(1, totalPages)}">
+                        <a th:if="${i != currentPage}"
+                           th:href="@{/cliente/tareas(page=${i}, size=${pageSize}, buscar=${buscar}, prioridad=${prioridad}, estadoTarea=${estadoTarea}, categoriaId=${categoriaId})}"
+                           class="page-btn" th:text="${i}">1</a>
+                        <span th:if="${i == currentPage}" class="page-btn active" th:text="${i}">1</span>
+                    </th:block>
+
+                    <a th:if="${currentPage < totalPages}"
+                       th:href="@{/cliente/tareas(page=${currentPage + 1}, size=${pageSize}, buscar=${buscar}, prioridad=${prioridad}, estadoTarea=${estadoTarea}, categoriaId=${categoriaId})}"
+                       class="page-btn">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                    <span th:if="${currentPage >= totalPages}" class="page-btn disabled">
+                        <i class="fas fa-chevron-right"></i>
+                    </span>
+                </nav>
             </div>
 
         </div>
     </main>
 </div>
 
-<!-- ====== MODALES ELIMINAR ====== -->
 <div th:each="tarea : ${tareas != null ? tareas : {}}">
     <div class="modal-overlay" th:id="'modal-' + ${tarea.id}"
          onclick="if(event.target===this) closeModal(this.id)">
@@ -1122,7 +1214,6 @@
     </div>
 </div>
 
-<!-- ====== MODAL NUEVA TAREA ====== -->
 <div class="modal fade" id="modalNuevaTarea" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
@@ -1137,7 +1228,6 @@
     </div>
 </div>
 
-<!-- 🔔 MODAL VER TODAS LAS NOTIFICACIONES -->
 <div class="modal fade" id="modalNotificaciones" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content" style="border-radius:16px; overflow:hidden; border:none;">
@@ -1159,7 +1249,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    /* ====== SIDEBAR ====== */
     let sidebarOpen = false;
     const menuToggle = document.getElementById('menuToggle');
     const menuIcon   = document.getElementById('menuToggleIcon');
@@ -1196,7 +1285,6 @@
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && sidebarOpen) closeSidebar(); });
     window.addEventListener('resize', () => { if (window.innerWidth >= 992 && sidebarOpen) closeSidebar(); });
 
-    /* ====== ACTIONS DROPDOWN ====== */
     function toggleActions(btn) {
         const dd = btn.nextElementSibling;
         const isOpen = dd.classList.contains('open');
@@ -1221,7 +1309,6 @@
             document.querySelectorAll('.dropdown-actions.open').forEach(d => d.classList.remove('open'));
     });
 
-    /* ====== CONFIRM MODAL ====== */
     function openModal(id) {
         const m = document.getElementById(id);
         if (m) m.classList.add('open');
@@ -1232,7 +1319,6 @@
     }
 </script>
 
-<!-- 🔔 SCRIPTS DE NOTIFICACIONES -->
 <script>
     function cargarNotificaciones() {
         const container = document.getElementById('listaNotificaciones');
@@ -1243,7 +1329,7 @@
             credentials: 'same-origin'
         })
         .then(response => {
-            if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+            if (!response.ok) throw new Error('HTTP Error: ' + response.status);
             return response.json();
         })
         .then(data => {
@@ -1252,11 +1338,11 @@
                 renderizarNotificaciones(data.notificaciones);
                 renderizarModalNotificaciones(data.notificaciones, data.totalElements);
             } else {
-                container.innerHTML = `<div class="notif-empty"><i class="fas fa-exclamation-circle"></i><p>${data.message || 'Error desconocido'}</p></div>`;
+                container.innerHTML = '<div class="notif-empty"><i class="fas fa-exclamation-circle"></i><p>' + (data.message || 'Error desconocido') + '</p></div>';
             }
         })
         .catch(error => {
-            container.innerHTML = `<div class="notif-empty"><i class="fas fa-exclamation-triangle"></i><p>Error: ${error.message}</p></div>`;
+            container.innerHTML = '<div class="notif-empty"><i class="fas fa-exclamation-triangle"></i><p>Error: ' + error.message + '</p></div>';
         });
     }
 
@@ -1273,7 +1359,7 @@
     function renderizarNotificaciones(notificaciones) {
         const container = document.getElementById('listaNotificaciones');
         if (!notificaciones || notificaciones.length === 0) {
-            container.innerHTML = `<div class="notif-empty"><i class="fas fa-bell-slash"></i><p>No tienes notificaciones</p></div>`;
+            container.innerHTML = '<div class="notif-empty"><i class="fas fa-bell-slash"></i><p>No tienes notificaciones</p></div>';
             return;
         }
 
@@ -1286,15 +1372,13 @@
             else if (notif.tipo === 'RECORDATORIO') { iconClass = 'recordatorio'; icon = 'fa-clock'; }
             else if (notif.tipo === 'ALERTA') { iconClass = 'alerta'; icon = 'fa-exclamation-triangle'; }
 
-            html += `
-                <a href="${notif.linkAccion || '#'}" class="notif-item ${unreadClass}" onclick="${notif.linkAccion ? '' : `event.preventDefault(); marcarComoLeida(${notif.id});`}">
-                    <div class="notif-icon ${iconClass}"><i class="fas ${icon}"></i></div>
-                    <div class="notif-content">
-                        <div class="notif-title">${notif.titulo}</div>
-                        <div class="notif-msg">${notif.mensaje}</div>
-                        <div class="notif-time">${fecha}</div>
-                    </div>
-                </a>`;
+            html += '<a href="' + (notif.linkAccion || '#') + '" class="notif-item ' + unreadClass + '" onclick="' + (notif.linkAccion ? '' : 'event.preventDefault(); marcarComoLeida(' + notif.id + ');') + '">' +
+                    '<div class="notif-icon ' + iconClass + '"><i class="fas ' + icon + '"></i></div>' +
+                    '<div class="notif-content">' +
+                    '<div class="notif-title">' + notif.titulo + '</div>' +
+                    '<div class="notif-msg">' + notif.mensaje + '</div>' +
+                    '<div class="notif-time">' + fecha + '</div>' +
+                    '</div></a>';
         });
         container.innerHTML = html;
     }
@@ -1302,7 +1386,7 @@
     function renderizarModalNotificaciones(notificaciones, total) {
         const container = document.getElementById('modalListaNotificaciones');
         if (!notificaciones || notificaciones.length === 0) {
-            container.innerHTML = `<div class="notif-empty"><i class="fas fa-bell-slash"></i><p>No tienes notificaciones</p></div>`;
+            container.innerHTML = '<div class="notif-empty"><i class="fas fa-bell-slash"></i><p>No tienes notificaciones</p></div>';
             return;
         }
 
@@ -1315,15 +1399,13 @@
             else if (notif.tipo === 'RECORDATORIO') { iconClass = 'recordatorio'; icon = 'fa-clock'; }
             else if (notif.tipo === 'ALERTA') { iconClass = 'alerta'; icon = 'fa-exclamation-triangle'; }
 
-            html += `
-                <a href="${notif.linkAccion || '#'}" class="notif-item ${unreadClass}" onclick="${notif.linkAccion ? '' : `event.preventDefault(); marcarComoLeida(${notif.id});`}">
-                    <div class="notif-icon ${iconClass}"><i class="fas ${icon}"></i></div>
-                    <div class="notif-content">
-                        <div class="notif-title">${notif.titulo}</div>
-                        <div class="notif-msg">${notif.mensaje}</div>
-                        <div class="notif-time">${fecha}</div>
-                    </div>
-                </a>`;
+            html += '<a href="' + (notif.linkAccion || '#') + '" class="notif-item ' + unreadClass + '" onclick="' + (notif.linkAccion ? '' : 'event.preventDefault(); marcarComoLeida(' + notif.id + ');') + '">' +
+                    '<div class="notif-icon ' + iconClass + '"><i class="fas ' + icon + '"></i></div>' +
+                    '<div class="notif-content">' +
+                    '<div class="notif-title">' + notif.titulo + '</div>' +
+                    '<div class="notif-msg">' + notif.mensaje + '</div>' +
+                    '<div class="notif-time">' + fecha + '</div>' +
+                    '</div></a>';
         });
         container.innerHTML = html;
     }
@@ -1335,7 +1417,7 @@
     }
 
     function marcarComoLeida(id) {
-        fetch(`/cliente/notificaciones/${id}/leer`, {
+        fetch('/cliente/notificaciones/' + id + '/leer', {
             method: 'POST',
             credentials: 'same-origin'
         })
@@ -1360,7 +1442,7 @@
 
     function eliminarNotificacion(id) {
         if (confirm('¿Eliminar esta notificación?')) {
-            fetch(`/cliente/notificaciones/${id}`, {
+            fetch('/cliente/notificaciones/' + id, {
                 method: 'DELETE',
                 credentials: 'same-origin'
             })
@@ -1376,12 +1458,11 @@
         const ahora = new Date();
         const diffMinutos = Math.floor((ahora - fecha) / 60000);
         if (diffMinutos < 1) return 'Ahora';
-        if (diffMinutos < 60) return `Hace ${diffMinutos}m`;
-        if (diffMinutos < 1440) return `Hace ${Math.floor(diffMinutos / 60)}h`;
+        if (diffMinutos < 60) return 'Hace ' + diffMinutos + 'm';
+        if (diffMinutos < 1440) return 'Hace ' + Math.floor(diffMinutos / 60) + 'h';
         return fecha.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
     }
 
-    // Actualizar badge cada 30 segundos
     setInterval(() => {
         fetch('/cliente/notificaciones/api/no-leidas/count', { credentials: 'same-origin' })
         .then(response => response.json())
@@ -1389,7 +1470,6 @@
         .catch(() => {});
     }, 30000);
 
-    // Cargar badge al iniciar
     document.addEventListener('DOMContentLoaded', function() {
         fetch('/cliente/notificaciones/api/no-leidas/count', { credentials: 'same-origin' })
         .then(response => response.json())

@@ -1,6 +1,6 @@
 package com.easydates.easydateap.service.impl;
 
-import com.easydates.easydateap.entity.Categoria;
+import com.easydates.easydateap.model.Categoria;
 import com.easydates.easydateap.repository.CategoriaRepository;
 import com.easydates.easydateap.service.ICategoriaService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
 package com.easydates.easydateap.controller;
 
-import com.easydates.easydateap.entity.HistorialCambios;
+import com.easydates.easydateap.model.HistorialCambios;
 import com.easydates.easydateap.service.IHistorialCambiosService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -33,15 +33,16 @@ public class AdminAuditoriaController {
                 ? filtroAccion.trim().toUpperCase()
                 : null;
 
-        // Crear Pageable con ordenamiento
+        //Pageable con ordenamiento
         Sort sort = sortDir.equalsIgnoreCase("desc")
                 ? Sort.by(sortBy).descending()
                 : Sort.by(sortBy).ascending();
 
-        // Crear Pageable
+
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        // Obtener página del servicio
+
+
         Page<HistorialCambios> paginaHistorial = historialService.buscarHistorialPaginado(
                 accionBusqueda, pageable
         );

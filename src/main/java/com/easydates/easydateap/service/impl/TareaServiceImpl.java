@@ -1,7 +1,7 @@
 package com.easydates.easydateap.service.impl;
 
 import com.easydates.easydateap.dto.TareaDTO;
-import com.easydates.easydateap.entity.*;
+import com.easydates.easydateap.model.*;
 import com.easydates.easydateap.repository.*;
 import com.easydates.easydateap.service.IHistorialCambiosService;
 import com.easydates.easydateap.service.ITareaService;
@@ -341,9 +341,29 @@ public class TareaServiceImpl implements ITareaService {
         );
     }
 
-    // =====================================================
-    // MÉTODO HELPER (NO MODIFICAR)
-    // =====================================================
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Tarea> buscarTareasClientePaginadas(
+            Integer usuarioId,
+            String buscar,
+            String prioridad,
+            String estadoTarea,
+            Integer categoriaId,
+            Pageable pageable) {
+
+        String buscarNorm = (buscar != null && !buscar.trim().isEmpty()) ? buscar.trim() : null;
+        String prioridadNorm = (prioridad != null && !prioridad.trim().isEmpty()) ? prioridad.trim().toUpperCase() : null;
+        String estadoNorm = (estadoTarea != null && !estadoTarea.trim().isEmpty()) ? estadoTarea.trim().toUpperCase() : null;
+
+        return tareaRepository.buscarTareasClientePaginadas(
+                usuarioId,
+                buscarNorm,
+                prioridadNorm,
+                estadoNorm,
+                categoriaId,
+                pageable
+        );
+    }
 
     private void mapearDTOaEntidad(TareaDTO dto, Tarea tarea, Integer usuarioId) {
         tarea.setTitulo(dto.getTitulo());
