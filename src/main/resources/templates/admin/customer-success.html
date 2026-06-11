@@ -6,7 +6,6 @@
     <title>Customer Success 360° - NotyGo Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -64,8 +63,8 @@
         /* PAGE HEADER */
         .page-header{background:white;border-radius:var(--admin-radius);padding:1.25rem 1.75rem;
             margin-bottom:1.5rem;box-shadow:var(--admin-card-shadow);display:flex;
-            justify-content:space-between;align-items:center;animation:fadeInDown .5s ease;
-            border:1px solid rgba(0,0,0,.04)}
+            justify-content:space-between;align-items:center;
+            border:1px solid rgba(0,0,0,.04);animation:fadeInDown .5s ease}
         .page-header h2{font-weight:800;color:var(--admin-text);margin:0;font-size:1.35rem;
             display:flex;align-items:center;gap:.75rem;letter-spacing:-.02em}
         .page-header h2 .header-icon{width:40px;height:40px;
@@ -78,7 +77,7 @@
         /* FILTERS */
         .filters-card{background:white;border-radius:var(--admin-radius);padding:1.375rem 1.75rem;
             margin-bottom:1.5rem;box-shadow:var(--admin-card-shadow);
-            animation:fadeInUp .5s ease .1s both;border:1px solid rgba(0,0,0,.04)}
+            border:1px solid rgba(0,0,0,.04);animation:fadeInUp .5s ease .1s both}
         .filter-tabs{display:flex;gap:.5rem;flex-wrap:wrap}
         .filter-tab{padding:.5rem 1.25rem;border-radius:50px;font-size:.85rem;font-weight:600;
             border:1.5px solid var(--admin-border);background:white;color:var(--admin-text-muted);
@@ -122,15 +121,26 @@
         .table-card .table{margin:0;border-collapse:separate;border-spacing:0}
         .table-card thead tr{background:linear-gradient(135deg,#f8fafc,#f1f5f9)}
         .table-card th{font-weight:700;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;
-            color:var(--admin-text-muted);padding:.75rem 1.25rem;
+            color:var(--admin-text-muted);padding:.75rem 1rem;
             border-bottom:1.5px solid var(--admin-border);border-top:none;white-space:nowrap}
-        .table-card td{padding:.75rem 1.25rem;vertical-align:middle;font-size:.875rem;border-color:#f3f4f6}
+        .table-card td{padding:.65rem 1rem;vertical-align:middle;font-size:.875rem;border-color:#f3f4f6}
         .table-card tbody tr{transition:all .2s}
         .table-card tbody tr:hover{background:linear-gradient(135deg,#f0f9ff,#eff6ff)}
 
+        /* Columnas: ancho controlado para que el botón nunca quede fuera */
+        .col-usuario{min-width:180px}
+        .col-plan{min-width:90px}
+        .col-health{min-width:140px}
+        .col-riesgo{min-width:100px}
+        .col-actividad{min-width:100px}
+        .col-suscripcion{min-width:110px}
+        .col-tareas{min-width:90px}
+        .col-recomendacion{min-width:160px;max-width:200px}
+        .col-accion{min-width:90px;width:90px;white-space:nowrap}
+
         /* HEALTH SCORE BAR */
-        .health-bar-container{width:120px;height:8px;background:#e5e7eb;border-radius:99px;overflow:hidden;
-            display:inline-block;vertical-align:middle;margin-right:.5rem}
+        .health-bar-container{width:90px;height:8px;background:#e5e7eb;border-radius:99px;overflow:hidden;
+            display:inline-block;vertical-align:middle;margin-right:.4rem}
         .health-bar{height:100%;border-radius:99px;transition:width .5s ease}
         .health-bar.excellent{background:linear-gradient(90deg,#10b981,#059669)}
         .health-bar.good{background:linear-gradient(90deg,#3b82f6,#2563eb)}
@@ -139,7 +149,7 @@
 
         /* RISK BADGES */
         .badge-risk{padding:.3rem .75rem;border-radius:50px;font-size:.7rem;font-weight:700;
-            text-transform:uppercase;letter-spacing:.06em;display:inline-flex;align-items:center;gap:.3rem}
+            text-transform:uppercase;letter-spacing:.06em;display:inline-flex;align-items:center;gap:.3rem;white-space:nowrap}
         .badge-risk.bajo{background:#d1fae5;color:#065f46;border:1.5px solid #a7f3d0}
         .badge-risk.medio{background:#fef3c7;color:#92400e;border:1.5px solid #fde68a}
         .badge-risk.alto{background:#fed7aa;color:#9a3412;border:1.5px solid #fdba74}
@@ -148,46 +158,45 @@
         /* PREMIUM BADGE */
         .badge-premium{background:linear-gradient(135deg,#FFD700,#FFA500);color:white;
             padding:.25rem .6rem;border-radius:50px;font-size:.65rem;font-weight:700;
-            display:inline-flex;align-items:center;gap:.3rem}
+            display:inline-flex;align-items:center;gap:.3rem;white-space:nowrap}
         .badge-free{background:#e5e7eb;color:#6b7280;padding:.25rem .6rem;border-radius:50px;
-            font-size:.65rem;font-weight:700}
+            font-size:.65rem;font-weight:700;white-space:nowrap}
 
         /* SUBSCRIPTION INFO */
-        .sub-info{font-size:.8rem;color:var(--admin-text-muted)}
+        .sub-info{font-size:.78rem;color:var(--admin-text-muted)}
         .sub-info.expiring{color:#dc2626;font-weight:600}
         .sub-info.active{color:#059669;font-weight:600}
 
         /* RECOMMENDATION */
         .recommendation{font-size:.75rem;color:var(--admin-text-muted);font-style:italic;
-            max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+            max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
 
         /* USER CELL */
-        .user-cell{display:flex;align-items:center;gap:.75rem}
-        .user-avatar{width:36px;height:36px;border-radius:50%;
+        .user-cell{display:flex;align-items:center;gap:.65rem}
+        .user-avatar{width:34px;height:34px;border-radius:50%;flex-shrink:0;
             background:linear-gradient(135deg,#dbeafe,#bfdbfe);display:flex;
-            align-items:center;justify-content:center;font-weight:700;font-size:.75rem;
-            color:#1d4ed8;flex-shrink:0}
+            align-items:center;justify-content:center;font-weight:700;font-size:.72rem;color:#1d4ed8}
         .user-avatar.premium{background:linear-gradient(135deg,#FFD700,#FFA500);color:white}
-        .user-name{font-weight:600;color:var(--admin-text)}
-        .user-email{font-size:.75rem;color:var(--admin-text-muted)}
+        .user-name{font-weight:600;color:var(--admin-text);font-size:.85rem;white-space:nowrap}
+        .user-email{font-size:.72rem;color:var(--admin-text-muted);white-space:nowrap}
 
         /* TASK STATS */
-        .task-stats{display:flex;gap:.75rem;font-size:.75rem}
-        .task-stat{display:flex;align-items:center;gap:.25rem}
+        .task-stats{display:flex;gap:.5rem;font-size:.75rem}
+        .task-stat{display:flex;align-items:center;gap:.2rem}
         .task-stat.completed{color:#059669}
         .task-stat.overdue{color:#dc2626}
         .task-stat.total{color:var(--admin-text-muted)}
 
-        /* BOTÓN DE MENSAJE */
+        /* BOTÓN ENVIAR — siempre visible */
         .btn-message{background:linear-gradient(135deg,var(--admin-primary),var(--admin-primary-hover));
-            color:white;border:none;border-radius:50px;padding:.4rem .85rem;font-size:.78rem;
+            color:white;border:none;border-radius:50px;padding:.42rem .9rem;font-size:.78rem;
             font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:.35rem;
-            transition:all .25s;font-family:inherit;box-shadow:0 2px 8px rgba(59,130,246,.25)}
+            transition:all .25s;font-family:inherit;box-shadow:0 2px 8px rgba(59,130,246,.25);
+            white-space:nowrap}
         .btn-message:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(59,130,246,.4);
             background:linear-gradient(135deg,var(--admin-primary-hover),#1d4ed8)}
-        .btn-message i{font-size:.85rem}
 
-        /* MODAL DE MENSAJE */
+        /* MODAL */
         .modal-message-header{background:linear-gradient(135deg,var(--admin-primary),var(--admin-primary-hover));
             color:white;padding:1.375rem 1.75rem;border:none}
         .modal-message-header .modal-title{font-weight:800;font-size:1.05rem;
@@ -195,7 +204,6 @@
         .modal-message-header .header-icon-sm{width:36px;height:36px;border-radius:10px;
             background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:1rem}
         .modal-message-header .btn-close{filter:invert(1) grayscale(100%) brightness(200%)}
-
         .message-user-info{background:linear-gradient(135deg,#f0f9ff,#e0f2fe);
             border:1.5px solid #bae6fd;border-radius:12px;padding:1rem 1.25rem;
             margin-bottom:1.25rem;display:flex;align-items:center;gap:.85rem}
@@ -204,28 +212,22 @@
             display:flex;align-items:center;justify-content:center;color:white;
             font-weight:800;font-size:1.1rem;flex-shrink:0}
         .message-user-avatar.premium{background:linear-gradient(135deg,#FFD700,#FFA500)}
-
-        /* PLANTILLAS RÁPIDAS */
         .quick-templates{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem}
         .template-chip{background:white;border:1.5px solid var(--admin-border);border-radius:50px;
             padding:.35rem .85rem;font-size:.75rem;font-weight:600;color:var(--admin-text-muted);
             cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:.35rem}
         .template-chip:hover{border-color:var(--admin-primary);color:var(--admin-primary);
             background:#eff6ff;transform:translateY(-1px)}
-        .template-chip i{font-size:.75rem}
-
         .form-control-message{border:1.5px solid var(--admin-border);border-radius:10px;
             padding:.7rem 1rem;font-family:inherit;font-size:.9rem;transition:all .2s;width:100%}
         .form-control-message:focus{outline:none;border-color:var(--admin-primary);
             box-shadow:0 0 0 3px rgba(59,130,246,.12)}
-
         .btn-send-message{background:linear-gradient(135deg,var(--admin-success),#059669);
             color:white;border:none;border-radius:50px;padding:.65rem 1.5rem;font-weight:700;
             font-size:.9rem;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem;
             transition:all .25s;font-family:inherit;box-shadow:0 4px 12px rgba(16,185,129,.3)}
         .btn-send-message:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(16,185,129,.4)}
         .btn-send-message:disabled{opacity:.6;cursor:not-allowed;transform:none}
-
         .btn-cancel-message{background:white;color:var(--admin-text-muted);
             border:1.5px solid var(--admin-border);border-radius:50px;padding:.65rem 1.5rem;
             font-weight:700;font-size:.9rem;cursor:pointer;transition:all .2s;font-family:inherit}
@@ -235,21 +237,51 @@
         .empty-state{text-align:center;padding:3rem 1rem;color:var(--admin-text-muted)}
         .empty-state i{font-size:3rem;opacity:.3;margin-bottom:1rem;display:block}
 
-        /* ANIMATIONS */
+        /* ═══════════════════════════════
+           MOBILE CARDS (< 768px)
+           — oculta la tabla, muestra cards
+        ═══════════════════════════════ */
+        .user-cards-list{display:none;flex-direction:column;gap:.75rem;padding:1rem}
+        .user-card{background:#fafbfc;border:1.5px solid var(--admin-border);border-radius:12px;
+            padding:1rem 1.1rem;transition:box-shadow .2s}
+        .user-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.09)}
+        .user-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;gap:.5rem}
+        .user-card-meta{display:flex;flex-wrap:wrap;gap:.4rem .75rem;font-size:.78rem;margin-bottom:.75rem}
+        .user-card-meta-item{display:flex;align-items:center;gap:.3rem;color:var(--admin-text-muted)}
+        .user-card-bottom{display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap}
+
         @keyframes fadeInDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
         @keyframes fadeInUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 
-        /* RESPONSIVE */
+        /* ═══ RESPONSIVE ═══ */
         @media(max-width:1200px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
+
         @media(max-width:991.98px){
             .admin-sidebar{position:fixed;left:-260px;top:70px;height:calc(100vh - 70px);z-index:999;
                 box-shadow:4px 0 16px rgba(0,0,0,.1)}
             .admin-sidebar.show{transform:translateX(260px)}
-            .admin-main{padding:1rem}.btn-toggle-sidebar{display:block}
+            .admin-main{padding:1rem}
+            .btn-toggle-sidebar{display:block}
             .page-header{flex-direction:column;gap:1rem;text-align:center}
             .stats-grid{grid-template-columns:repeat(2,1fr)}
         }
-        @media(max-width:576px){.stats-grid{grid-template-columns:1fr}}
+
+        /* En tablets/desktop: tabla con scroll horizontal propio,
+           el wrapper no hace overflow clip para que el botón sea visible */
+        .table-scroll-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+        @media(max-width:767px){
+            .stats-grid{grid-template-columns:repeat(2,1fr)}
+            /* Oculta tabla, muestra cards */
+            .table-scroll-wrap{display:none}
+            .user-cards-list{display:flex}
+        }
+
+        @media(max-width:576px){
+            .stats-grid{grid-template-columns:1fr 1fr}
+            .admin-main{padding:.75rem}
+        }
+
         @media(min-width:992px){.btn-toggle-sidebar{display:none!important}}
     </style>
 </head>
@@ -380,22 +412,22 @@
                 <a th:href="@{/admin/customer-success(filtro='todos')}"
                    class="filter-tab"
                    th:classappend="${filtroActual == 'todos'} ? 'active' : ''">
-                    <i class="fas fa-users"></i> Todos los Usuarios
+                    <i class="fas fa-users"></i> Todos
                 </a>
                 <a th:href="@{/admin/customer-success(filtro='riesgo')}"
                    class="filter-tab"
                    th:classappend="${filtroActual == 'riesgo'} ? 'active' : ''">
-                    <i class="fas fa-exclamation-triangle"></i> En Riesgo (Alto/Crítico)
+                    <i class="fas fa-exclamation-triangle"></i> En Riesgo
                 </a>
                 <a th:href="@{/admin/customer-success(filtro='upsell')}"
                    class="filter-tab"
                    th:classappend="${filtroActual == 'upsell'} ? 'active' : ''">
-                    <i class="fas fa-arrow-up"></i> Oportunidades Upsell
+                    <i class="fas fa-arrow-up"></i> Upsell
                 </a>
             </div>
         </div>
 
-        <!-- Table -->
+        <!-- Table Card -->
         <div class="table-card">
             <div class="table-card-header">
                 <span class="table-card-title">
@@ -403,72 +435,57 @@
                     Análisis de Usuarios
                 </span>
                 <span style="font-size:.8rem;color:var(--admin-text-muted);">
-                    <i class="fas fa-info-circle me-1"></i>
-                    Mostrando <strong th:text="${#lists.size(usuarios)}">0</strong> usuarios
+                    <strong th:text="${#lists.size(usuarios)}">0</strong> usuarios
                 </span>
             </div>
-            <div class="table-responsive">
+
+            <!-- ═══ DESKTOP TABLE ═══ -->
+            <div class="table-scroll-wrap">
                 <table class="table table-hover mb-0">
                     <thead>
                     <tr>
-                        <th class="ps-4">Usuario</th>
-                        <th>Plan</th>
-                        <th>Health Score</th>
-                        <th>Nivel Riesgo</th>
-                        <th>Actividad</th>
-                        <th>Suscripción</th>
-                        <th>Tareas</th>
-                        <th>Recomendación</th>
-                        <th class="text-end pe-4">Acción</th>
+                        <th class="ps-3 col-usuario">Usuario</th>
+                        <th class="col-plan">Plan</th>
+                        <th class="col-health">Health</th>
+                        <th class="col-riesgo">Riesgo</th>
+                        <th class="col-actividad">Actividad</th>
+                        <th class="col-suscripcion">Suscripción</th>
+                        <th class="col-tareas">Tareas</th>
+                        <th class="col-recomendacion">Recomendación</th>
+                        <th class="col-accion text-end pe-3">Acción</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:each="usuario : ${usuarios}">
-                        <!-- Usuario -->
-                        <td class="ps-4">
+                        <td class="ps-3">
                             <div class="user-cell">
                                 <div class="user-avatar"
                                      th:classappend="${usuario.esPremium} ? 'premium' : ''"
                                      th:text="${usuario.nombre != null and usuario.nombre.length() > 0 ? #strings.substring(usuario.nombre,0,1) : 'U'}">U</div>
                                 <div>
-                                    <div class="user-name">
-                                        <span th:text="${usuario.nombre}">Usuario</span>
-                                        <span th:if="${usuario.esPremium}" class="badge-premium ms-1">
-                                            <i class="fas fa-crown"></i>
-                                        </span>
-                                    </div>
+                                    <div class="user-name" th:text="${usuario.nombre}">Usuario</div>
                                     <div class="user-email" th:text="${usuario.email}">email@ejemplo.com</div>
                                 </div>
                             </div>
                         </td>
-
-                        <!-- Plan -->
                         <td>
                             <span th:if="${usuario.esPremium}" class="badge-premium">
                                 <i class="fas fa-crown"></i>
                                 <span th:text="${usuario.planActual}">Premium</span>
                             </span>
-                            <span th:unless="${usuario.esPremium}" class="badge-free">
-                                Gratuito
-                            </span>
+                            <span th:unless="${usuario.esPremium}" class="badge-free">Gratuito</span>
                         </td>
-
-                        <!-- Health Score -->
                         <td>
                             <div class="d-flex align-items-center" th:if="${usuario.healthScore != null}">
                                 <div class="health-bar-container">
                                     <div class="health-bar"
                                          th:classappend="${usuario.healthScore >= 80} ? 'excellent' : (${usuario.healthScore >= 60} ? 'good' : (${usuario.healthScore >= 40} ? 'warning' : 'danger'))"
-                                         th:style="'width: ' + ${usuario.healthScore} + '%'"
-                                         th:title="${usuario.healthScore} + '/100'"></div>
+                                         th:style="'width: ' + ${usuario.healthScore} + '%'"></div>
                                 </div>
-                                <span style="font-weight:700;font-size:.85rem;"
-                                      th:text="${usuario.healthScore}">85</span>
+                                <span style="font-weight:700;font-size:.82rem;" th:text="${usuario.healthScore}">85</span>
                             </div>
                             <span th:unless="${usuario.healthScore != null}" class="text-muted">N/A</span>
                         </td>
-
-                        <!-- Nivel Riesgo -->
                         <td>
                             <span th:if="${usuario.nivelRiesgo != null}" class="badge-risk"
                                   th:classappend="${usuario.nivelRiesgo == 'BAJO'} ? 'bajo' : (${usuario.nivelRiesgo == 'MEDIO'} ? 'medio' : (${usuario.nivelRiesgo == 'ALTO'} ? 'alto' : 'critico'))">
@@ -480,26 +497,20 @@
                             </span>
                             <span th:unless="${usuario.nivelRiesgo != null}" class="text-muted">N/A</span>
                         </td>
-
-                        <!-- Actividad -->
                         <td>
                             <div th:if="${usuario.diasSinActividad != null and usuario.diasSinActividad < 999}">
                                 <span th:if="${usuario.diasSinActividad <= 7}" class="text-success" style="font-size:.8rem;font-weight:600;">
                                     <i class="fas fa-bolt"></i> Activo
                                 </span>
                                 <span th:if="${usuario.diasSinActividad > 7 and usuario.diasSinActividad <= 30}" class="text-warning" style="font-size:.8rem;font-weight:600;">
-                                    <i class="fas fa-clock"></i> <span th:text="${usuario.diasSinActividad} + ' días'">0 días</span>
+                                    <i class="fas fa-clock"></i> <span th:text="${usuario.diasSinActividad} + 'd'">0d</span>
                                 </span>
                                 <span th:if="${usuario.diasSinActividad > 30}" class="text-danger" style="font-size:.8rem;font-weight:600;">
                                     <i class="fas fa-bed"></i> Inactivo
                                 </span>
                             </div>
-                            <div th:unless="${usuario.diasSinActividad != null and usuario.diasSinActividad < 999}">
-                                <span class="text-muted" style="font-size:.8rem;">Sin actividad</span>
-                            </div>
+                            <span th:unless="${usuario.diasSinActividad != null and usuario.diasSinActividad < 999}" class="text-muted" style="font-size:.8rem;">—</span>
                         </td>
-
-                        <!-- Suscripción -->
                         <td>
                             <div th:if="${usuario.fechaVencimiento != null}">
                                 <div th:if="${usuario.suscripcionActiva}" class="sub-info active">
@@ -507,44 +518,24 @@
                                 </div>
                                 <div th:classappend="${usuario.fechaVencimiento.isBefore(T(java.time.LocalDate).now())} ? 'sub-info expiring' : 'sub-info'">
                                     <i class="fas fa-calendar-alt"></i>
-                                    <span th:text="${#temporals.format(usuario.fechaVencimiento, 'dd/MM/yyyy')}">01/01/2026</span>
+                                    <span th:text="${#temporals.format(usuario.fechaVencimiento, 'dd/MM/yy')}">01/01/26</span>
                                 </div>
                             </div>
-                            <div th:unless="${usuario.fechaVencimiento != null}">
-                                <span class="text-muted" style="font-size:.8rem;">Sin suscripción</span>
-                            </div>
+                            <span th:unless="${usuario.fechaVencimiento != null}" class="text-muted" style="font-size:.78rem;">Sin suscripción</span>
                         </td>
-
-                        <!-- Tareas -->
                         <td>
                             <div class="task-stats">
-                                <span class="task-stat total" title="Total">
-                                    <i class="fas fa-tasks"></i>
-                                    <span th:text="${usuario.tareasTotales}">0</span>
-                                </span>
-                                <span class="task-stat completed" title="Completadas">
-                                    <i class="fas fa-check"></i>
-                                    <span th:text="${usuario.tareasCompletadas}">0</span>
-                                </span>
-                                <span class="task-stat overdue" title="Vencidas">
-                                    <i class="fas fa-exclamation"></i>
-                                    <span th:text="${usuario.tareasVencidas}">0</span>
-                                </span>
+                                <span class="task-stat total" title="Total"><i class="fas fa-tasks"></i><span th:text="${usuario.tareasTotales}">0</span></span>
+                                <span class="task-stat completed" title="Completadas"><i class="fas fa-check"></i><span th:text="${usuario.tareasCompletadas}">0</span></span>
+                                <span class="task-stat overdue" title="Vencidas"><i class="fas fa-exclamation"></i><span th:text="${usuario.tareasVencidas}">0</span></span>
                             </div>
                         </td>
-
-                        <!-- Recomendación -->
                         <td>
                             <span th:if="${usuario.recomendacion != null}" class="recommendation"
-                                  th:text="${usuario.recomendacion}"
-                                  th:title="${usuario.recomendacion}">
-                                Recomendación
-                            </span>
-                            <span th:unless="${usuario.recomendacion != null}" class="text-muted">-</span>
+                                  th:text="${usuario.recomendacion}" th:title="${usuario.recomendacion}">Recomendación</span>
+                            <span th:unless="${usuario.recomendacion != null}" class="text-muted">—</span>
                         </td>
-
-                        <!-- Acción: Botón Enviar Mensaje -->
-                        <td class="text-end pe-4">
+                        <td class="text-end pe-3">
                             <button class="btn-message"
                                     th:data-usuario-id="${usuario.usuarioId}"
                                     th:data-usuario-nombre="${usuario.nombre}"
@@ -553,24 +544,109 @@
                                     th:data-usuario-recomendacion="${usuario.recomendacion}"
                                     th:data-usuario-riesgo="${usuario.nivelRiesgo}"
                                     onclick="abrirModalMensaje(this)">
-                                <i class="fas fa-paper-plane"></i>
-                                <span class="d-none d-xl-inline">Enviar</span>
+                                <i class="fas fa-paper-plane"></i> Notificar
                             </button>
                         </td>
                     </tr>
-
-                    <!-- Empty State -->
                     <tr th:if="${usuarios == null or #lists.isEmpty(usuarios)}">
                         <td colspan="9">
                             <div class="empty-state">
                                 <i class="fas fa-user-slash"></i>
                                 <p style="font-weight:600;margin-bottom:.5rem;">No se encontraron usuarios</p>
-                                <small>Intenta ajustar los filtros de búsqueda</small>
+                                <small>Intenta ajustar los filtros</small>
                             </div>
                         </td>
                     </tr>
                     </tbody>
                 </table>
+            </div>
+
+            <!-- ═══ MOBILE CARDS (< 768px) ═══ -->
+            <div class="user-cards-list">
+                <!-- Vacío -->
+                <div th:if="${usuarios == null or #lists.isEmpty(usuarios)}" class="empty-state">
+                    <i class="fas fa-user-slash"></i>
+                    <p style="font-weight:600;margin-bottom:.5rem;">No se encontraron usuarios</p>
+                    <small>Intenta ajustar los filtros</small>
+                </div>
+
+                <div class="user-card" th:each="usuario : ${usuarios}">
+                    <!-- Top: avatar + nombre + botón -->
+                    <div class="user-card-top">
+                        <div class="user-cell">
+                            <div class="user-avatar"
+                                 th:classappend="${usuario.esPremium} ? 'premium' : ''"
+                                 th:text="${usuario.nombre != null and usuario.nombre.length() > 0 ? #strings.substring(usuario.nombre,0,1) : 'U'}">U</div>
+                            <div>
+                                <div class="user-name">
+                                    <span th:text="${usuario.nombre}">Usuario</span>
+                                    <span th:if="${usuario.esPremium}" class="badge-premium ms-1"><i class="fas fa-crown"></i></span>
+                                </div>
+                                <div class="user-email" th:text="${usuario.email}">email@ejemplo.com</div>
+                            </div>
+                        </div>
+                        <button class="btn-message"
+                                th:data-usuario-id="${usuario.usuarioId}"
+                                th:data-usuario-nombre="${usuario.nombre}"
+                                th:data-usuario-email="${usuario.email}"
+                                th:data-usuario-premium="${usuario.esPremium}"
+                                th:data-usuario-recomendacion="${usuario.recomendacion}"
+                                th:data-usuario-riesgo="${usuario.nivelRiesgo}"
+                                onclick="abrirModalMensaje(this)">
+                            <i class="fas fa-paper-plane"></i> Notificar
+                        </button>
+                    </div>
+
+                    <!-- Meta row -->
+                    <div class="user-card-meta">
+                        <!-- Plan -->
+                        <span>
+                            <span th:if="${usuario.esPremium}" class="badge-premium"><i class="fas fa-crown"></i><span th:text="${usuario.planActual}">Premium</span></span>
+                            <span th:unless="${usuario.esPremium}" class="badge-free">Gratuito</span>
+                        </span>
+                        <!-- Riesgo -->
+                        <span th:if="${usuario.nivelRiesgo != null}" class="badge-risk"
+                              th:classappend="${usuario.nivelRiesgo == 'BAJO'} ? 'bajo' : (${usuario.nivelRiesgo == 'MEDIO'} ? 'medio' : (${usuario.nivelRiesgo == 'ALTO'} ? 'alto' : 'critico'))">
+                            <i th:if="${usuario.nivelRiesgo == 'BAJO'}" class="fas fa-check-circle"></i>
+                            <i th:if="${usuario.nivelRiesgo == 'MEDIO'}" class="fas fa-exclamation-circle"></i>
+                            <i th:if="${usuario.nivelRiesgo == 'ALTO'}" class="fas fa-exclamation-triangle"></i>
+                            <i th:if="${usuario.nivelRiesgo == 'CRITICO'}" class="fas fa-times-circle"></i>
+                            <span th:text="${usuario.nivelRiesgo}">BAJO</span>
+                        </span>
+                    </div>
+
+                    <!-- Bottom: health + actividad + tareas -->
+                    <div class="user-card-bottom">
+                        <!-- Health -->
+                        <div th:if="${usuario.healthScore != null}" class="d-flex align-items-center gap-1">
+                            <div class="health-bar-container" style="width:70px">
+                                <div class="health-bar"
+                                     th:classappend="${usuario.healthScore >= 80} ? 'excellent' : (${usuario.healthScore >= 60} ? 'good' : (${usuario.healthScore >= 40} ? 'warning' : 'danger'))"
+                                     th:style="'width: ' + ${usuario.healthScore} + '%'"></div>
+                            </div>
+                            <span style="font-size:.78rem;font-weight:700;" th:text="${usuario.healthScore}">85</span>
+                        </div>
+                        <!-- Actividad -->
+                        <span th:if="${usuario.diasSinActividad != null and usuario.diasSinActividad <= 7}" class="text-success" style="font-size:.78rem;font-weight:600;">
+                            <i class="fas fa-bolt"></i> Activo
+                        </span>
+                        <span th:if="${usuario.diasSinActividad != null and usuario.diasSinActividad > 7 and usuario.diasSinActividad <= 30}" class="text-warning" style="font-size:.78rem;font-weight:600;">
+                            <i class="fas fa-clock"></i> <span th:text="${usuario.diasSinActividad} + 'd'">0d</span>
+                        </span>
+                        <span th:if="${usuario.diasSinActividad != null and usuario.diasSinActividad > 30}" class="text-danger" style="font-size:.78rem;font-weight:600;">
+                            <i class="fas fa-bed"></i> Inactivo
+                        </span>
+                        <!-- Tareas -->
+                        <div class="task-stats">
+                            <span class="task-stat total"><i class="fas fa-tasks"></i><span th:text="${usuario.tareasTotales}">0</span></span>
+                            <span class="task-stat completed"><i class="fas fa-check"></i><span th:text="${usuario.tareasCompletadas}">0</span></span>
+                            <span class="task-stat overdue"><i class="fas fa-exclamation"></i><span th:text="${usuario.tareasVencidas}">0</span></span>
+                        </div>
+                        <!-- Recomendación -->
+                        <span th:if="${usuario.recomendacion != null}" class="recommendation" style="max-width:100%"
+                              th:text="${usuario.recomendacion}">Recomendación</span>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -578,39 +654,34 @@
         <div class="row g-3 mb-4">
             <div class="col-md-4">
                 <div style="background:white;border-radius:var(--admin-radius);padding:1.25rem;box-shadow:var(--admin-card-shadow);border:1px solid rgba(0,0,0,.04);">
-                    <h6 style="font-weight:700;font-size:.9rem;margin-bottom:1rem;color:var(--admin-text);">
+                    <h6 style="font-weight:700;font-size:.9rem;margin-bottom:1rem;">
                         <i class="fas fa-info-circle me-2" style="color:var(--admin-primary)"></i>¿Qué es el Health Score?
                     </h6>
-                    <p style="font-size:.8rem;color:var(--admin-text-muted);margin:0;line-height:1.5;">
-                        El <strong>Health Score</strong> es una métrica de 0-100 que mide la salud del usuario basada en:
-                        <br>• Actividad reciente
-                        <br>• Tareas completadas vs vencidas
-                        <br>• Estado de suscripción
-                        <br>• Frecuencia de uso
+                    <p style="font-size:.8rem;color:var(--admin-text-muted);margin:0;line-height:1.6;">
+                        Métrica 0-100 basada en: actividad reciente, tareas completadas vs vencidas, estado de suscripción y frecuencia de uso.
                     </p>
                 </div>
             </div>
             <div class="col-md-4">
                 <div style="background:white;border-radius:var(--admin-radius);padding:1.25rem;box-shadow:var(--admin-card-shadow);border:1px solid rgba(0,0,0,.04);">
-                    <h6 style="font-weight:700;font-size:.9rem;margin-bottom:1rem;color:var(--admin-text);">
+                    <h6 style="font-weight:700;font-size:.9rem;margin-bottom:1rem;">
                         <i class="fas fa-shield-alt me-2" style="color:var(--admin-success)"></i>Niveles de Riesgo
                     </h6>
-                    <div style="font-size:.8rem;line-height:1.8;">
-                        <div><span class="badge-risk bajo" style="margin-right:.5rem;">BAJO</span> Usuario saludable (80-100)</div>
-                        <div><span class="badge-risk medio" style="margin-right:.5rem;">MEDIO</span> Requiere monitoreo (60-79)</div>
-                        <div><span class="badge-risk alto" style="margin-right:.5rem;">ALTO</span> Riesgo de churn (40-59)</div>
-                        <div><span class="badge-risk critico" style="margin-right:.5rem;">CRÍTICO</span> Intervención urgente (0-39)</div>
+                    <div style="font-size:.8rem;line-height:1.9;">
+                        <div><span class="badge-risk bajo me-2">BAJO</span>Saludable (80-100)</div>
+                        <div><span class="badge-risk medio me-2">MEDIO</span>Monitoreo (60-79)</div>
+                        <div><span class="badge-risk alto me-2">ALTO</span>Riesgo churn (40-59)</div>
+                        <div><span class="badge-risk critico me-2">CRÍTICO</span>Urgente (0-39)</div>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div style="background:white;border-radius:var(--admin-radius);padding:1.25rem;box-shadow:var(--admin-card-shadow);border:1px solid rgba(0,0,0,.04);">
-                    <h6 style="font-weight:700;font-size:.9rem;margin-bottom:1rem;color:var(--admin-text);">
+                    <h6 style="font-weight:700;font-size:.9rem;margin-bottom:1rem;">
                         <i class="fas fa-rocket me-2" style="color:var(--admin-warning)"></i>Oportunidades Upsell
                     </h6>
-                    <p style="font-size:.8rem;color:var(--admin-text-muted);margin:0;line-height:1.5;">
-                        Los usuarios <strong>gratuitos con Health Score ≥ 70</strong> son candidatos ideales para ofrecerles el plan Premium.
-                        Usa el filtro "Oportunidades Upsell" para ver la lista completa.
+                    <p style="font-size:.8rem;color:var(--admin-text-muted);margin:0;line-height:1.6;">
+                        Usuarios gratuitos con <strong>Health Score ≥ 70</strong> son candidatos ideales para el plan Premium.
                     </p>
                 </div>
             </div>
@@ -631,7 +702,6 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4" style="background:#fafbfc;">
-                <!-- Info del usuario destinatario -->
                 <div class="message-user-info">
                     <div class="message-user-avatar" id="msgUserAvatar">U</div>
                     <div class="flex-grow-1">
@@ -640,68 +710,39 @@
                     </div>
                     <div id="msgUserBadge"></div>
                 </div>
-
-                <!-- Plantillas rápidas -->
                 <div class="mb-3">
                     <label class="form-label" style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--admin-text-muted);">
                         <i class="fas fa-magic me-1"></i>Plantillas Rápidas
                     </label>
                     <div class="quick-templates">
-                        <button type="button" class="template-chip" onclick="usarPlantilla('bienvenida')">
-                            <i class="fas fa-hand-wave"></i> Saludo
-                        </button>
-                        <button type="button" class="template-chip" onclick="usarPlantilla('riesgo')">
-                            <i class="fas fa-heart"></i> Preocupación
-                        </button>
-                        <button type="button" class="template-chip" onclick="usarPlantilla('upsell')">
-                            <i class="fas fa-crown"></i> Oferta Premium
-                        </button>
-                        <button type="button" class="template-chip" onclick="usarPlantilla('recordatorio')">
-                            <i class="fas fa-bell"></i> Recordatorio
-                        </button>
-                        <button type="button" class="template-chip" onclick="usarPlantilla('agradecimiento')">
-                            <i class="fas fa-heart"></i> Agradecimiento
-                        </button>
+                        <button type="button" class="template-chip" onclick="usarPlantilla('bienvenida')"><i class="fas fa-hand-wave"></i> Saludo</button>
+                        <button type="button" class="template-chip" onclick="usarPlantilla('riesgo')"><i class="fas fa-heart"></i> Preocupación</button>
+                        <button type="button" class="template-chip" onclick="usarPlantilla('upsell')"><i class="fas fa-crown"></i> Oferta Premium</button>
+                        <button type="button" class="template-chip" onclick="usarPlantilla('recordatorio')"><i class="fas fa-bell"></i> Recordatorio</button>
+                        <button type="button" class="template-chip" onclick="usarPlantilla('agradecimiento')"><i class="fas fa-heart"></i> Agradecimiento</button>
                     </div>
                 </div>
-
-                <!-- Formulario -->
                 <form id="formMensaje">
                     <input type="hidden" id="msgUsuarioId">
                     <div class="mb-3">
-                        <label class="form-label" style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--admin-text-muted);">
-                            Título del Mensaje *
-                        </label>
+                        <label class="form-label" style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--admin-text-muted);">Título *</label>
                         <input type="text" class="form-control-message" id="msgTitulo"
                                placeholder="Ej: ¡Hola! Tenemos una novedad para ti" required maxlength="200">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label" style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--admin-text-muted);">
-                            Mensaje *
-                        </label>
+                        <label class="form-label" style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--admin-text-muted);">Mensaje *</label>
                         <textarea class="form-control-message" id="msgMensaje" rows="4"
                                   placeholder="Escribe tu mensaje personalizado..." required></textarea>
-                        <small class="text-muted" style="font-size:.72rem;">
-                            <i class="fas fa-info-circle me-1"></i>
-                            El usuario verá este mensaje en su buzón de notificaciones
-                        </small>
+                        <small class="text-muted" style="font-size:.72rem;"><i class="fas fa-info-circle me-1"></i>El usuario verá este mensaje en su buzón</small>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label" style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--admin-text-muted);">
-                            <i class="fas fa-link me-1"></i>Link de Acción (Opcional)
-                        </label>
-                        <input type="text" class="form-control-message" id="msgLink"
-                               placeholder="Ej: /suscripciones/comprar">
-                        <small class="text-muted" style="font-size:.72rem;">
-                            Si lo agregas, el usuario podrá hacer clic para ir directamente
-                        </small>
+                        <label class="form-label" style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--admin-text-muted);"><i class="fas fa-link me-1"></i>Link de Acción (Opcional)</label>
+                        <input type="text" class="form-control-message" id="msgLink" placeholder="Ej: /suscripciones/comprar">
                     </div>
                 </form>
             </div>
             <div class="modal-footer" style="background:white;border-top:1.5px solid #f3f4f6;padding:1rem 1.75rem;">
-                <button type="button" class="btn-cancel-message" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-1"></i>Cancelar
-                </button>
+                <button type="button" class="btn-cancel-message" data-bs-dismiss="modal"><i class="fas fa-times me-1"></i>Cancelar</button>
                 <button type="button" class="btn-send-message" onclick="enviarMensaje()" id="btnEnviarMensaje">
                     <i class="fas fa-paper-plane"></i>Enviar Mensaje
                 </button>
@@ -710,13 +751,11 @@
     </div>
 </div>
 
-<!-- Toast de notificación -->
+<!-- Toast -->
 <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index:9999;">
     <div id="toastNotificacion" class="toast align-items-center text-white border-0" role="alert">
         <div class="d-flex">
-            <div class="toast-body" id="toastMensaje">
-                <i class="fas fa-check-circle me-2"></i>Mensaje enviado
-            </div>
+            <div class="toast-body" id="toastMensaje"><i class="fas fa-check-circle me-2"></i>Mensaje enviado</div>
             <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
         </div>
     </div>
@@ -724,188 +763,123 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Sidebar toggle
     function toggleSidebar(){
         document.getElementById('adminSidebar').classList.toggle('show');
     }
-
-    document.addEventListener('click', function(e){
-        const sb = document.getElementById('adminSidebar');
-        const tb = document.querySelector('.btn-toggle-sidebar');
-        if(window.innerWidth < 992 && sb.classList.contains('show') && !sb.contains(e.target) && !tb.contains(e.target)){
+    document.addEventListener('click',function(e){
+        const sb=document.getElementById('adminSidebar');
+        const tb=document.querySelector('.btn-toggle-sidebar');
+        if(window.innerWidth<992&&sb.classList.contains('show')&&!sb.contains(e.target)&&!tb.contains(e.target)){
             sb.classList.remove('show');
         }
     });
 
-    // Variables globales
-    let modalMensajeInstance = null;
+    let modalMensajeInstance=null;
 
-    // Abrir modal con datos del usuario
-    function abrirModalMensaje(btn) {
-        const usuarioId = btn.getAttribute('data-usuario-id');
-        const nombre = btn.getAttribute('data-usuario-nombre');
-        const email = btn.getAttribute('data-usuario-email');
-        const esPremium = btn.getAttribute('data-usuario-premium') === 'true';
-        const recomendacion = btn.getAttribute('data-usuario-recomendacion');
-        const nivelRiesgo = btn.getAttribute('data-usuario-riesgo');
+    function abrirModalMensaje(btn){
+        const usuarioId=btn.getAttribute('data-usuario-id');
+        const nombre=btn.getAttribute('data-usuario-nombre');
+        const email=btn.getAttribute('data-usuario-email');
+        const esPremium=btn.getAttribute('data-usuario-premium')==='true';
+        const recomendacion=btn.getAttribute('data-usuario-recomendacion');
+        const nivelRiesgo=btn.getAttribute('data-usuario-riesgo');
 
-        // Llenar info del usuario
-        document.getElementById('msgUsuarioId').value = usuarioId;
-        document.getElementById('msgUserName').textContent = nombre;
-        document.getElementById('msgUserEmail').textContent = email;
+        document.getElementById('msgUsuarioId').value=usuarioId;
+        document.getElementById('msgUserName').textContent=nombre;
+        document.getElementById('msgUserEmail').textContent=email;
 
-        const avatar = document.getElementById('msgUserAvatar');
-        avatar.textContent = nombre.charAt(0).toUpperCase();
-        if (esPremium) {
-            avatar.classList.add('premium');
-        } else {
-            avatar.classList.remove('premium');
+        const avatar=document.getElementById('msgUserAvatar');
+        avatar.textContent=nombre.charAt(0).toUpperCase();
+        avatar.classList.toggle('premium',esPremium);
+
+        const badgeContainer=document.getElementById('msgUserBadge');
+        badgeContainer.innerHTML=esPremium
+            ?'<span class="badge-premium"><i class="fas fa-crown"></i> Premium</span>'
+            :'<span class="badge-free">Gratuito</span>';
+
+        document.getElementById('msgTitulo').value='';
+        document.getElementById('msgMensaje').value='';
+        document.getElementById('msgLink').value='';
+
+        if(nivelRiesgo==='ALTO'||nivelRiesgo==='CRITICO'){
+            document.getElementById('msgTitulo').value='¡Hola '+nombre.split(' ')[0]+'! Queremos ayudarte';
+            document.getElementById('msgMensaje').value='Hemos notado que no has estado muy activo últimamente en NotyGo. ¿Hay algo en lo que podamos ayudarte? Estamos aquí para mejorar tu experiencia.';
         }
 
-        // Badge del usuario
-        const badgeContainer = document.getElementById('msgUserBadge');
-        if (esPremium) {
-            badgeContainer.innerHTML = '<span class="badge-premium"><i class="fas fa-crown"></i> Premium</span>';
-        } else {
-            badgeContainer.innerHTML = '<span class="badge-free">Gratuito</span>';
-        }
-
-        // Limpiar formulario
-        document.getElementById('msgTitulo').value = '';
-        document.getElementById('msgMensaje').value = '';
-        document.getElementById('msgLink').value = '';
-
-        // Sugerir mensaje basado en nivel de riesgo
-        if (nivelRiesgo === 'ALTO' || nivelRiesgo === 'CRITICO') {
-            document.getElementById('msgTitulo').value = '¡Hola ' + nombre.split(' ')[0] + '! Queremos ayudarte';
-            document.getElementById('msgMensaje').value = 'Hemos notado que no has estado muy activo últimamente en NotyGo. ¿Hay algo en lo que podamos ayudarte? Estamos aquí para mejorar tu experiencia.';
-        }
-
-        // Abrir modal
-        if (!modalMensajeInstance) {
-            modalMensajeInstance = new bootstrap.Modal(document.getElementById('modalMensaje'));
+        if(!modalMensajeInstance){
+            modalMensajeInstance=new bootstrap.Modal(document.getElementById('modalMensaje'));
         }
         modalMensajeInstance.show();
     }
 
-    // Usar plantillas predefinidas
-    function usarPlantilla(tipo) {
-        const nombre = document.getElementById('msgUserName').textContent.split(' ')[0];
-        const tituloEl = document.getElementById('msgTitulo');
-        const mensajeEl = document.getElementById('msgMensaje');
-        const linkEl = document.getElementById('msgLink');
-
-        const plantillas = {
-            bienvenida: {
-                titulo: '¡Bienvenido/a de vuelta, ' + nombre + '! 👋',
-                mensaje: 'Esperamos que estés teniendo un excelente día. Recuerda que en NotyGo puedes organizar todas tus tareas de manera eficiente. ¡Estamos aquí para ayudarte!',
-                link: '/cliente/home'
-            },
-            riesgo: {
-                titulo: '¡Hola ' + nombre + '! Te extrañamos en NotyGo 💙',
-                mensaje: 'Hemos notado que hace un tiempo no interactúas con la aplicación. ¿Hay algo en lo que podamos ayudarte? Tu opinión es muy importante para nosotros y queremos mejorar tu experiencia.',
-                link: '/cliente/home'
-            },
-            upsell: {
-                titulo: '🎁 Oferta especial para ti, ' + nombre,
-                mensaje: '¡Hola! Hemos visto que usas mucho NotyGo y nos encanta. Por eso queremos ofrecerte una oportunidad única: prueba Premium con beneficios exclusivos como categorías ilimitadas, reportes avanzados y soporte prioritario. ¡Aprovecha esta oferta!',
-                link: '/suscripciones/comprar'
-            },
-            recordatorio: {
-                titulo: '📅 Recordatorio importante, ' + nombre,
-                mensaje: 'Te recordamos que tienes tareas pendientes que podrían vencer pronto. Te recomendamos revisar tu tablero para mantener todo al día. ¡Tú puedes!',
-                link: '/cliente/tareas'
-            },
-            agradecimiento: {
-                titulo: '¡Gracias por ser parte de NotyGo, ' + nombre + '! 🎉',
-                mensaje: 'Queremos agradecerte por confiar en nosotros. Tu actividad y feedback nos ayudan a mejorar cada día. ¡Sigue organizando tus tareas con NotyGo!',
-                link: '/cliente/home'
-            }
+    function usarPlantilla(tipo){
+        const nombre=document.getElementById('msgUserName').textContent.split(' ')[0];
+        const tituloEl=document.getElementById('msgTitulo');
+        const mensajeEl=document.getElementById('msgMensaje');
+        const linkEl=document.getElementById('msgLink');
+        const plantillas={
+            bienvenida:{titulo:'¡Bienvenido/a de vuelta, '+nombre+'! 👋',mensaje:'Esperamos que estés teniendo un excelente día. Recuerda que en NotyGo puedes organizar todas tus tareas de manera eficiente. ¡Estamos aquí para ayudarte!',link:'/cliente/home'},
+            riesgo:{titulo:'¡Hola '+nombre+'! Te extrañamos en NotyGo 💙',mensaje:'Hemos notado que hace un tiempo no interactúas con la aplicación. ¿Hay algo en lo que podamos ayudarte? Tu opinión es muy importante para nosotros.',link:'/cliente/home'},
+            upsell:{titulo:'🎁 Oferta especial para ti, '+nombre,mensaje:'¡Hola! Hemos visto que usas mucho NotyGo y nos encanta. Por eso queremos ofrecerte una oportunidad única: prueba Premium con categorías ilimitadas, reportes avanzados y soporte prioritario.',link:'/suscripciones/comprar'},
+            recordatorio:{titulo:'📅 Recordatorio importante, '+nombre,mensaje:'Te recordamos que tienes tareas pendientes que podrían vencer pronto. Te recomendamos revisar tu tablero para mantener todo al día. ¡Tú puedes!',link:'/cliente/tareas'},
+            agradecimiento:{titulo:'¡Gracias por ser parte de NotyGo, '+nombre+'! 🎉',mensaje:'Queremos agradecerte por confiar en nosotros. Tu actividad y feedback nos ayudan a mejorar cada día. ¡Sigue organizando tus tareas con NotyGo!',link:'/cliente/home'}
         };
-
-        const plantilla = plantillas[tipo];
-        if (plantilla) {
-            tituloEl.value = plantilla.titulo;
-            mensajeEl.value = plantilla.mensaje;
-            linkEl.value = plantilla.link;
-
-            // Animación visual
-            tituloEl.style.transition = 'background 0.3s';
-            mensajeEl.style.transition = 'background 0.3s';
-            tituloEl.style.background = '#eff6ff';
-            mensajeEl.style.background = '#eff6ff';
-            setTimeout(() => {
-                tituloEl.style.background = 'white';
-                mensajeEl.style.background = 'white';
-            }, 500);
-        }
-    }
-
-    // Enviar mensaje al backend
-    async function enviarMensaje() {
-        const usuarioId = document.getElementById('msgUsuarioId').value;
-        const titulo = document.getElementById('msgTitulo').value.trim();
-        const mensaje = document.getElementById('msgMensaje').value.trim();
-        const link = document.getElementById('msgLink').value.trim();
-
-        // Validaciones
-        if (!titulo) {
-            mostrarToast('❌ Ingresa un título para el mensaje', 'danger');
-            document.getElementById('msgTitulo').focus();
-            return;
-        }
-        if (!mensaje) {
-            mostrarToast('❌ Ingresa el mensaje', 'danger');
-            document.getElementById('msgMensaje').focus();
-            return;
-        }
-
-        // Deshabilitar botón
-        const btnEnviar = document.getElementById('btnEnviarMensaje');
-        const textoOriginal = btnEnviar.innerHTML;
-        btnEnviar.disabled = true;
-        btnEnviar.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Enviando...';
-
-        try {
-            // Construir FormData
-            const formData = new FormData();
-            formData.append('usuarioId', usuarioId);
-            formData.append('titulo', titulo);
-            formData.append('mensaje', mensaje);
-            if (link) formData.append('linkAccion', link);
-
-            // URL CORREGIDA: apunta al endpoint correcto
-            const response = await fetch('/admin/customer-success/enviar-mensaje', {
-                method: 'POST',
-                body: formData
+        const p=plantillas[tipo];
+        if(p){
+            tituloEl.value=p.titulo;
+            mensajeEl.value=p.mensaje;
+            linkEl.value=p.link;
+            [tituloEl,mensajeEl].forEach(el=>{
+                el.style.transition='background .3s';
+                el.style.background='#eff6ff';
+                setTimeout(()=>el.style.background='white',500);
             });
-
-            if (response.ok) {
-                mostrarToast(' Mensaje enviado correctamente', 'success');
-                modalMensajeInstance.hide();
-            } else {
-                const errorText = await response.text();
-                mostrarToast('Error: ' + errorText, 'danger');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            mostrarToast(' Error de conexión: ' + error.message, 'danger');
-        } finally {
-            btnEnviar.disabled = false;
-            btnEnviar.innerHTML = textoOriginal;
         }
     }
 
-    // Mostrar toast
-    function mostrarToast(mensaje, tipo = 'success') {
-        const toast = document.getElementById('toastNotificacion');
-        const toastBody = document.getElementById('toastMensaje');
+    async function enviarMensaje(){
+        const usuarioId=document.getElementById('msgUsuarioId').value;
+        const titulo=document.getElementById('msgTitulo').value.trim();
+        const mensaje=document.getElementById('msgMensaje').value.trim();
+        const link=document.getElementById('msgLink').value.trim();
 
-        toast.className = 'toast align-items-center text-white border-0 bg-' + (tipo === 'success' ? 'success' : 'danger');
-        toastBody.innerHTML = '<i class="fas ' + (tipo === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle') + ' me-2"></i>' + mensaje;
+        if(!titulo){mostrarToast('❌ Ingresa un título','danger');document.getElementById('msgTitulo').focus();return;}
+        if(!mensaje){mostrarToast('❌ Ingresa el mensaje','danger');document.getElementById('msgMensaje').focus();return;}
 
-        const bsToast = new bootstrap.Toast(toast, { delay: 3500 });
-        bsToast.show();
+        const btnEnviar=document.getElementById('btnEnviarMensaje');
+        const textoOriginal=btnEnviar.innerHTML;
+        btnEnviar.disabled=true;
+        btnEnviar.innerHTML='<i class="fas fa-spinner fa-spin"></i>Enviando...';
+
+        try{
+            const formData=new FormData();
+            formData.append('usuarioId',usuarioId);
+            formData.append('titulo',titulo);
+            formData.append('mensaje',mensaje);
+            if(link)formData.append('linkAccion',link);
+
+            const response=await fetch('/admin/customer-success/enviar-mensaje',{method:'POST',body:formData});
+            if(response.ok){
+                mostrarToast('✅ Mensaje enviado correctamente','success');
+                modalMensajeInstance.hide();
+            }else{
+                const errorText=await response.text();
+                mostrarToast('Error: '+errorText,'danger');
+            }
+        }catch(error){
+            mostrarToast('Error de conexión: '+error.message,'danger');
+        }finally{
+            btnEnviar.disabled=false;
+            btnEnviar.innerHTML=textoOriginal;
+        }
+    }
+
+    function mostrarToast(mensaje,tipo='success'){
+        const toast=document.getElementById('toastNotificacion');
+        const toastBody=document.getElementById('toastMensaje');
+        toast.className='toast align-items-center text-white border-0 bg-'+(tipo==='success'?'success':'danger');
+        toastBody.innerHTML='<i class="fas '+(tipo==='success'?'fa-check-circle':'fa-exclamation-circle')+' me-2"></i>'+mensaje;
+        new bootstrap.Toast(toast,{delay:3500}).show();
     }
 </script>
 </body>
