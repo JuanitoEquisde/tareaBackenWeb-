@@ -10,7 +10,6 @@ public class CustomerSuccessDTO {
     private String planActual;
     private LocalDate fechaVencimiento;
 
-    // ✅ CAMBIAR A Long (COUNT y SUM de SQL devuelven Long)
     private Long tareasTotales;
     private Long tareasCompletadas;
     private Long tareasVencidas;

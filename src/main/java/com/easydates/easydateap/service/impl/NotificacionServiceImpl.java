@@ -86,7 +86,7 @@ public class NotificacionServiceImpl implements INotificacionService {
 
     @Override
     public void enviarRecordatorioPremium(Integer usuarioId, Integer diasParaVencer) {
-        String titulo = "⚠️ Tu suscripción Premium está por vencer";
+        String titulo = " Tu suscripción Premium está por vencer";
         String mensaje = String.format(
                 "Tu suscripción Premium vencerá en %d días. ¡Renueva ahora para no perder acceso a todas las funcionalidades!",
                 diasParaVencer
@@ -96,14 +96,14 @@ public class NotificacionServiceImpl implements INotificacionService {
 
     @Override
     public void enviarBienvenidaPremium(Integer usuarioId) {
-        String titulo = "🎉 ¡Bienvenido a Premium!";
+        String titulo = " ¡Bienvenido a Premium!";
         String mensaje = "Gracias por unirte a NotyGo Premium. Ahora tienes acceso a todas las funcionalidades avanzadas. ¡Disfruta tu experiencia!";
         enviarNotificacionConLink(usuarioId, titulo, mensaje, "/cliente/home");
     }
 
     @Override
     public void enviarAlertaTareaVencida(Integer usuarioId, String tituloTarea) {
-        String titulo = "📅 Tarea vencida";
+        String titulo = " Tarea vencida";
         String mensaje = String.format("La tarea \"%s\" ha vencido. Revísala y actualiza su estado.", tituloTarea);
         enviarNotificacionConLink(usuarioId, titulo, mensaje, "/cliente/tareas");
     }

@@ -13,10 +13,8 @@ public class TareaDTO {
     private LocalDate fechaLimite;
     private Integer categoriaId;
 
-    // ✅ AGREGA ESTE CAMPO
-    private List<Integer> etiquetasIds;  // Lista de IDs de etiquetas seleccionadas
+    private List<Integer> etiquetasIds;
 
-    // ✅ AGREGA GETTER Y SETTER
     public List<Integer> getEtiquetasIds() {
         return etiquetasIds;
     }
@@ -25,9 +23,7 @@ public class TareaDTO {
         this.etiquetasIds = etiquetasIds;
     }
 
-    // ... resto de getters y setters existentes ...
 
-    // Getters y setters de los otros campos
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
 

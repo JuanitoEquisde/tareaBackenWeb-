@@ -12,6 +12,5 @@ public class SuscripcionDTO {
     private String cvv;
     private BigDecimal monto;
 
-    // ✅ NUEVO: Método de pago seleccionado por el usuario
-    private String metodoPago;  // "TARJETA", "PAYPAL", "TRANSFERENCIA"
+    private String metodoPago;
 }

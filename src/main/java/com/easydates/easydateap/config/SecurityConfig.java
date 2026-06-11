@@ -19,8 +19,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // ✅ Rutas públicas
-                        .requestMatchers(
+                         .requestMatchers(
                                 "/login",
                                 "/registro",
                                 "/login/invitado",
@@ -30,17 +29,13 @@ public class SecurityConfig {
                                 "/admin/migrate-passwords"
                         ).permitAll()
 
-                        // ✅ Rutas de cliente (cualquier usuario autenticado)
-                        .requestMatchers("/cliente/**").authenticated()
+                         .requestMatchers("/cliente/**").authenticated()
 
-                        // ✅ NUEVO: Rutas de suscripciones (usuarios autenticados)
-                        .requestMatchers("/suscripciones/**").authenticated()
+                         .requestMatchers("/suscripciones/**").authenticated()
 
-                        // ✅ Rutas de admin: solo ADMINISTRADOR
-                        .requestMatchers("/admin/**").hasRole("ADMINISTRADOR")
+                         .requestMatchers("/admin/**").hasRole("ADMINISTRADOR")
 
-                        // Cualquier otra ruta requiere autenticación
-                        .anyRequest().authenticated()
+                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form.disable())
                 .logout(logout -> logout
