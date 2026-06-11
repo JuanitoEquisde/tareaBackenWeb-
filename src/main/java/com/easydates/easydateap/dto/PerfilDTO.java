@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class PerfilDTO {
     private String nombre;
     private String email;
-    private String tema; // claro, oscuro, elegante
+    private String tema;
 }

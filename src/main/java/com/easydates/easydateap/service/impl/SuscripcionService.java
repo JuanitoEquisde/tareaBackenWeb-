@@ -141,7 +141,7 @@ public class SuscripcionService implements ISuscripcionService {
             String fechaFin,
             Pageable pageable) {
 
-        // ✅ Convertir String a Enum para el estado (MANEJO SEGURO DE NULL)
+        //  Convertir String a Enum para el estado (MANEJO SEGURO DE NULL)
         Suscripcion.EstadoSuscripcion estadoEnum = null;
         if (estado != null && !estado.trim().isEmpty()) {
             try {
@@ -152,7 +152,7 @@ public class SuscripcionService implements ISuscripcionService {
             }
         }
 
-        // ✅ Convertir fechas String a LocalDate (MANEJO SEGURO DE NULL)
+        //  Convertir fechas String a LocalDate (MANEJO SEGURO DE NULL)
         LocalDate fechaInicioDate = null;
         LocalDate fechaFinDate = null;
 
@@ -174,7 +174,7 @@ public class SuscripcionService implements ISuscripcionService {
             }
         }
 
-        // ✅ Llamar al repository con los parámetros convertidos
+        //  Llamar al repository con los parámetros convertidos
         return suscripcionRepository.buscarConFiltrosAdmin(
                 estadoEnum,
                 plan,
@@ -366,8 +366,7 @@ public class SuscripcionService implements ISuscripcionService {
             suscripcionRepository.save(s);
         }
 
-        System.out.println("✅ Suscripciones canceladas para usuario ID: " + usuarioId +
-                " (Total: " + suscripcionesActivas.size() + ")");
+
     }
 
 }

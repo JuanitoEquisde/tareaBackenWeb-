@@ -76,7 +76,7 @@ public class TareaServiceImpl implements ITareaService {
         Tarea tarea = obtenerTarea(id)
                 .orElseThrow(() -> new RuntimeException("Tarea no encontrada"));
 
-        // ✅ CAPTURAR EL ESTADO ANTES DE ACTUALIZAR
+        //  CAPTURAR EL ESTADO ANTES DE ACTUALIZAR
         String descripcionAntes = "Estado: " + tarea.getEstadoTarea() +
                 ", Prioridad: " + tarea.getPrioridad() +
                 ", Título: " + tarea.getTitulo();
@@ -313,9 +313,7 @@ public class TareaServiceImpl implements ITareaService {
         }).orElse(false);
     }
 
-    // =====================================================
-    // ✅ NUEVO: BÚSQUEDA PAGINADA CON FILTROS (PARA ADMIN)
-    // =====================================================
+
     @Override
     @Transactional(readOnly = true)
     public Page<Tarea> buscarTareasPaginadas(

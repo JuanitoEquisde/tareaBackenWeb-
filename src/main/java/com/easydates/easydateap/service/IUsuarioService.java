@@ -11,9 +11,6 @@ import java.util.Optional;
 
 public interface IUsuarioService {
 
-    // =====================================================
-    // 🔹 MÉTODOS EXISTENTES (NO MODIFICAR - Ya funcionan)
-    // =====================================================
 
     Optional<Usuario> login(String email, String password);
 
